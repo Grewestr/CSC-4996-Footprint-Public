@@ -14,11 +14,11 @@ def login_view(request):
             # Firebase Admin SDK: authenticate the user
             user = auth.get_user_by_email(email)
             
-            # Perform password validation with Firebase Authentication API
-            # Redirect to the homepage after successful login
-            return redirect('homepage')  # Replace with the name of your homepage view
+            #Akram here is wehre we need to integrrate the email and passwords into the database
+            return redirect('homepage')  
         except firebase_admin.auth.AuthError:
             messages.error(request, 'Invalid login credentials.')
     
     return render(request, 'home/login.html')
 
+#new fucntion needed for registering
