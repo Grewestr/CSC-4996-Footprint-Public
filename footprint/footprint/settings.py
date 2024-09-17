@@ -11,7 +11,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import firebase_admin 
+from firebase_admin import credentials
 
+# SECTION 1: BASE SETTINGS
+# --------------------------------------------------------------
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -27,6 +32,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# SECTION 2: INSTALLED APPS
+# --------------------------------------------------------------
 
 # Application definition
 
@@ -40,6 +47,9 @@ INSTALLED_APPS = [
     'home',
 ]
 
+# SECTION 3: MIDDLEWARE
+# --------------------------------------------------------------
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -50,6 +60,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# SECTION 4: FIREBASE CONFIGURATION
+# --------------------------------------------------------------
+# Firebase Initialization
+# Path to your service account key file
+cred = credentials.Certificate(BASE_DIR / "firebase/serviceAccountKey.json") 
+firebase_admin.initialize_app(cred) 
+
+
+# SECTION 5: URLS & TEMPLATES
+# --------------------------------------------------------------
 ROOT_URLCONF = 'footprint.urls'
 
 TEMPLATES = [
@@ -71,6 +91,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'footprint.wsgi.application'
 
 
+# SECTION 6: DATABASE SETTINGS
+# --------------------------------------------------------------
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -100,8 +122,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
+# SECTION 8: INTERNATIONALIZATION
+# --------------------------------------------------------------
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
@@ -112,12 +134,16 @@ USE_I18N = True
 
 USE_TZ = True
 
-
+# SECTION 9: STATIC FILES
+# --------------------------------------------------------------
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
 
+
+# SECTION 10: DEFAULT AUTO FIELD
+# --------------------------------------------------------------
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
