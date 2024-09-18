@@ -1,27 +1,54 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}"> <!-- Link to your CSS file -->
 </head>
 <body>
-    <h2>Login</h2>
-    <form method="POST">
-        {% csrf_token %}
-        <label for="email">Email:</label>
-        <input type="email" name="email" required><br><br>
+    <!-- ================================
+         Section 1: Header
+    =================================== -->
+    <header>
+        <h2>Login</h2>
+    </header>
 
-        <label for="password">Password:</label>
-        <input type="password" name="password" required><br><br>
+    <!-- ================================
+         Section 2: Login Form
+    =================================== -->
+    <main>
+        <section>
+            <form method="POST">
+                {% csrf_token %}
+                <label for="email">Email:</label>
+                <input type="email" name="email" required><br><br>
 
-        <button type="submit">Login</button>
-    </form>
+                <label for="password">Password:</label>
+                <input type="password" name="password" required><br><br>
 
-    {% if messages %}
-        <ul>
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+                <button type="submit">Login</button>
+            </form>
+
+            <!-- ================================
+                 Section 3: Messages
+            =================================== -->
+            {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </section>
+    </main>
+
+    <!-- ================================
+         Section 4: Footer
+    =================================== -->
+    <footer>
+        <p>&copy; 2024 Your Company Name</p>
+    </footer>
 </body>
 </html>

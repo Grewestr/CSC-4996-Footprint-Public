@@ -20,7 +20,17 @@
     =================================== -->
     <main>
         <section>
-            <p>Form goes here</p> <!-- Placeholder for sign-up form -->
+            <form id="signup-form">
+                <label for="signup-email">Email:</label>
+                <input type="email" id="signup-email" placeholder="Enter your email" required />
+
+                <label for="signup-password">Password:</label>
+                <input type="password" id="signup-password" placeholder="Enter your password" required />
+
+                <button type="button" onclick="alert('Sign Up functionality not yet implemented.')">Sign Up</button>
+                <!-- The button currently shows an alert when clicked -->
+            </form>
+            <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p> <!-- Link to login page -->
         </section>
     </main>
 
