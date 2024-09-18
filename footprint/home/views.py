@@ -22,3 +22,6 @@ def login_view(request):
     return render(request, 'home/login.html')
 
 #new fucntion needed for registering
+
+def signup_view(request):
+    return render(request, 'home/signup.html')  # Render the sign-up template
