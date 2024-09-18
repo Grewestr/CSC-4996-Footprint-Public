@@ -64,7 +64,7 @@ MIDDLEWARE = [
 # --------------------------------------------------------------
 # Firebase Initialization
 # Path to your service account key file
-cred = credentials.Certificate(BASE_DIR / "firebase/serviceAccountKey.json") 
+cred = credentials.Certificate(BASE_DIR / "Firebase/serviceAccountKey.json") 
 firebase_admin.initialize_app(cred) 
 
 
