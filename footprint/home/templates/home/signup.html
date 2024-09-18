@@ -20,17 +20,24 @@
     =================================== -->
     <main>
         <section>
-            <form id="signup-form">
+            <form method="POST" action="">
+                {% csrf_token %}
+                
                 <label for="signup-email">Email:</label>
-                <input type="email" id="signup-email" placeholder="Enter your email" required />
+                <input type="email" id="signup-email" name="email" placeholder="Enter your email" required />
 
                 <label for="signup-password">Password:</label>
-                <input type="password" id="signup-password" placeholder="Enter your password" required />
+                <input type="password" id="signup-password" name="password" placeholder="Enter your password" required />
+                <p style="font-size: 0.9em; color: #555;">Password must be at least 8 characters and include an uppercase letter and a lowercase letter.</p>
+                
+                {% if invalid_password_message %}
+                    <p style="color: red;">{{ invalid_password_message }}</p> <!-- Display password error message -->
+                {% endif %}
 
-                <button type="button" onclick="alert('Sign Up functionality not yet implemented.')">Sign Up</button>
-                <!-- The button currently shows an alert when clicked -->
+                <button type="submit">Sign Up</button>
             </form>
-            <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p> <!-- Link to login page -->
+
+            <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
         </section>
     </main>
 
