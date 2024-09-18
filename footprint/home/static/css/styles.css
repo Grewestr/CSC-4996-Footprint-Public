@@ -1,0 +1,47 @@
+/* ================================
+   Section 1: General Styles
+================================ */
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+}
+
+/* ================================
+ Section 2: Header Styles
+================================ */
+
+h1 {
+  color: #333;
+}
+
+/* ================================
+ Section 3: Paragraph Styles
+================================ */
+
+p {
+  font-size: 1.2em;
+}
+
+/* ================================
+ Section 4: Link Styles
+================================ */
+
+a {
+  text-decoration: none;
+  color: #007BFF; /* Primary link color */
+}
+
+a:hover {
+  text-decoration: underline; /* Underline links on hover */
+}
+
+/* ================================
+ Section 5: Footer Styles
+================================ */
+
+footer {
+  margin-top: 20px;
+  font-size: 0.9em;
+  color: #666; /* Secondary text color */
+}

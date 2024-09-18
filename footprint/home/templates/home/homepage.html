@@ -1,12 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Homepage</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}"> <!-- Link to your CSS file -->
 </head>
 <body>
-    <h1>Welcome to the Homepage!</h1>
-    <p>Here we will describe the project and point the clients to the register/login.</p>
+    <!-- ================================
+         Section 1: Header
+    =================================== -->
+    <header>
+        <h1>Welcome to the Homepage!</h1>
+    </header>
 
-    <p><a href="{% url 'login' %}">Login</a></p>
+    <!-- ================================
+         Section 2: Main Content
+    =================================== -->
+    <main>
+        <section>
+            <p>Here we will describe the project and point the clients to the register/login.</p>
+            <p><a href="{% url 'login' %}">Login</a></p>
+        </section>
+    </main>
+
+    <!-- ================================
+         Section 3: Footer
+    =================================== -->
+    <footer>
+        <p>&copy; 2024 Footprint</p>
+    </footer>
 </body>
 </html>
