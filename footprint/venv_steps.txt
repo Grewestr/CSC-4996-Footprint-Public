@@ -1,6 +1,8 @@
 Virtual Environment Setup and Managing Dependencies
 ___________________________________________________
 Step 1: Create a Virtual Environment:
+first change directory into the folder that containing the GitHub clone folder 
+
 For Windows:
 python -m venv venv
 
@@ -17,8 +19,12 @@ ___________________________________________________
 Step 3: Install Required Packages
 pip install -r requirements.txt
 ___________________________________________________
-If you install any new packages during development:
-1- firs activate virtual environment first 
-2- then save new install into requirements.txt using following command: 
-pip freeze > requirements.txt
+If you install any new packages during development update the requirement.txt file manually following next steps : 
+1- First, activate the virtual environment (refer to Step 2).
+
+2- Manually add the newly installed package to the requirements.txt file by specifying the package name and version in the following format:
+package-name==version
+example : django==5.1.1
+
+
 ___________________________________________________
