@@ -2,37 +2,92 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Homepage</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}"> <!-- Link to your CSS file -->
+    <title>Footprint - Home</title>
+
+    <!-- Load static files for CSS and JavaScript -->
+    {% load static %}  <!-- Ensure static tag is loaded -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script src="{% static 'js/script.js' %}" defer></script>
 </head>
 <body>
-    <!-- ================================
-         Section 1: Header
-    =================================== -->
+    <!-- Header Section -->
     <header>
-        <h1>Welcome to the Homepage!</h1>
+        <div class="container">
+            <div class="logo-and-title">
+                <!-- Logo linked to homepage -->
+                <a href="{% url 'homepage' %}" class="logo-link">
+                    <img src="{% static 'images/logo.png' %}" alt="Footprint Logo" class="logo-image">
+                </a>
+                <!-- Site Title -->
+                <h1 class="site-title">Footprint</h1>
+            </div>
+            <!-- Navigation Links -->
+            <nav>
+                <a href="{% url 'login' %}" class="nav-link">Login</a>
+                <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
+            </nav>
+        </div>
     </header>
 
-    <!-- ================================
-         Section 2: Main Content
-    =================================== -->
+    <!-- Main Content Section -->
     <main>
-        <section>
-            <p>Here we will describe the project and point the clients to the register/login.</p>
-            <p>
-                <a href="{% url 'login' %}">Login</a>
-                <a href="{% url 'signup' %}">Sign Up</a>
+        <div class="container">
+            <!-- Main Heading -->
+            <h2 class="main-heading">Quickly Locate Missing People Using Computer Vision</h2>
+            <!-- Introduction Text -->
+            <p class="intro">
+                Footprint is a system designed to rapidly locate missing individuals by analyzing live video feeds. Utilizing existing technology, it recognizes people based on clothing and appearance without the need for specialized equipment.
             </p>
-        </section>
+
+            <!-- Section: Problem & Solutions -->
+            <section>
+                <h3 class="section-heading">Problem & Solutions</h3>
+                <p>
+                    Identifying people based on clothing and appearance poses challenges due to frequent outfit changes and environmental factors like poor lighting or weather conditions. Footprint addresses these issues by combining features such as color and texture with time and location data.
+                </p>
+            </section>
+
+            <!-- Section: Why Choose Footprint? -->
+            <section>
+                <h3 class="section-heading">Why Choose Footprint?</h3>
+                <ul class="features-list">
+                    <li>Fast and Efficient</li>
+                    <li>Cost-Effective</li>
+                    <li>Advanced Technology</li>
+                </ul>
+            </section>
+
+            <!-- Section: Target Audience -->
+            <section>
+                <h3 class="section-heading">Target Audience</h3>
+                <p>
+                    Ideal for law enforcement agencies, search and rescue teams, and public safety organizations.
+                </p>
+            </section>
+
+            <!-- Section: Technologies We Use -->
+            <section>
+                <h3 class="section-heading">Technologies We Use</h3>
+                <ul class="tech-list">
+                    <li>YOLOv5 for object detection</li>
+                    <li>PyTorch for model training</li>
+                    <li>OpenCV for image processing</li>
+                    <li>Django for backend development</li>
+                    <li>Python for functions</li>
+                    <li>Firebase for storing attributes and managing queries</li>
+                    <li>GitHub for version control</li>
+                    <li>Internal note for Jordan... Add the versions!</li>
+
+                </ul>
+            </section>
+        </div>
     </main>
 
-    <!-- ================================
-         Section 3: Footer
-    =================================== -->
+    <!-- Footer Section -->
     <footer>
-        <p>&copy; 2024 FOOTPRINT</p>
+        <div class="container">
+            <p>&copy; 2024 FOOTPRINT. All rights reserved.</p>
+        </div>
     </footer>
 </body>
 </html>

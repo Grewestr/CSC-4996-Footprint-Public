@@ -45,3 +45,181 @@ footer {
   font-size: 0.9em;
   color: #666; /* Secondary text color */
 }
+/* General Styles */
+/* These styles apply to the overall page, setting the default font, background color, text color, and page margin */
+body {
+  font-family: 'Courier New', Courier, monospace;
+  background-color: #ffffff;
+  color: #000000;
+  margin: 0;
+}
+
+.container {
+  width: 90%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Header Styles */
+/* This section controls the header's layout, stickiness, background, padding, and spacing for logo and title */
+header {
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  border-bottom: 2px solid #000;
+  padding: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo-and-title {
+  display: flex;
+  align-items: center;
+}
+
+/* Styles for the clickable logo in the header */
+.logo-link {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+/* Styles for the logo image, including hover effects */
+.logo-image {
+  max-width: 100px;
+  height: auto;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.logo-image:hover {
+  opacity: 0.8;
+}
+
+/* Styling for the site title, setting font size and weight */
+.site-title {
+  font-size: 1.8em;
+  font-weight: 700;  
+  color: #000;
+  margin: 0;
+}
+
+/* Navigation Styles */
+/* Controls the layout and appearance of navigation links */
+nav {
+  display: flex;
+  align-items: center;
+}
+
+/* Styles for individual navigation links, including hover effects */
+.nav-link {
+  color: #000;
+  text-decoration: none;
+  font-weight: bold;
+  margin-left: 20px;
+  position: relative;
+  transition: color 0.3s;
+}
+
+.nav-link:first-child {
+  margin-left: 0;
+}
+
+/* Changes the color of navigation links when hovered */
+.nav-link:hover {
+  color: #ff0000;
+}
+
+/* Main Content Styles */
+/* Controls the layout, font size, and spacing of the main content */
+main {
+  padding: 40px 0;
+}
+
+.main-heading {
+  font-size: 2em;
+  margin-bottom: 20px;
+  font-weight: 700; 
+}
+
+/* Styles for the introductory paragraph in the main content */
+.intro {
+  font-size: 1.2em;
+  margin-bottom: 30px;
+  font-weight: 500; 
+}
+
+/* Section Heading Styles */
+/* Controls the look and behavior of section headings, including hover effects */
+.section-heading {
+  font-size: 1.3em;
+  margin: 10px 0;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s ease, transform 0.3s ease;
+  font-weight: 700;  /* Increased boldness for headings */
+}
+
+.section-heading:hover {
+  transform: scale(1.1);
+  font-weight: 800;  
+}
+
+/* Adds a plus sign after section headings, changes on toggle */
+.section-heading::after {
+  content: '+';
+  position: absolute;
+  right: 0;
+  font-size: 1.2em;
+  transition: transform 0.3s;
+}
+
+.section.open .section-heading::after {
+  transform: rotate(45deg);
+}
+
+/* Section Content Styles */
+/* Controls the appearance of section paragraphs and lists, hidden by default */
+section p,
+section ul {
+  display: none;
+  margin-bottom: 15px;
+  font-weight: 500; 
+}
+
+/* Makes section content visible when section is open */
+section.open p,
+section.open ul {
+  display: block;
+}
+
+/* Styles for the features and tech lists within sections */
+.features-list,
+.tech-list {
+  list-style-type: square;
+  padding-left: 20px;
+  font-weight: 500;  
+}
+
+/* Footer Styles */
+/* Controls the layout and appearance of the footer, including border, padding, and text alignment */
+footer {
+  border-top: 2px solid #000;
+  padding: 20px 0;
+  text-align: center;
+  margin-top: 40px;
+  font-weight: 500;  
+}
+
+/* Link Styles */
+/* General link styling for links across the page */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Changes the color of links when hovered */
+a:hover {
+  color: #ff0000;
+}
