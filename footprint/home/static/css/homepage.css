@@ -1,11 +1,13 @@
 /* ================================
-   Section 1: General Styles
+   Homepage Styles
 ================================ */
+
+/* General Styles */
 body {
-  font-family: 'Courier New', Courier, monospace; /* Unified font family */
+  font-family: 'Courier New', Courier, monospace;
   background-color: #ffffff;
   color: #000000;
-  margin: 20px; /* Adjusted margin */
+  margin: 0;
 }
 
 .container {
@@ -14,9 +16,7 @@ body {
   margin: 0 auto;
 }
 
-/* ================================
-   Section 2: Header Styles
-================================ */
+/* Header Styles */
 header {
   position: sticky;
   top: 0;
@@ -57,9 +57,7 @@ header {
   margin: 0;
 }
 
-/* ================================
-   Section 3: Navigation Styles
-================================ */
+/* Navigation Styles */
 nav {
   display: flex;
   align-items: center;
@@ -82,9 +80,7 @@ nav {
   color: #ff0000;
 }
 
-/* ================================
-   Section 4: Main Content Styles
-================================ */
+/* Main Content Styles */
 main {
   padding: 40px 0;
 }
@@ -101,9 +97,7 @@ main {
   font-weight: 500;
 }
 
-/* ================================
-   Section 5: Section Heading Styles
-================================ */
+/* Section Heading Styles */
 .section-heading {
   font-size: 1.3em;
   margin: 10px 0;
@@ -130,9 +124,7 @@ main {
   transform: rotate(45deg);
 }
 
-/* ================================
-   Section 6: Section Content Styles
-================================ */
+/* Section Content Styles */
 section p,
 section ul {
   display: none;
@@ -152,48 +144,11 @@ section.open ul {
   font-weight: 500;
 }
 
-/* ================================
-   Section 7: Paragraph Styles
-================================ */
-p {
-  font-size: 1.2em;
-}
-
-/* ================================
-   Section 8: Link Styles
-================================ */
-a {
-  color: #007BFF; /* Primary link color */
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline; /* Underline links on hover */
-  color: #0056b3; /* Slightly darker on hover */
-}
-
-/* ================================
-   Section 9: Footer Styles
-================================ */
+/* Footer Styles */
 footer {
   border-top: 2px solid #000;
   padding: 20px 0;
   text-align: center;
   margin-top: 40px;
-  font-size: 0.9em;
-  color: #666; /* Secondary text color */
   font-weight: 500;
-}
-
-/* ================================
-   Section 10: Specific Link Styling
-================================ */
-/* Class-based styling for specific use cases */
-.login-link {
-  color: #007BFF; /* Primary link color */
-}
-
-.login-link:hover {
-  text-decoration: underline;
-  color: #0056b3; /* Slightly darker on hover */
 }
