@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 import firebase_admin 
 from firebase_admin import credentials
 
@@ -62,10 +63,10 @@ MIDDLEWARE = [
 
 # SECTION 4: FIREBASE CONFIGURATION
 # --------------------------------------------------------------
+
 # Firebase Initialization
-# Path to your service account key file
-cred = credentials.Certificate(BASE_DIR / "Firebase/serviceAccountKey.json") 
-firebase_admin.initialize_app(cred) 
+cred = credentials.Certificate(os.path.join(BASE_DIR, 'Firebase', 'serviceAccountKey.json'))
+firebase_admin.initialize_app(cred)
 
 
 # SECTION 5: URLS & TEMPLATES
