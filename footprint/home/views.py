@@ -47,7 +47,7 @@ def login_view(request):
             messages.error(request, 'This email is not registered. Please sign up first.')
         except exceptions.FirebaseError as e:
             messages.error(request, f'Firebase error occurred: {str(e)}')
-
+        return render(request, 'home/login.html', {'email': email})
     return render(request, 'home/login.html')
 
 
@@ -71,7 +71,7 @@ def signup_view(request):
             existing_user = auth.get_user_by_email(email)
             # If we reach this point, the email is already registered
             return render(request, 'home/signup.html', {
-                'invalid_password_message': 'Email is already registered.',
+                'invalid_password_message': 'Email is already registered.','email': email
             })
         except firebase_admin.auth.UserNotFoundError:
             # If the user does not exist, we move on to password validation
