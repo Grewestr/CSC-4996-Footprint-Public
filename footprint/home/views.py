@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 import firebase_admin
 from firebase_admin import auth
+import requests
 
 def homepage_view(request):
     return render(request, 'home/homepage.html')
@@ -10,17 +11,29 @@ def login_view(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
-        try:
-            # Firebase Admin SDK: authenticate the user
-            user = auth.get_user_by_email(email)
-            
-            #Akram here is wehre we need to integrrate the email and passwords into the database
-            return redirect('homepage')  
-        except firebase_admin.auth.AuthError:
-            messages.error(request, 'Invalid login credentials.')
-    
-    return render(request, 'home/login.html')
 
+        try:
+            user = auth.get_user_by_email(email)
+            firebase_api_key = 'AIzaSyBrnuE0rPIse9NIoJiV0kw2FMEGDXShjBQ'
+            url = f'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={firebase_api_key}'
+            payload = {
+                'email': email,
+                'password': password,
+                'returnSecureToken': True
+            }
+            response = requests.post(url, json=payload)
+
+            if response.status_code == 200:
+                # Login successful, redirect to homepage
+                return redirect('homepage')
+            else:
+                # If authentication fails
+                messages.error(request, 'Invalid login credentials.')
+
+        except exceptions.FirebaseError as e:
+            messages.error(request, 'Firebase error occurred: {}'.format(str(e)))
+
+    return render(request, 'home/login.html')
 
 # validating passwords
 def validate_password(password):
