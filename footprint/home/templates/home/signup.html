@@ -6,6 +6,8 @@
     <title>Sign Up</title>
     {% load static %}
     <!--<link rel="stylesheet" href="{% static 'css/styles.css' %}">-->
+    <link rel="stylesheet" href="{% static 'css/passw_validation.css' %}">
+    <script src="{% static 'js/passw_validation.js' %}"></script>
 </head>
 <body>
     <!-- ================================
@@ -38,7 +40,19 @@
                 =================================== -->
                 <label for="signup-password">Password:</label>
                 <input type="password" id="signup-password" name="password" placeholder="Enter your password" required />
-                <p style="font-size: 0.9em; color: #555;">Password must be at least 8 characters and include an uppercase letter and a lowercase letter.</p>
+
+                 <!-- Password Requirements -->
+                <ul class="password-requirements">
+                    <li id="length" class="requirement">
+                        <i class="x-mark"></i> At least 8 characters
+                    </li>
+                    <li id="uppercase" class="requirement">
+                        <i class="x-mark"></i> One uppercase letter
+                    </li>
+                    <li id="lowercase" class="requirement">
+                        <i class="x-mark"></i> One lowercase letter
+                    </li>
+                </ul>
 
                 <!-- ================================
                      Section 2.1.3: Error Handling for Invalid Password
