@@ -1,8 +1,4 @@
-// Import the necessary Firebase modules
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth"; // Import Firebase Authentication
-
-// web app's Firebase configuration
+// Firebase configuration object
 const firebaseConfig = {
   apiKey: "AIzaSyBrnuE0rPIse9NIoJiV0kw2FMEGDXShjBQ",
   authDomain: "footprint-2024.firebaseapp.com",
@@ -15,7 +11,7 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 
-// Initialize Firebase Authentication and export it
-export const auth = getAuth(app); // Export the auth object for use in other files
+// Initialize Firebase Authentication
+const auth = firebase.auth(); // Use the Firebase Auth object

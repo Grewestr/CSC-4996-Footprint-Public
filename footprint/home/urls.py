@@ -20,5 +20,5 @@ from .views import login_view, homepage_view, signup_view
 urlpatterns = [
     path('login/', login_view, name='login'),
     path('signup/', signup_view, name='signup'),
-    path('', homepage_view, name='homepage'),  # Homepage URL
+    path('', homepage_view, name='homepage')  # Homepage URL
 ]

@@ -65,8 +65,9 @@ MIDDLEWARE = [
 # --------------------------------------------------------------
 
 # Firebase Initialization
-cred = credentials.Certificate(os.path.join(BASE_DIR, 'Firebase', 'serviceAccountKey.json'))
-firebase_admin.initialize_app(cred)
+if not firebase_admin._apps:
+    cred = credentials.Certificate(os.path.join(BASE_DIR, 'Firebase', 'serviceAccountKey.json'))
+    firebase_admin.initialize_app(cred)
 
 
 # SECTION 5: URLS & TEMPLATES
