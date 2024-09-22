@@ -31,7 +31,7 @@ def login_view(request):
 
             if response.status_code == 200:
                 # Login successful, redirect to homepage
-                return redirect('dashboard')
+                return redirect('homepage')
             else:
                 # If authentication fails, check the error response
                 error_message = response.json().get('error', {}).get('message')

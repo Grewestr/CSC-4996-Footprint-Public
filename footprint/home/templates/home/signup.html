@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/signup.css' %}">
 </head>
 <body>
     <!-- ================================
@@ -30,7 +30,8 @@
                      Section 2.1.1: Email Input
                 =================================== -->
                 <label for="signup-email">Email:</label>
-                <input type="email" id="signup-email" name="email" placeholder="Enter your email" required />
+                <input type="email" id="signup-email" name="email" placeholder="Enter your email" required value="{{ email }}" />
+
 
                 <!-- ================================
                      Section 2.1.2: Password Input
