@@ -8,21 +8,26 @@
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 </head>
 <body>
+    <!-- Header Section -->
     <header>
-        <div class="logo-and-title">
-            <a href="{% url 'homepage' %}" class="logo-link">
-                <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-image">
-            </a>
-            <h1 class="site-title">Dashboard</h1>
+        <div class="container">
+            <div class="logo-and-title">
+                <!-- Logo linked to homepage -->
+                <a href="{% url 'homepage' %}" class="logo-link">
+                    <img src="{% static 'images/logo.png' %}" alt="Footprint Logo" class="logo-image">
+                </a>
+                <!-- Site Title -->
+                <h1 class="site-title">Footprint</h1>
+            </div>
+            <!-- Navigation Links -->
+            <nav>
+                <a href="{% url 'login' %}" class="nav-link">Login</a>
+                <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
+                <a href="{% url 'homepage' %}" class="nav-link">Homepage</a>
+                <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+            </nav>
         </div>
-        <nav>
-            <a href="{% url 'homepage' %}" class="nav-link">Homepage</a>
-            <a href="{% url 'login' %}" class="nav-link">Login</a>
-            <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
-            <a href="{% url 'logout' %}" class="nav-link">Logout</a>
-        </nav>
     </header>
-
     <div class="dashboard-layout">
         <!-- Menu Section with Dropdowns -->
         <aside class="menu">
