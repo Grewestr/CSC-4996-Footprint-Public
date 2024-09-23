@@ -6,8 +6,9 @@
     <title>Login</title>
     {% load static %}
     <!--<link rel="stylesheet" href="{% static 'css/styles.css' %}"> --><!-- Link to your CSS file -->
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
 </head>
-<body>
+<body class="login-page">
     <!-- ================================
          Section 1: Header
     =================================== -->
@@ -41,6 +42,9 @@
                     {% endfor %}
                 </ul>
             {% endif %}
+        </section>
+        <section></section>
+            <p>Don't have an account? <a href="{% url 'signup' %}">sign up here</a></p>
         </section>
     </main>
 

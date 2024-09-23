@@ -7,9 +7,10 @@
     {% load static %}
     <!--<link rel="stylesheet" href="{% static 'css/styles.css' %}">-->
     <link rel="stylesheet" href="{% static 'css/passw_validation.css' %}">
+    <link rel="stylesheet" href="{% static 'css/signup.css' %}">
     <script src="{% static 'js/passw_validation.js' %}"></script>
 </head>
-<body>
+<body class="signup-page">
     <!-- ================================
          Section 1: Header
     =================================== -->
@@ -28,7 +29,7 @@
             <h2>Create Your Account</h2> 
             <form method="POST" action="">
                 {% csrf_token %}
-                
+
                 <!-- First Name Input -->
                 <label for="signup-firstname">First Name:</label>
                 <input type="text" id="signup-firstname" name="first_name" placeholder="Enter your first name" required value="{{ first_name }}" />
