@@ -1,71 +1,70 @@
-/* login.css */
-
-/* Login Page Styling */
+/* =========================================
+   Genral Login Page Styles
+   These styles apply to the overall page, setting the default font, backgroud color, text color, margin, and padding
+========================================= */
 .login-page {
-  font-family: Arial, sans-serif;
-  background-color: #f7f7f7;
+  font-family: 'Courier New', Courier, monospace; /* Font updated to match other pages */
+  background-color: #ffffff; /* Match the backgroud color of other pages */
+  color: #000000;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
 }
 
-/* Center the header at the top */
-.login-page header {
+/* =========================================
+   Header Styles
+   Controls the layout and appearence of the header
+========================================= */
+.login-header {
   text-align: center;
-  width: 100%;
-  margin-bottom: 20px;
-  padding: 20px 0; /* Optional: Adds space around the header */
+  width: 100%; /* Added width to match signup page */
+  padding: 20px 0;
+  border-bottom: 2px solid #000; /* Border to match other pages */
 }
 
-/* Center the main content */
-.login-page main {
-  width: 100%;
-  max-width: 400px;
+.login-header h1 {
+  color: #000;
+  font-size: 2em;
+  font-weight: bold;
+}
+
+/* =========================================
+   Main Content Styles
+   Controls the layout and styling of the main content area
+========================================= */
+.login-main {
+  width: 100%; /* Match signup page */
+  max-width: 800px; /* Increased max-width to match signup page */
+  margin: 20px auto;
+  padding: 0 20px; /* Adds padding around the content */
+}
+
+.login-form {
   background-color: #fff;
   padding: 30px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
+  margin-bottom: 20px;
 }
 
-/* Center the footer at the bottom */
-.login-page footer {
-  width: 100%;
-  text-align: center;
-  margin-top: 20px;
-  color: #666;
-  padding: 10px 0; /* Optional: Adds space around the footer */
-  position: absolute;
-  bottom: 10px; /* Adjust this value as needed */
+.login-form h2 {
+  color: #000; /* Updated color to match signup page */
+  font-size: 1.2em; /* Adjusted font size to match signup page */
+  margin-bottom: 20px;
+  font-weight: bold; /* Added font-weight to match signup page */
 }
 
-/* Reset margin for footer paragraph */
-.login-page footer p {
-  margin: 0;
-  font-size: 0.9em;
-}
-
-.login-page h1 {
-  color: #333;
-  font-size: 2em;
-}
-
-.login-page form {
-  display: flex;
-  flex-direction: column;
-}
-
-.login-page label {
+/* =========================================
+   Form Input Styles
+   Styles for text, email, and password input feilds
+========================================= */
+.login-form label {
   font-size: 1em;
   margin-bottom: 5px;
   color: #333;
 }
 
-.login-page input[type="email"], 
-.login-page input[type="password"] {
+.login-form input[type="email"],
+.login-form input[type="password"] {
   padding: 10px;
   margin-bottom: 15px;
   border: 1px solid #ccc;
@@ -75,14 +74,18 @@
   box-sizing: border-box;
 }
 
-.login-page input[type="email"]:focus, 
-.login-page input[type="password"]:focus {
-  border-color: #007BFF;
+.login-form input[type="email"]:focus,
+.login-form input[type="password"]:focus {
+  border-color: #000; /* Black focus border to match overall color scheme */
   outline: none;
 }
 
-.login-page button[type="submit"] {
-  background-color: #007BFF;
+/* =========================================
+   Button Styles
+   Styles for the submit button
+========================================= */
+.login-form button[type="submit"] {
+  background-color: #000; /* Black backgroud to match other pages */
   color: white;
   padding: 10px;
   border: none;
@@ -91,12 +94,15 @@
   font-size: 1em;
 }
 
-.login-page button[type="submit"]:hover {
-  background-color: #0056b3;
+.login-form button[type="submit"]:hover {
+  background-color: #333; /* Slightly lighter on hover */
 }
 
-/* Styling for error messages */
-.login-page ul {
+/* =========================================
+   Error Message Styles
+   Controls the apperance of error messages
+========================================= */
+.error-messages {
   list-style-type: none;
   padding: 0;
   margin-top: 15px;
@@ -104,6 +110,45 @@
   font-size: 0.9em;
 }
 
-.login-page li {
+.error-messages li {
   margin-bottom: 5px;
+}
+
+/* =========================================
+   Redirect Section Styles
+   Styles for the redirect message
+========================================= */
+.redirect-section p {
+  font-size: 1em;
+  margin: 10px 0;
+}
+
+/* =========================================
+   Link Styles
+   General link styling for links across the page
+========================================= */
+a {
+  color: #007BFF;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* =========================================
+   Footer Styles
+   Controls the layout and apperance of the footer, including border, padding, and text alignment
+========================================= */
+.login-footer {
+  width: 100%;
+  text-align: center;
+  color: #666;
+  padding: 10px 0;
+  border-top: 2px solid #000; /* Added border to match signup page */
+}
+
+.login-footer p {
+  margin: 0;
+  font-size: 0.9em;
 }

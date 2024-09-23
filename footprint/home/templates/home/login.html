@@ -5,54 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     {% load static %}
-    <!--<link rel="stylesheet" href="{% static 'css/styles.css' %}"> --><!-- Link to your CSS file -->
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
 </head>
 <body class="login-page">
     <!-- ================================
          Section 1: Header
     =================================== -->
-    <header>
+    <header class="login-header">
         <h1>Login</h1>
     </header>
 
     <!-- ================================
-         Section 2: Login Form
+         Section 2: Main Login Form
     =================================== -->
-    <main>
-        <section>
+    <main class="login-main">
+        <section class="login-form">
+            <h2>Login to Your Account</h2>
             <form method="POST">
                 {% csrf_token %}
+                <!-- Email Input -->
                 <label for="email">Email:</label>
-                <input type="email" name="email" id="email" value="{{ email }}" required><br><br>
+                <input type="email" name="email" id="email" value="{{ email }}" required>
 
+                <!-- Password Input -->
                 <label for="password">Password:</label>
-                <input type="password" name="password" required><br><br>
+                <input type="password" name="password" required>
 
+                <!-- Submit Button -->
                 <button type="submit">Login</button>
             </form>
 
             <!-- ================================
-                 Section 3: Messages
+                 Section 3: Error Messages (if any)
             =================================== -->
             {% if messages %}
-                <ul>
+                <ul class="error-messages">
                     {% for message in messages %}
                         <li>{{ message }}</li>
                     {% endfor %}
                 </ul>
             {% endif %}
         </section>
-        <section></section>
-            <p>Don't have an account? <a href="{% url 'signup' %}">sign up here</a></p>
+
+        <!-- ================================
+             Section 4: Redirect to Signup and Homepage
+        =================================== -->
+        <section class="redirect-section">
+            <p>Don't have an account? <a href="{% url 'signup' %}">Sign up here</a></p>
+            <p>Back to home: <a href="{% url 'homepage' %}">Click here</a></p>
         </section>
     </main>
 
     <!-- ================================
-         Section 4: Footer
+         Section 5: Footer
     =================================== -->
-    <footer>
-        <p>&copy; 2024 FOOTPRINT</p>
+    <footer class="login-footer">
+        <p>2024 FOOTPRINT</p>
     </footer>
 </body>
 </html>

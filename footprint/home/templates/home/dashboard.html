@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+    <header>
+        <div class="logo-and-title">
+            <a href="{% url 'homepage' %}" class="logo-link">
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-image">
+            </a>
+            <h1 class="site-title">Dashboard</h1>
+        </div>
+        <nav>
+            <a href="{% url 'homepage' %}" class="nav-link">Homepage</a>
+            <a href="{% url 'login' %}" class="nav-link">Login</a>
+            <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
+            <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+        </nav>
+    </header>
+
+    <div class="dashboard-layout">
+        <!-- Menu Section with Dropdowns -->
+        <aside class="menu">
+            <ul>
+                <!-- Top Dropdown -->
+                <li class="dropdown">
+                    <button class="dropdown-btn">Top</button>
+                    <ul class="dropdown-content">
+                        <li><a href="#">Bald</a></li>
+                        <li><a href="#">Short</a></li>
+                        <li><a href="#">Medium</a></li>
+                        <li><a href="#">Long</a></li>
+                        <li><a href="#">Hat</a></li>
+                    </ul>
+                </li>
+                <!-- Middle Dropdown -->
+                <li class="dropdown">
+                    <button class="dropdown-btn">Middle</button>
+                    <ul class="dropdown-content">
+                        <li><a href="#">Tank Top</a></li>
+                        <li><a href="#">Short Shirt</a></li>
+                        <li><a href="#">Long Shirt</a></li>
+                        <li><a href="#">Outerwear (Jackets, Zip-ups, Coats, Cardigan)</a></li>
+                    </ul>
+                </li>
+                <!-- Bottom Dropdown -->
+                <li class="dropdown">
+                    <button class="dropdown-btn">Bottom</button>
+                    <ul class="dropdown-content">
+                        <li><a href="#">Pants</a></li>
+                        <li><a href="#">Shorts</a></li>
+                        <li><a href="#">Dress</a></li>
+                        <li><a href="#">Skirt</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content Section -->
+        <section class="content">
+            <div class="video-area">
+                <h2 class="main-heading">Video Area</h2>
+                <div class="video-content">Photo/Video match Content will go here</div>
+            </div>
+
+            <div class="table-area">
+                <h2 class="main-heading">Table Area</h2>
+                <div class="table-content">Table Content (attribute matches) will go here</div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>2024 FOOTPRINT.</p>
+    </footer>
+
+    <script src="{% static 'js/dashboard.js' %}"></script>
+</body>
+</html>

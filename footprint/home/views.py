@@ -1,8 +1,9 @@
 from asyncio import exceptions
 from django.shortcuts import render, redirect
+from django.contrib.auth import logout
 from django.contrib import messages
 import firebase_admin
-from firebase_admin import auth, firestore
+from firebase_admin import auth, firestore, exceptions
 import requests
 from django.conf import settings
 
@@ -13,6 +14,13 @@ url = f'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?ke
 
 def homepage_view(request):
     return render(request, 'home/homepage.html')
+
+def dashboard_view(request):
+    return render(request, 'home/dashboard.html')
+
+def logout_view(request):
+    logout(request)
+    return render(request, 'home/login.html')
 
 def login_view(request):
     if request.method == 'POST':
@@ -34,8 +42,8 @@ def login_view(request):
             response = requests.post(url, json=payload)
 
             if response.status_code == 200:
-                # Login successful, redirect to homepage
-                return redirect('homepage')
+                # Login successful, redirect to dashboard
+                return render(request, 'home/dashboard.html')
             else:
                 # If authentication fails, check the error response
                 error_message = response.json().get('error', {}).get('message')
