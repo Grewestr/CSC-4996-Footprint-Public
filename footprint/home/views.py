@@ -2,9 +2,11 @@ from asyncio import exceptions
 from django.shortcuts import render, redirect
 from django.contrib import messages
 import firebase_admin
-from firebase_admin import auth
+from firebase_admin import auth, firestore
 import requests
 from django.conf import settings
+
+db = firestore.client()
 
 firebase_api_key = 'AIzaSyBrnuE0rPIse9NIoJiV0kw2FMEGDXShjBQ'
 url = f'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={firebase_api_key}'
@@ -14,6 +16,8 @@ def homepage_view(request):
 
 def login_view(request):
     if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
         email = request.POST.get('email')
         password = request.POST.get('password')
 
@@ -63,6 +67,9 @@ def validate_password(password):
 
 def signup_view(request):
     if request.method == 'POST':
+        # Capture first name, last name, email, and password from the form
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
         email = request.POST.get('email')
         password = request.POST.get('password')
 
@@ -71,7 +78,10 @@ def signup_view(request):
             existing_user = auth.get_user_by_email(email)
             # If we reach this point, the email is already registered
             return render(request, 'home/signup.html', {
-                'invalid_password_message': 'Email is already registered.','email': email
+                'invalid_password_message': 'Email is already registered.',
+                'email': email,
+                'first_name': first_name,
+                'last_name': last_name
             })
         except firebase_admin.auth.UserNotFoundError:
             # If the user does not exist, we move on to password validation
@@ -81,12 +91,28 @@ def signup_view(request):
         if not validate_password(password):
             return render(request, 'home/signup.html', {
                 'invalid_password_message': 'Password must meet the requirements.',
-                'email': email
+                'email': email,
+                'first_name': first_name,
+                'last_name': last_name
             })
 
         # Step 3: Create a new user
         try:
-            user = auth.create_user(email=email, password=password)
+            # Create a new user in Firebase Authentication
+            user = auth.create_user(
+                email=email,
+                password=password,
+                display_name=f"{first_name} {last_name}"
+            )
+            
+            # Store additional user information in Firestore
+            db.collection('users').document(user.uid).set({
+                'first_name': first_name,
+                'last_name': last_name,
+                'email': email,
+                'created_at': firestore.SERVER_TIMESTAMP
+            })
+
             messages.success(request, 'User created successfully! Please log in.')
             return redirect('login')  # Redirect to the login page after successful sign-up
         except Exception as e:

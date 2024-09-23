@@ -28,9 +28,16 @@
             <h2>Create Your Account</h2> 
             <form method="POST" action="">
                 {% csrf_token %}
-                <!-- ================================
-                     Section 2.1.1: Email Input
-                =================================== -->
+                
+                <!-- First Name Input -->
+                <label for="signup-firstname">First Name:</label>
+                <input type="text" id="signup-firstname" name="first_name" placeholder="Enter your first name" required value="{{ first_name }}" />
+
+                <!-- Last Name Input -->
+                <label for="signup-lastname">Last Name:</label>
+                <input type="text" id="signup-lastname" name="last_name" placeholder="Enter your last name" required value="{{ last_name }}" />
+
+                <!-- Email Input -->
                 <label for="signup-email">Email:</label>
                 <input type="email" id="signup-email" name="email" placeholder="Enter your email" required value="{{ email }}" />
 
