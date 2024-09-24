@@ -1,11 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <div class="container">
+        <div class="logo-and-title">
+            <!-- Logo linked to homepage -->
+            <a href="{% url 'homepage' %}" class="logo-link">
+                <img src="{% static 'images/logo.png' %}" alt="Footprint Logo" class="logo-image">
+            </a>
+            <!-- Site Title -->
+            <h1 class="site-title">Footprint</h1>
+        </div>
 </head>
 <body class="login-page">
     <!-- ================================

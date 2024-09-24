@@ -140,3 +140,36 @@ a:hover {
   margin: 0;
   font-size: 0.9em;
 }
+
+
+.logo-and-title {
+  display: flex;
+  align-items: center;
+}
+
+/* Styles for the clickable logo in the header */
+.logo-link {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+/* Styles for the logo image, including hover effects */
+.logo-image {
+  max-width: 100px;
+  height: auto;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.logo-image:hover {
+  opacity: 0.8;
+}
+
+/* Styling for the site tittle, setting font size and weight */
+.site-title {
+  font-size: 1.8em;
+  font-weight: 700;  
+  color: #000;
+  margin: 0;
+}
