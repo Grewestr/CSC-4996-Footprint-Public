@@ -5,11 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
     {% load static %}
-    <!--<link rel="stylesheet" href="{% static 'css/styles.css' %}">-->
+    <!-- External Stylesheets -->
     <link rel="stylesheet" href="{% static 'css/passw_validation.css' %}">
     <link rel="stylesheet" href="{% static 'css/signup.css' %}">
-    <script src="{% static 'js/passw_validation.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/name-validation.css' %}">
+</head>
+<body class="signup-page">
+    <!-- ================================
+         Section 1: Container and Header
+    =================================== -->
     <div class="container">
+        <!-- Logo and Title -->
         <div class="logo-and-title">
             <!-- Logo linked to homepage -->
             <a href="{% url 'homepage' %}" class="logo-link">
@@ -18,80 +24,74 @@
             <!-- Site Title -->
             <h1 class="site-title">Footprint</h1>
         </div>
-</head>
-<body class="signup-page">
-    <!-- ================================
-         Section 1: Header
-    =================================== -->
-    <header>
-        <h1>Sign Up</h1>
-    </header>
 
-    <!-- ================================
-         Section 2: Main Content
-    =================================== -->
-    <main>
         <!-- ================================
-             Section 2.1: Sign Up Form
+             Section 2: Main Content
         =================================== -->
-        <section class="signup-form-section">
-            <h2>Create Your Account</h2>
-            <form method="POST" action="">
-                {% csrf_token %}
+        <main>
+            <!-- Sign Up Form Section -->
+            <section class="signup-form-section">
+                <h2>Create Your Account</h2>
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <!-- First Name Input -->
+                    <label for="signup-firstname">First Name:</label>
+                    <input type="text" id="signup-firstname" name="first_name" placeholder="Enter your first name" required value="{{ first_name }}" />
+                    <p class="error-message" id="first-name-error">Name should only contain letters.</p>
 
-                <!-- First Name Input -->
-                <label for="signup-firstname">First Name:</label>
-                <input type="text" id="signup-firstname" name="first_name" placeholder="Enter your first name" required value="{{ first_name }}" />
+                    <!-- Last Name Input -->
+                    <label for="signup-lastname">Last Name:</label>
+                    <input type="text" id="signup-lastname" name="last_name" placeholder="Enter your last name" required value="{{ last_name }}" />
+                    <p class="error-message" id="last-name-error">Name should only contain letters.</p>
 
-                <!-- Last Name Input -->
-                <label for="signup-lastname">Last Name:</label>
-                <input type="text" id="signup-lastname" name="last_name" placeholder="Enter your last name" required value="{{ last_name }}" />
+                    <!-- Email Input -->
+                    <label for="signup-email">Email:</label>
+                    <input type="email" id="signup-email" name="email" placeholder="Enter your email" required value="{{ email }}" />
 
-                <!-- Email Input -->
-                <label for="signup-email">Email:</label>
-                <input type="email" id="signup-email" name="email" placeholder="Enter your email" required value="{{ email }}" />
+                    <!-- Password Input -->
+                    <label for="signup-password">Password:</label>
+                    <input type="password" id="signup-password" name="password" placeholder="Enter your password" required />
 
-                <!-- ================================
-                     Section 2.1.2: Password Input
-                =================================== -->
-                <label for="signup-password">Password:</label>
-                <input type="password" id="signup-password" name="password" placeholder="Enter your password" required />
+                    <!-- Password Requirements -->
+                    <ul class="password-requirements">
+                        <li id="length" class="requirement">
+                            <i class="x-mark"></i> At least 8 characters
+                        </li>
+                        <li id="uppercase" class="requirement">
+                            <i class="x-mark"></i> One uppercase letter
+                        </li>
+                        <li id="lowercase" class="requirement">
+                            <i class="x-mark"></i> One lowercase letter
+                        </li>
+                    </ul>
 
-                <!-- Password Requirements -->
-                <ul class="password-requirements">
-                    <li id="length" class="requirement">
-                        <i class="x-mark"></i> At least 8 characters
-                    </li>
-                    <li id="uppercase" class="requirement">
-                        <i class="x-mark"></i> One uppercase letter
-                    </li>
-                    <li id="lowercase" class="requirement">
-                        <i class="x-mark"></i> One lowercase letter
-                    </li>
-                </ul>
+                    <!-- Error Handling for Invalid Password -->
+                    {% if invalid_password_message %}
+                        <p class="error-message">{{ invalid_password_message }}</p>
+                    {% endif %}
 
-                <!-- Error Handling for Invalid Password -->
-                {% if invalid_password_message %}
-                    <p style="color: red;">{{ invalid_password_message }}</p>
-                {% endif %}
+                    <!-- Submit Button -->
+                    <button type="submit" id="submit-button">Sign Up</button>
+                </form>
+            </section>
 
-                <!-- Submit Button -->
-                <button type="submit">Sign Up</button>
-            </form>
-        </section>
+            <!-- Redirect to Login -->
+            <section class="redirect-section">
+                <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+                <p>Back to home: <a href="{% url 'homepage' %}">click here</a></p>
+            </section>
+        </main>
 
-        <!-- Redirect to Login -->
-        <section class="redirect-section">
-            <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
-            <p>Back to home: <a href="{% url 'homepage' %}">click here</a></p>
-        </section>
-    </main>
+        <!-- ================================
+             Section 3: Footer
+        =================================== -->
+        <footer>
+            <p>&copy; 2024 FOOTPRINT.</p>
+        </footer>
+    </div> <!-- End of container div -->
 
-    <!-- ================================
-         Section 3: Footer
-    =================================== -->
-    <footer>
-        <p>2024 FOOTPRINT.</p>
-    </footer>
+    <!-- External JavaScript Files -->
+    <script src="{% static 'js/name-validation.js' %}"></script>
+    <script src="{% static 'js/passw_validation.js' %}"></script>
 </body>
 </html>
