@@ -9,11 +9,12 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+from firebase_admin import firestore
 from pathlib import Path
 import os
 import firebase_admin 
 from firebase_admin import credentials
+
 
 # SECTION 1: BASE SETTINGS
 # --------------------------------------------------------------
@@ -67,7 +68,7 @@ MIDDLEWARE = [
 # Firebase Initialization
 cred = credentials.Certificate(os.path.join(BASE_DIR, 'Firebase', 'serviceAccountKey.json'))
 firebase_admin.initialize_app(cred)
-
+db = firestore.client()
 
 # SECTION 5: URLS & TEMPLATES
 # --------------------------------------------------------------
