@@ -34,3 +34,19 @@
 .requirement i.check-mark::before {
   content: '✔️'; /* Green check mark for met requirements */
 }
+
+
+/* password-validation.css */
+
+/* Error message styling */
+.error-message {
+  font-size: 0.9em;
+  margin-top: 5px;
+  color: red;
+  display: none; /* Hidden by default */
+}
+
+/* Style for invalid password confirmation input */
+input.invalid {
+  border-color: red; /* Red border for invalid input */
+}
