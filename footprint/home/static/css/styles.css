@@ -1,11 +1,13 @@
-/* ================================
-   Section 1: General Styles
-================================ */
+/* =========================================
+   Genral Styles
+   These styles apply to the overall page, setting the default font, backgroud color, text color, and page margin
+========================================= */
+
 body {
-  font-family: 'Courier New', Courier, monospace; /* Unified font family */
+  font-family: 'Courier New', Courier, monospace;
   background-color: #ffffff;
   color: #000000;
-  margin: 20px; /* Adjusted margin */
+  margin: 0;
 }
 
 .container {
@@ -14,9 +16,29 @@ body {
   margin: 0 auto;
 }
 
-/* ================================
-   Section 2: Header Styles
-================================ */
+/* =========================================
+   Heading Styles
+   Controls the appearence of headings
+========================================= */
+
+h1 {
+  color: #333;
+}
+
+/* =========================================
+   Paragraph Styles
+   Controls the font size and spacing of paragrphs
+========================================= */
+
+p {
+  font-size: 1.2em;
+}
+
+/* =========================================
+   Header Styles
+   This section controls the header's layout, stickyness, background, padding, and spacing for logo and tittle
+========================================= */
+
 header {
   position: sticky;
   top: 0;
@@ -33,11 +55,13 @@ header {
   align-items: center;
 }
 
+/* Styles for the clickable logo in the header */
 .logo-link {
   display: inline-block;
   margin-right: 20px;
 }
 
+/* Styles for the logo image, including hover effects */
 .logo-image {
   max-width: 100px;
   height: auto;
@@ -50,21 +74,25 @@ header {
   opacity: 0.8;
 }
 
+/* Styling for the site tittle, setting font size and weight */
 .site-title {
   font-size: 1.8em;
-  font-weight: 700;
+  font-weight: 700;  
   color: #000;
   margin: 0;
 }
 
-/* ================================
-   Section 3: Navigation Styles
-================================ */
+/* =========================================
+   Navigation Styles
+   Controls the layout and appearence of navigation links
+========================================= */
+
 nav {
   display: flex;
   align-items: center;
 }
 
+/* Styles for individual navigation links, including hover effects */
 .nav-link {
   color: #000;
   text-decoration: none;
@@ -78,13 +106,16 @@ nav {
   margin-left: 0;
 }
 
+/* Changes the color of navigation links when hovered */
 .nav-link:hover {
   color: #ff0000;
 }
 
-/* ================================
-   Section 4: Main Content Styles
-================================ */
+/* =========================================
+   Main Content Styles
+   Controls the layout, font size, and spacing of the main content
+========================================= */
+
 main {
   padding: 40px 0;
 }
@@ -92,32 +123,36 @@ main {
 .main-heading {
   font-size: 2em;
   margin-bottom: 20px;
-  font-weight: 700;
+  font-weight: 700; 
 }
 
+/* Styles for the intoductory paragraph in the main content */
 .intro {
   font-size: 1.2em;
   margin-bottom: 30px;
-  font-weight: 500;
+  font-weight: 500; 
 }
 
-/* ================================
-   Section 5: Section Heading Styles
-================================ */
+/* =========================================
+   Section Heading Styles
+   Controls the look and behaviour of section headings, including hover effects
+========================================= */
+
 .section-heading {
   font-size: 1.3em;
   margin: 10px 0;
   cursor: pointer;
   position: relative;
   transition: color 0.3s ease, transform 0.3s ease;
-  font-weight: 700;
+  font-weight: 700;  /* Increased boldness for headings */
 }
 
 .section-heading:hover {
   transform: scale(1.1);
-  font-weight: 800;
+  font-weight: 800;  
 }
 
+/* Adds a plus sign after section headings, changes on toggle */
 .section-heading::after {
   content: '+';
   position: absolute;
@@ -130,70 +165,58 @@ main {
   transform: rotate(45deg);
 }
 
-/* ================================
-   Section 6: Section Content Styles
-================================ */
+/* =========================================
+   Section Content Styles
+   Controls the apperance of section paragraphs and lists, hidden by default
+========================================= */
+
 section p,
 section ul {
   display: none;
   margin-bottom: 15px;
-  font-weight: 500;
+  font-weight: 500; 
 }
 
+/* Makes section content visible when section is open */
 section.open p,
 section.open ul {
   display: block;
 }
 
+/* Styles for the features and tech lists within sections */
 .features-list,
 .tech-list {
   list-style-type: square;
   padding-left: 20px;
-  font-weight: 500;
+  font-weight: 500;  
 }
 
-/* ================================
-   Section 7: Paragraph Styles
-================================ */
-p {
-  font-size: 1.2em;
-}
+/* =========================================
+   Footer Styles
+   Controls the layout and apperance of the footer, including border, padding, and text alignment
+========================================= */
 
-/* ================================
-   Section 8: Link Styles
-================================ */
-a {
-  color: #007BFF; /* Primary link color */
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline; /* Underline links on hover */
-  color: #0056b3; /* Slightly darker on hover */
-}
-
-/* ================================
-   Section 9: Footer Styles
-================================ */
 footer {
   border-top: 2px solid #000;
   padding: 20px 0;
   text-align: center;
   margin-top: 40px;
+  font-weight: 500;  
   font-size: 0.9em;
   color: #666; /* Secondary text color */
-  font-weight: 500;
 }
 
-/* ================================
-   Section 10: Specific Link Styling
-================================ */
-/* Class-based styling for specific use cases */
-.login-link {
+/* =========================================
+   Link Styles
+   General link styling for links accross the page
+========================================= */
+
+a {
+  text-decoration: none;
   color: #007BFF; /* Primary link color */
 }
 
-.login-link:hover {
-  text-decoration: underline;
-  color: #0056b3; /* Slightly darker on hover */
+a:hover {
+  text-decoration: underline; /* Underline links on hover */
+  color: #ff0000;
 }

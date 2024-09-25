@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    {% load static %}
+   
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <h1>Admin Dashboard</h1>
+        <p>Approve or reject pending user registrations.</p>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <section>
+            <h2>Pending Registrations</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in pending_users %}
+                        <tr>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.first_name }}</td>
+                            <td>{{ user.last_name }}</td>
+                            <td>
+                                <form method="POST" action="{% url 'approve_user' user.email %}">
+                                    {% csrf_token %}
+                                    <button type="submit">Approve</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 FOOTPRINT Admin Panel</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,11 @@
+/* Error Message Styling */
+.error-message {
+  font-size: 0.9em;
+  color: red;
+  display: none; /* Hidden by default */
+}
+
+/* Input Field Error Styling */
+input[type="text"].error {
+  border-color: red; /* Red border for invalid input */
+}

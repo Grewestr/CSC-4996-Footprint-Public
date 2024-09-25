@@ -9,11 +9,12 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+from firebase_admin import firestore
 from pathlib import Path
 import os
 import firebase_admin 
 from firebase_admin import credentials
+
 
 # SECTION 1: BASE SETTINGS
 # --------------------------------------------------------------
@@ -64,23 +65,10 @@ MIDDLEWARE = [
 # SECTION 4: FIREBASE CONFIGURATION
 # --------------------------------------------------------------
 
-firebaseConfig = {
-  'apiKey': "AIzaSyBrnuE0rPIse9NIoJiV0kw2FMEGDXShjBQ",
-  'authDomain': "footprint-2024.firebaseapp.com",
-  'databaseURL': "https://footprint-2024-default-rtdb.firebaseio.com",
-  'projectId': "footprint-2024",
-  'storageBucket': "footprint-2024.appspot.com",
-  'messagingSenderId': "998466139135",
-  'appId': "1:998466139135:web:017ddec8e02c17b4202dca",
-  'measurementId': "G-JF6P6GTTE3"
-}
 # Firebase Initialization
-
-
-if not firebase_admin._apps:
-    cred = credentials.Certificate(os.path.join(BASE_DIR, 'Firebase', 'serviceAccountKey.json'))
-    firebase_admin.initialize_app(cred)
-
+cred = credentials.Certificate(os.path.join(BASE_DIR, 'Firebase', 'serviceAccountKey.json'))
+firebase_admin.initialize_app(cred)
+db = firestore.client()
 
 # SECTION 5: URLS & TEMPLATES
 # --------------------------------------------------------------

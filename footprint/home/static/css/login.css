@@ -1,8 +1,8 @@
 /* =========================================
-   Genral Signup Page Styles
+   Genral Login Page Styles
    These styles apply to the overall page, setting the default font, backgroud color, text color, margin, and padding
 ========================================= */
-.signup-page {
+.login-page {
   font-family: 'Courier New', Courier, monospace; /* Font updated to match other pages */
   background-color: #ffffff; /* Match the backgroud color of other pages */
   color: #000000;
@@ -14,14 +14,14 @@
    Header Styles
    Controls the layout and appearence of the header
 ========================================= */
-.signup-page header {
+.login-header {
   text-align: center;
-  width: 100%;
+  width: 100%; /* Added width to match signup page */
   padding: 20px 0;
   border-bottom: 2px solid #000; /* Border to match other pages */
 }
 
-.signup-page h1 {
+.login-header h1 {
   color: #000;
   font-size: 2em;
   font-weight: bold;
@@ -31,14 +31,14 @@
    Main Content Styles
    Controls the layout and styling of the main content area
 ========================================= */
-.signup-page main {
-  width: 100%;
-  max-width: 800px;
+.login-main {
+  width: 100%; /* Match signup page */
+  max-width: 800px; /* Increased max-width to match signup page */
   margin: 20px auto;
-  padding: 0 20px; 
+  padding: 0 20px; /* Adds padding around the content */
 }
 
-.signup-form-section {
+.login-form {
   background-color: #fff;
   padding: 30px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -46,31 +46,25 @@
   margin-bottom: 20px;
 }
 
-.signup-page h2 {
-  color: #000;
-  font-size: 1.2em;
+.login-form h2 {
+  color: #000; /* Updated color to match signup page */
+  font-size: 1.2em; /* Adjusted font size to match signup page */
   margin-bottom: 20px;
-  font-weight: bold;
+  font-weight: bold; /* Added font-weight to match signup page */
 }
 
-.signup-page form {
-  display: flex;
-  flex-direction: column;
-}
-
-.signup-page label {
+/* =========================================
+   Form Input Styles
+   Styles for text, email, and password input feilds
+========================================= */
+.login-form label {
   font-size: 1em;
   margin-bottom: 5px;
   color: #333;
 }
 
-/* =========================================
-   Input Styles
-   Styles for text, email, and password input feilds
-========================================= */
-.signup-page input[type="text"], 
-.signup-page input[type="email"], 
-.signup-page input[type="password"] {
+.login-form input[type="email"],
+.login-form input[type="password"] {
   padding: 10px;
   margin-bottom: 15px;
   border: 1px solid #ccc;
@@ -80,9 +74,8 @@
   box-sizing: border-box;
 }
 
-.signup-page input[type="text"]:focus, 
-.signup-page input[type="email"]:focus, 
-.signup-page input[type="password"]:focus {
+.login-form input[type="email"]:focus,
+.login-form input[type="password"]:focus {
   border-color: #000; /* Black focus border to match overall color scheme */
   outline: none;
 }
@@ -91,7 +84,7 @@
    Button Styles
    Styles for the submit button
 ========================================= */
-.signup-page button[type="submit"] {
+.login-form button[type="submit"] {
   background-color: #000; /* Black backgroud to match other pages */
   color: white;
   padding: 10px;
@@ -101,20 +94,39 @@
   font-size: 1em;
 }
 
-.signup-page button[type="submit"]:hover {
+.login-form button[type="submit"]:hover {
   background-color: #333; /* Slightly lighter on hover */
 }
 
 /* =========================================
-   Redirect Section
-   Styles for the redirect message and link
+   Error Message Styles
+   Controls the apperance of error messages
+========================================= */
+.error-messages {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 15px;
+  color: red;
+  font-size: 0.9em;
+}
+
+.error-messages li {
+  margin-bottom: 5px;
+}
+
+/* =========================================
+   Redirect Section Styles
+   Styles for the redirect message
 ========================================= */
 .redirect-section p {
   font-size: 1em;
   margin: 10px 0;
 }
 
-/* General link styling */
+/* =========================================
+   Link Styles
+   General link styling for links across the page
+========================================= */
 a {
   color: #007BFF;
   text-decoration: none;
@@ -128,18 +140,20 @@ a:hover {
    Footer Styles
    Controls the layout and apperance of the footer, including border, padding, and text alignment
 ========================================= */
-.signup-page footer {
+.login-footer {
   width: 100%;
   text-align: center;
   color: #666;
   padding: 10px 0;
-  border-top: 2px solid #000; /* Add top border to match other pages */
+  border-top: 2px solid #000; /* Added border to match signup page */
 }
 
-.signup-page footer p {
+.login-footer p {
   margin: 0;
   font-size: 0.9em;
 }
+
+
 
 
 .logo-and-title {

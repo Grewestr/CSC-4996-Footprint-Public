@@ -11,7 +11,7 @@ python3 -m venv venv
 ___________________________________________________
 Step 2: Go to footprint directory and Activate the Virtual Environment:
 On Windows:
-...\venv\Scripts\activate
+..\..\venv\Scripts\activate
 
 On macOS/Linux:
 source venv/bin/activate
