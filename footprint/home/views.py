@@ -135,7 +135,8 @@ def signup_view(request):
                 'email': email,
                 'password': password,
                 'created_at': firestore.SERVER_TIMESTAMP,
-                'approved': False  # Set approved to False initially
+                'approved': False,  # Set approved to False initially
+                'role':'user'
             })
 
             messages.success(request, 'Registration successful! Your account is awaiting approval.')
