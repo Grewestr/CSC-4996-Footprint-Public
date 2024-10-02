@@ -5,8 +5,7 @@ from django.contrib import messages
 import firebase_admin
 from firebase_admin import auth, firestore, exceptions
 import requests
-from django.conf import settings
-from django.core.mail import send_mail
+from django.contrib.auth import logout
 
 
 db = firestore.client()
@@ -16,13 +15,14 @@ url = f'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?ke
 
 def homepage_view(request):
     return render(request, 'home/homepage.html')
-
+def example_view(request):
+    return render(request, 'home/example.html')
 def dashboard_view(request):
     return render(request, 'home/dashboard.html')
 
 def logout_view(request):
-    logout(request)
-    return render(request, 'home/login.html')
+    logout(request) 
+    return redirect('login')
 
 def login_view(request):
     if request.method == 'POST':
@@ -51,8 +51,19 @@ def login_view(request):
             response = requests.post(url, json=payload)
 
             if response.status_code == 200:
-                # Login successful, redirect to dashboard
-                return redirect('dashboard')
+                # Retrieve the role from Firestore 'users' collection and store it in the session
+                user_ref = db.collection('users').document(email)
+                user_data = user_ref.get()
+
+                if user_data.exists:
+                    role = user_data.to_dict().get('role', 'user')  # Default to 'user' if no role found
+                    request.session['uid'] = user.uid  # Firebase UID
+                    request.session['role'] = role  # Store role in session
+
+                    if role == 'admin':
+                        return redirect('admin_dashboard')
+                    else:
+                        return redirect('dashboard')
             else:
                 # If authentication fails, check the error response
                 error_message = response.json().get('error', {}).get('message')
@@ -73,6 +84,7 @@ def login_view(request):
         return render(request, 'home/login.html', {'email': email})
     
     return render(request, 'home/login.html')
+
 
 
 
