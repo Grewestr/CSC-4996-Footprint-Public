@@ -16,6 +16,12 @@
             <!-- Site Title -->
             <h1 class="site-title">Footprint</h1>
         </div>
+        <nav></nav>
+            <a href="{% url 'login' %}" class="nav-link">Login</a>
+            <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
+            <a href="{% url 'homepage' %}" class="nav-link">Homepage</a>
+            <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+        </nav>
 </head>
 <body class="login-page">
     <!-- ================================

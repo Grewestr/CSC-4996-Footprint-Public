@@ -11,12 +11,21 @@
     <!-- Header -->
     <header>
         <h1>Admin Dashboard</h1>
-        <p>Approve or reject pending user registrations.</p>
+
+        <nav>
+            <a href="{% url 'login' %}" class="nav-link">Login</a>
+            <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
+            <a href="{% url 'homepage' %}" class="nav-link">Homepage</a>
+            <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+        </nav>
+        
+        
     </header>
 
     <!-- Main Content -->
     <main>
         <section>
+            <p>Approve or reject pending user registrations.</p>
             <h2>Pending Registrations</h2>
             <table>
                 <thead>

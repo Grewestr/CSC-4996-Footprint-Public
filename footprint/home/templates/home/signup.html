@@ -9,13 +9,10 @@
     <link rel="stylesheet" href="{% static 'css/passw_validation.css' %}">
     <link rel="stylesheet" href="{% static 'css/signup.css' %}">
     <link rel="stylesheet" href="{% static 'css/name-validation.css' %}">
-</head>
-<body class="signup-page">
-    <!-- ================================
-         Section 1: Container and Header
-    =================================== -->
+    
+    <!-- Container and Header-->
+
     <div class="container">
-        <!-- Logo and Title -->
         <div class="logo-and-title">
             <!-- Logo linked to homepage -->
             <a href="{% url 'homepage' %}" class="logo-link">
@@ -24,6 +21,18 @@
             <!-- Site Title -->
             <h1 class="site-title">Footprint</h1>
         </div>
+        <!-- Navigation Links -->
+        <nav>
+            <a href="{% url 'login' %}" class="nav-link">Login</a>
+            <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
+            <a href="{% url 'homepage' %}" class="nav-link">Homepage</a>
+            <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+        </nav>
+    </div>
+</head>
+<body class="signup-page">
+    
+    
 
         <!-- ================================
              Section 2: Main Content
