@@ -189,11 +189,14 @@ def approve_user_view(request, email):
                 display_name=f"{user_data['first_name']} {user_data['last_name']}"
             )
 
+            user_role = user_data.get('role', 'user')
+            
             # Move the user data to the 'users' collection in Firestore
             db.collection('users').document(user_doc.id).set({
                 'first_name': user_data['first_name'],
                 'last_name': user_data['last_name'],
                 'email': user_data['email'],
+                'role': user_role,
                 'created_at': firestore.SERVER_TIMESTAMP,
                 'approved': True  # Mark the user as approved
             })
