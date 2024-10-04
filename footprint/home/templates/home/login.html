@@ -24,16 +24,12 @@
         </nav>
 </head>
 <body class="login-page">
-    <!-- ================================
-         Section 1: Header
-    =================================== -->
+    <!-- Header -->
     <header class="login-header">
         <h1>Login</h1>
     </header>
 
-    <!-- ================================
-         Section 2: Main Login Form
-    =================================== -->
+    <!-- Main Login Form -->
     <main class="login-main">
         <section class="login-form">
             <h2>Login to Your Account</h2>
@@ -51,9 +47,7 @@
                 <button type="submit">Login</button>
             </form>
 
-            <!-- ================================
-                 Section 3: Error Messages (if any)
-            =================================== -->
+            <!-- Section 3: Error Messages  -->
             {% if messages %}
                 <ul class="error-messages">
                     {% for message in messages %}
@@ -63,18 +57,14 @@
             {% endif %}
         </section>
 
-        <!-- ================================
-             Section 4: Redirect to Signup and Homepage
-        =================================== -->
+        <!-- Redirect to Signup and Homepage-->
         <section class="redirect-section">
+            <p><a href="{% url 'password_reset' %}">Forgot your password?</a></p>
             <p>Don't have an account? <a href="{% url 'signup' %}">Sign up here</a></p>
-            <p>Back to home: <a href="{% url 'homepage' %}">Click here</a></p>
         </section>
     </main>
 
-    <!-- ================================
-         Section 5: Footer
-    =================================== -->
+    <!-- Footer -->
     <footer class="login-footer">
         <p>2024 FOOTPRINT.</p>
     </footer>

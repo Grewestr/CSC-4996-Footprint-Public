@@ -226,3 +226,37 @@ def approve_user_view(request, email):
 
     # Redirect back to the admin dashboard
     return redirect('admin_dashboard')
+
+
+def password_reset_view(request):
+    # The URL for sending the password reset request to Firebase API
+    reset_password_url = f'https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key={firebase_api_key}'
+    
+    # Check if the request method is POST (i.e., the form was submitted)
+    if request.method == 'POST':
+        # Retrieve the email address from the submitted form
+        email = request.POST.get('email')
+
+        # Prepare the payload that will be sent to Firebase for the password reset request
+        payload = {
+            'requestType': 'PASSWORD_RESET',  # Specify the type of request as a password reset
+            'email': email  # Include the user's email address in the payload
+        }
+
+        # Send the password reset request to Firebase API
+        response = requests.post(reset_password_url, json=payload)
+
+        # Check if the request was successful (HTTP status 200)
+        if response.status_code == 200:
+            # If successful, show a success message to the user
+            messages.success(request, 'A password reset email has been sent to your email address.')
+            # Redirect the user back to the login page
+            return redirect('login')
+        else:
+            # If there was an error, extract the error message from Firebase's response
+            error_message = response.json().get('error', {}).get('message', 'Error sending reset email')
+            # Display the error message to the user
+            messages.error(request, f'Error: {error_message}')
+    
+    # If the request method is not POST, render the password reset form
+    return render(request, 'home/password_reset.html')
