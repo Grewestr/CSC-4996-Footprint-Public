@@ -17,71 +17,140 @@
                     <img src="{% static 'images/logo.png' %}" alt="Footprint Logo" class="logo-image">
                 </a>
                 <!-- Site Title -->
-                <h1 class="site-title">Footprint</h1>
+                <h1 class="site-title">Dashboard</h1>
             </div>
-            <!-- Navigation Links -->
-            <nav>
-                <a href="{% url 'login' %}" class="nav-link">Login</a>
-                <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
+            <!-- Profile Button -->
+            <div class="profile-button">
+                <button>Profile</button>
                 <a href="{% url 'homepage' %}" class="nav-link">Homepage</a>
                 <a href="{% url 'logout' %}" class="nav-link">Logout</a>
-            </nav>
+            </div>
         </div>
     </header>
-    <div class="dashboard-layout">
-        <!-- Menu Section with Dropdowns -->
-        <aside class="menu">
-            <ul>
-                <!-- Top Dropdown -->
-                <li class="dropdown">
-                    <button class="dropdown-btn">Top</button>
-                    <ul class="dropdown-content">
-                        <li><a href="#">Bald</a></li>
-                        <li><a href="#">Short</a></li>
-                        <li><a href="#">Medium</a></li>
-                        <li><a href="#">Long</a></li>
-                        <li><a href="#">Hat</a></li>
-                    </ul>
-                </li>
-                <!-- Middle Dropdown -->
-                <li class="dropdown">
-                    <button class="dropdown-btn">Middle</button>
-                    <ul class="dropdown-content">
-                        <li><a href="#">Tank Top</a></li>
-                        <li><a href="#">Short Shirt</a></li>
-                        <li><a href="#">Long Shirt</a></li>
-                        <li><a href="#">Outerwear (Jackets, Zip-ups, Coats, Cardigan)</a></li>
-                    </ul>
-                </li>
-                <!-- Bottom Dropdown -->
-                <li class="dropdown">
-                    <button class="dropdown-btn">Bottom</button>
-                    <ul class="dropdown-content">
-                        <li><a href="#">Pants</a></li>
-                        <li><a href="#">Shorts</a></li>
-                        <li><a href="#">Dress</a></li>
-                        <li><a href="#">Skirt</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </aside>
 
-        <!-- Main Content Section -->
-        <section class="content">
-            <div class="video-area">
-                <h2 class="main-heading">Video Area</h2>
-                <div class="video-content">Photo/Video match Content will go here</div>
+    <div class="dashboard-layout">
+        <!-- Attributes Section -->
+        <aside class="attributes-section">
+            <h2>Attributes</h2>
+
+            <!-- Top Attributes -->
+            <div class="attribute-group">
+                <h3>TOP</h3>
+                <div class="top-attributes">
+                    <button>Short Hair</button>
+                    <button>Medium Hair</button>
+                    <button>Long Hair</button>
+                    <button>Bald</button>
+                </div>
+                <div class="color-options">
+                    <button class="color brown"></button>
+                    <button class="color black"></button>
+                    <button class="color blonde"></button>
+                    <button class="color gray"></button>
+                    <button class="color mixed"></button>
+                </div>
             </div>
 
-            <div class="table-area">
-                <h2 class="main-heading">Table Area</h2>
-                <div class="table-content">Table Content (attribute matches) will go here</div>
+            <!-- Middle Attributes -->
+            <div class="attribute-group">
+                <h3>MIDDLE</h3>
+                <div class="middle-attributes">
+                    <button>Short Shirt</button>
+                    <button>Long Shirt</button>
+                    <button>Tank Top</button>
+                    <button>Outerwear</button>
+                </div>
+                <div class="color-options">
+                    <button class="color red"></button>
+                    <button class="color blue"></button>
+                    <button class="color yellow"></button>
+                    <button class="color green"></button>
+                    <button class="color mixed"></button>
+                </div>
+            </div>
+
+            <!-- Bottom Attributes -->
+            <div class="attribute-group">
+                <h3>BOTTOM</h3>
+                <div class="bottom-attributes">
+                    <button>Pants</button>
+                    <button>Shorts</button>
+                    <button>Skirt</button>
+                    <button>Dress</button>
+                </div>
+                <div class="color-options">
+                    <button class="color black"></button>
+                    <button class="color brown"></button>
+                    <button class="color gray"></button>
+                    <button class="color mixed"></button>
+                </div>
+            </div>
+
+            <!-- Video Feed Selector -->
+            <div class="video-feed">
+                <label for="video-feed-select">Video Feed</label>
+                <select id="video-feed-select">
+                    <option value="camera1">Camera 1</option>
+                    <option value="camera2">Camera 2</option>
+                </select>
+            </div>
+        </aside>
+
+        <!-- Time Frame Section -->
+        <section class="time-frame">
+            <h2>Time Frame</h2>
+            <div class="calendar">
+                <input type="date" value="2024-07-19">
+                <input type="date" value="2024-07-21">
+            </div>
+        </section>
+
+        <!-- Summary Section -->
+        <section class="summary">
+            <h2>Summary</h2>
+            <div class="summary-content">
+                <p>Top: Short Hair, Brown</p>
+                <p>Middle: Short Shirt, Red</p>
+                <p>Bottom: Long Pants, Black</p>
+                <button class="reset-button">Reset</button>
+                <button class="submit-button">Submit</button>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results">
+            <h2>Results</h2>
+            <div class="result-content">
+                <p>Top: Short Hair, Brown</p>
+                <p>Middle: Short Shirt, Red</p>
+                <p>Bottom: Long Pants, Black</p>
+                <p>Time Detected: July 20, 2024 - 14:30</p>
+                <p>Location: Camera #5 - Main Lobby, Building A</p>
+                <p>Image Hash: bb10c8a4</p>
+                <button>Previous</button>
+                <button>Next</button>
+            </div>
+        </section>
+
+        <!-- Image Gallery -->
+        <section class="image-gallery">
+            <h2>Image Gallery</h2>
+            <div class="image-grid">
+                <div class="image-placeholder">Image 1</div>
+                <div class="image-placeholder">Image 2</div>
+                <div class="image-placeholder">Image 3</div>
+                <!-- Additional images -->
+            </div>
+            <div class="pagination">
+                <button>Previous</button>
+                <span>1 of 50</span>
+                <button>Next</button>
             </div>
         </section>
     </div>
 
     <footer>
-        <p>2024 FOOTPRINT.</p>
+        <p>2024 FOOTPRINT. Last Updated: July 23, 2024 13:00</p>
     </footer>
 
     <script src="{% static 'js/dashboard.js' %}"></script>
