@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile Management</title>
+</head>
+<body>
+    <h1>Profile Management</h1>
+
+    <!-- Display User Information -->
+    <div>
+        <p><strong>Full Name:</strong> {{ full_name }}</p> <!-- Dynamically display full name -->
+        <p><strong>Email:</strong> {{ email }}</p> <!-- Dynamically display email -->
+        <p><strong>Apartment Name:</strong> {{ apartment_name }}</p> <!-- Placeholder for apartment name -->
+    </div>
+
+    <!-- Delete Email Form -->
+    <form method="post" action="{% url 'delete_email' %}">
+        {% csrf_token %}
+        <button type="submit">Delete Email</button>
+    </form>
+
+    <!-- Change Password Form -->
+    <form method="post" action="{% url 'change_password' %}">
+        {% csrf_token %}
+        <input type="password" name="new_password" placeholder="New Password" required>
+        <button type="submit">Change Password</button>
+    </form>
+
+    <!-- Logout Button -->
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+</body>
+</html>

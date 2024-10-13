@@ -8,13 +8,13 @@ class AuthenticationMiddleware:
 
     def __call__(self, request):
         # List of public URLs that don't require authentication
-        public_urls = ['/', '/login/', '/signup/', '/logout/','/example/','/password_reset/'] 
+        public_urls = ['/', '/login/', '/signup/','/example/','/password_reset/', '/test_search/','/results/'] 
 
         # URLs accessible by regular users
-        user_allowed_urls = ['/dashboard/','/logout/','/profile/']
+        user_allowed_urls = ['/dashboard/','/logout/','/profile/','/change_password/','/delete_email/']
 
         # URLs accessible by admins
-        admin_allowed_urls = ['/admin_dashboard/','/logout/']
+        admin_allowed_urls = ['/admin_dashboard/','/logout/','/approve_user/']
 
         # Get the role and uid from the session
         uid = request.session.get('uid')
@@ -31,9 +31,10 @@ class AuthenticationMiddleware:
             return redirect('dashboard')
 
         # If logged in as an admin, check allowed URLs
-        if role == 'admin' and request.path not in admin_allowed_urls:
-            # Redirect admins trying to access user-only pages to the admin dashboard
-            return redirect('admin_dashboard')
+        if role == 'admin':
+            # Check if the path starts with any allowed admin URL
+            if not any(request.path.startswith(url) for url in admin_allowed_urls):
+                return redirect('admin_dashboard')
 
         # If all conditions are met, allow access to the requested page
         return self.get_response(request)
