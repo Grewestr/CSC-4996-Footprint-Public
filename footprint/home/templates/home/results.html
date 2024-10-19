@@ -6,19 +6,9 @@
 </head>
 <body>
     <h2>Search Results</h2>
-    
 
-    <!-- Generate Documents Button Form -->
-    <form method="get" action="{% url 'generate_persons' %}">
-        <button type="submit">Generate 20 Random Documents</button>
-    </form>
-    
-    <!-- Results Button Form -->
-    <form method="get" action="{% url 'test_search' %}">
-        <button type="submit">Retrieve Results</button>
-    </form>
-    
-    <!-- Display Retrieved Results -->
+    <!-- Old Results Section -->
+    <h3>Old Results</h3>
     {% if results %}
         <ul>
         {% for result in results %}
@@ -30,7 +20,53 @@
         {% endfor %}
         </ul>
     {% else %}
-        <p>No results found for the specified criteria.</p>
+        <p>No old results found.</p>
     {% endif %}
+
+    <!-- New Results Section (results2 from the search_person function) -->
+    <h3>New Search & Retrieve Results</h3>
+    {% if results2 %}
+        <!-- Display Searched Attributes -->
+        <h4>Searched Attributes</h4>
+        <ul>
+            <li>Bottom Color: {{ summary.bottom_color }}</li>
+            <li>Bottom Type: {{ summary.bottom_type }}</li>
+            <li>Middle Color: {{ summary.middle_color }}</li>
+            <li>Middle Type: {{ summary.middle_type }}</li>
+            <li>Top Color: {{ summary.top_color }}</li>
+            <li>Top Type: {{ summary.top_type }}</li>
+            <li>Camera: {{ summary.camera }}</li>
+            <li>Time Frame: {{ summary.start_time }} to {{ summary.end_time }}</li>
+        </ul>
+
+        <!-- Display Retrieved Results -->
+        <ul>
+        {% for result in results2 %}
+            <li>
+                <p>Times Detected: {{ result.timestamp }}</p>
+                <p>Camera: {{ result.camera }}</p>
+                <p><img src="{{ result.photo }}" alt="Photo of person" style="max-width: 200px;"></p> <!-- Image -->
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No new results found for the specified criteria.</p>
+    {% endif %}
+
+    <!-- Generate Documents Button Form -->
+    <form method="get" action="{% url 'generate_persons' %}">
+        <button type="submit">Generate 10 Random Documents</button>
+    </form>
+    
+    <!-- Results Button Form -->
+    <form method="get" action="{% url 'test_search' %}">
+        <button type="submit">Retrieve Results</button>
+    </form>
+
+    <!-- Search & Retrieve Button Form -->
+    <form method="get" action="{% url 'demo_input' %}">
+        <button type="submit">Search & Retrieve</button>
+    </form>
+
 </body>
 </html>

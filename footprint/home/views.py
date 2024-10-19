@@ -296,7 +296,7 @@ def test_attribute_search(request):
     bottom_color = "blue"
     bottom_type = "pants"
     middle_color = "red"
-    middle_type = "short shirt"  # Matching exactly as "short shirt"
+    middle_type = "short shirt"  
     top_color = "black"
     top_type = "short"
     camera = "1"  # Specify the camera as a string to match Firestore storage
@@ -398,12 +398,12 @@ def change_password_view(request):
 
 def generate_persons(request):
     # Define the possible attribute values
-    top_types = ["short", "medium", "long", "hat", "bald"]
+    top_types = ["short_hair", "medium_hair", "long_hair", "hat", "bald"]
     top_colors = ["red", "yellow", "green", "orange", "black", "white", "purple", "blue"]
-    middle_types = ["short shirt", "long shirt", "no shirt", "tank top", "no shirt"]
-    middle_colors = ["red", "yellow", "green", "orange", "black", "white", "purple", "blue"]
-    bottom_types = ["shorts", "pants", "skirt", "dress"]
-    bottom_colors = ["red", "yellow", "green", "orange", "black", "white", "purple", "blue"]
+    middle_types = ["short_shirt", "long_shirt", "no_shirt", "tank top", "no shirt"]
+    middle_colors = ["red", "yellow", "green", "orange", "black", "white", "purple", "blue", "pink"]
+    bottom_types = ["short_pants", "long_pants", "skirt", "dress"]
+    bottom_colors = ["red", "yellow", "green", "orange", "black", "white", "purple", "blue", "pink"]
     camera_numbers = ["1", "2"]
 
     # Define the time range for timestamps
@@ -431,7 +431,7 @@ def generate_persons(request):
         }
 
     # Generate and add 20 documents to the 'search_test' collection
-    for _ in range(20):
+    for _ in range(10):
         doc_data = generate_random_document()
         db.collection('search_test').add(doc_data)  # Automatically generate ID
         print(f"Added document with data: {doc_data}")
@@ -441,3 +441,74 @@ def generate_persons(request):
     
     # Redirect back to the dashboard or any other appropriate page
     return render(request, 'home/homepage.html')
+
+
+
+def search_person(request, summary):
+    # Extract attributes from the summary
+    bottom_color = summary.get('bottom_color')
+    bottom_type = summary.get('bottom_type')
+    middle_color = summary.get('middle_color')
+    middle_type = summary.get('middle_type')
+    top_color = summary.get('top_color')
+    top_type = summary.get('top_type')
+    camera = summary.get('camera')  # Camera number
+
+    results2 = []
+
+    # Step 1: Query Firestore based on the attributes and camera number
+    query = db.collection('search_test') \
+              .where('bottom_color', '==', bottom_color) \
+              .where('bottom_type', '==', bottom_type) \
+              .where('middle_color', '==', middle_color) \
+              .where('middle_type', '==', middle_type) \
+              .where('top_color', '==', top_color) \
+              .where('top_type', '==', top_type) \
+              .where('camera', '==', camera)
+
+    # Step 2: Retrieve matching documents and append to results
+    for doc in query.stream():
+        doc_data = doc.to_dict()
+
+        # Format timestamp if needed
+        raw_timestamp = doc_data.get('timestamp')
+        formatted_timestamp = raw_timestamp  # Assuming it's already a string
+
+        # Append the result with the formatted timestamp and other details
+        results2.append({
+            'timestamp': formatted_timestamp,
+            'photo': doc_data.get('photo'),
+            'camera': camera,
+            'bottom_color': bottom_color,
+            'bottom_type': bottom_type,
+            'middle_color': middle_color,
+            'middle_type': middle_type,
+            'top_color': top_color,
+            'top_type': top_type,
+        })
+
+    # Step 3: Return results to the frontend
+    return render(request, 'home/results.html', {
+        'results2': results2,
+        'summary': summary
+    })
+
+
+
+
+def demo_input(request):
+    # Simulated summary input (attributes to match and timeframe)
+    summary = {
+    'bottom_color': "black",
+    'bottom_type': "long_pants",
+    'middle_color': "black",
+    'middle_type': "long_shirt",
+    'top_color': "black",
+    'top_type': "medium_hair",
+    'camera': "1",  # Only search for camera 1
+    'start_time': '2024-10-14T00:01',  # Start of the day for October 14, 2024
+    'end_time': '2024-10-14T23:59'  # End of the day for October 14, 2024
+}
+
+    # Call the search_person function with the summarized input
+    return search_person(request, summary)
