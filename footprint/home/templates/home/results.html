@@ -7,6 +7,12 @@
 <body>
     <h2>Search Results</h2>
     
+
+    <!-- Generate Documents Button Form -->
+    <form method="get" action="{% url 'generate_persons' %}">
+        <button type="submit">Generate 20 Random Documents</button>
+    </form>
+    
     <!-- Results Button Form -->
     <form method="get" action="{% url 'test_search' %}">
         <button type="submit">Retrieve Results</button>
@@ -17,7 +23,7 @@
         <ul>
         {% for result in results %}
             <li>
-                <p>Timestamp: {{ result.timestamp }}</p>
+                <p>Times Detected: {{ result.timestamp }}</p>
                 <p>Camera: {{ result.camera }}</p>
                 <p><img src="{{ result.photo }}" alt="Photo of person"></p>
             </li>

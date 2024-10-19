@@ -5,7 +5,9 @@ from django.contrib import messages
 import firebase_admin
 from firebase_admin import auth, firestore, exceptions
 import requests
-
+from datetime import datetime, timedelta
+import pytz
+import random
 
 
 db = firestore.client()
@@ -286,6 +288,9 @@ def password_reset_view(request):
     return render(request, 'home/password_reset.html')
 
 
+# Define the desired time zone (UTC-4)
+desired_timezone = pytz.timezone("America/New_York")  # This is UTC-4 when in daylight saving time
+
 def test_attribute_search(request):
     # Define the criteria for matching attributes
     bottom_color = "blue"
@@ -311,8 +316,20 @@ def test_attribute_search(request):
     # Step 2: Retrieve matching documents and append timestamp and photo to results
     for doc in query.stream():
         doc_data = doc.to_dict()
+
+        # Retrieve and format the timestamp
+        raw_timestamp = doc_data.get('timestamp')
+
+        # Convert Firestore UTC timestamp to local timezone (UTC-4)
+        if isinstance(raw_timestamp, datetime):
+            # Convert the UTC timestamp to the desired time zone (UTC-4)
+            local_timestamp = raw_timestamp.astimezone(desired_timezone)
+            formatted_timestamp = local_timestamp.strftime("%B %d, %Y at %I:%M:%S %p UTC%z")
+        else:
+            formatted_timestamp = raw_timestamp  # In case it's already a string
+
         results.append({
-            'timestamp': doc_data.get('timestamp'),
+            'timestamp': formatted_timestamp,
             'photo': doc_data.get('photo'),
             'camera': camera
         })
@@ -376,3 +393,51 @@ def change_password_view(request):
             messages.error(request, f"Error changing password: {str(e)}")
     
     return redirect('profile')
+
+
+
+def generate_persons(request):
+    # Define the possible attribute values
+    top_types = ["short", "medium", "long", "hat", "bald"]
+    top_colors = ["red", "yellow", "green", "orange", "black", "white", "purple", "blue"]
+    middle_types = ["short shirt", "long shirt", "no shirt", "tank top", "no shirt"]
+    middle_colors = ["red", "yellow", "green", "orange", "black", "white", "purple", "blue"]
+    bottom_types = ["shorts", "pants", "skirt", "dress"]
+    bottom_colors = ["red", "yellow", "green", "orange", "black", "white", "purple", "blue"]
+    camera_numbers = ["1", "2"]
+
+    # Define the time range for timestamps
+    start_date = datetime(2024, 10, 20, tzinfo=pytz.UTC)
+    end_date = datetime(2024, 10, 23, tzinfo=pytz.UTC)
+
+    # Function to generate a random timestamp between two dates
+    def random_timestamp(start, end):
+        delta = end - start
+        random_seconds = random.randint(0, int(delta.total_seconds()))
+        return start + timedelta(seconds=random_seconds)
+
+    # Function to generate a random document with the specified attribute ranges
+    def generate_random_document():
+        return {
+            'bottom_color': random.choice(bottom_colors),
+            'bottom_type': random.choice(bottom_types),
+            'camera': random.choice(camera_numbers),
+            'middle_color': random.choice(middle_colors),
+            'middle_type': random.choice(middle_types),
+            'photo': "URL",
+            'timestamp': random_timestamp(start_date, end_date),
+            'top_color': random.choice(top_colors),
+            'top_type': random.choice(top_types),
+        }
+
+    # Generate and add 20 documents to the 'search_test' collection
+    for _ in range(20):
+        doc_data = generate_random_document()
+        db.collection('search_test').add(doc_data)  # Automatically generate ID
+        print(f"Added document with data: {doc_data}")
+
+    # Provide feedback to the user
+    messages.success(request, "20 random documents have been successfully added to Firestore.")
+    
+    # Redirect back to the dashboard or any other appropriate page
+    return render(request, 'home/homepage.html')
