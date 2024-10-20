@@ -453,10 +453,16 @@ def search_person(request, summary):
     top_color = summary.get('top_color')
     top_type = summary.get('top_type')
     camera = summary.get('camera')  # Camera number
+    start_time = summary.get('start_time')  # Start of the time frame (string in ISO format)
+    end_time = summary.get('end_time')  # End of the time frame (string in ISO format)
+
+    # Convert the start and end time to Firestore-friendly UTC timestamps
+    start_timestamp = datetime.strptime(start_time, "%Y-%m-%dT%H:%M").replace(tzinfo=pytz.UTC)
+    end_timestamp = datetime.strptime(end_time, "%Y-%m-%dT%H:%M").replace(tzinfo=pytz.UTC)
 
     results2 = []
 
-    # Step 1: Query Firestore based on the attributes and camera number
+    # Step 1: Query Firestore based on attributes (without timestamp filtering)
     query = db.collection('search_test') \
               .where('bottom_color', '==', bottom_color) \
               .where('bottom_type', '==', bottom_type) \
@@ -466,35 +472,43 @@ def search_person(request, summary):
               .where('top_type', '==', top_type) \
               .where('camera', '==', camera)
 
-    # Step 2: Retrieve matching documents and append to results
+    # Step 2: Manually filter by the timestamp
     for doc in query.stream():
         doc_data = doc.to_dict()
 
-        # Format timestamp if needed
+        # Retrieve the document's timestamp and convert it to UTC if needed
         raw_timestamp = doc_data.get('timestamp')
-        formatted_timestamp = raw_timestamp  # Assuming it's already a string
 
-        # Append the result with the formatted timestamp and other details
-        results2.append({
-            'timestamp': formatted_timestamp,
-            'photo': doc_data.get('photo'),
-            'camera': camera,
-            'bottom_color': bottom_color,
-            'bottom_type': bottom_type,
-            'middle_color': middle_color,
-            'middle_type': middle_type,
-            'top_color': top_color,
-            'top_type': top_type,
-        })
+        if isinstance(raw_timestamp, str):
+            # Convert string timestamp to datetime (assuming the format is consistent)
+            detection_time = datetime.strptime(raw_timestamp, "%B %d, %Y at %I:%M:%S %p UTC%z")
+        else:
+            detection_time = raw_timestamp  # If it's already a Firestore timestamp object
+
+        # Check if the timestamp falls within the desired timeframe
+        if start_timestamp <= detection_time <= end_timestamp:
+            # Convert the UTC timestamp to the desired timezone (UTC-4)
+            local_timestamp = detection_time.astimezone(desired_timezone)
+            formatted_timestamp = local_timestamp.strftime("%B %d, %Y at %I:%M:%S %p UTC%z")
+
+            # Append the result with the formatted timestamp and other details
+            results2.append({
+                'timestamp': formatted_timestamp,
+                'photo': doc_data.get('photo'),
+                'camera': camera,
+                'bottom_color': bottom_color,
+                'bottom_type': bottom_type,
+                'middle_color': middle_color,
+                'middle_type': middle_type,
+                'top_color': top_color,
+                'top_type': top_type,
+            })
 
     # Step 3: Return results to the frontend
     return render(request, 'home/results.html', {
         'results2': results2,
         'summary': summary
     })
-
-
-
 
 def demo_input(request):
     # Simulated summary input (attributes to match and timeframe)
