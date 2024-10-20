@@ -460,6 +460,10 @@ def search_person(request, summary):
     start_timestamp = datetime.strptime(start_time, "%Y-%m-%dT%H:%M").replace(tzinfo=pytz.UTC)
     end_timestamp = datetime.strptime(end_time, "%Y-%m-%dT%H:%M").replace(tzinfo=pytz.UTC)
 
+    # Convert start and end timestamps to the desired display format
+    formatted_start_time = start_timestamp.strftime("%B %d, %Y at %I:%M:%S %p")
+    formatted_end_time = end_timestamp.strftime("%B %d, %Y at %I:%M:%S %p")
+
     results2 = []
 
     # Step 1: Query Firestore based on attributes (without timestamp filtering)
@@ -489,7 +493,7 @@ def search_person(request, summary):
         if start_timestamp <= detection_time <= end_timestamp:
             # Convert the UTC timestamp to the desired timezone (UTC-4)
             local_timestamp = detection_time.astimezone(desired_timezone)
-            formatted_timestamp = local_timestamp.strftime("%B %d, %Y at %I:%M:%S %p UTC%z")
+            formatted_timestamp = local_timestamp.strftime("%B %d, %Y at %I:%M:%S %p")
 
             # Append the result with the formatted timestamp and other details
             results2.append({
@@ -507,8 +511,11 @@ def search_person(request, summary):
     # Step 3: Return results to the frontend
     return render(request, 'home/results.html', {
         'results2': results2,
-        'summary': summary
+        'summary': summary,
+        'formatted_start_time': formatted_start_time,
+        'formatted_end_time': formatted_end_time
     })
+
 
 def demo_input(request):
     # Simulated summary input (attributes to match and timeframe)
