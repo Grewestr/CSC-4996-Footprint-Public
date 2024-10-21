@@ -1,0 +1,47 @@
+/* General button styling (Change Password, Delete Account, Logout) */
+.button-container button {
+  background-color: #3fb2d8; /* Light blue */
+  color: white;
+  padding: 10px 20px;
+  margin: 10px 10px 10px 0;
+  border: none;
+  cursor: pointer;
+  width: auto; /* Auto width to prevent full page stretch */
+  min-width: 150px; /* Minimum width to make the buttons uniformly sized */
+  font-size: 16px;
+  text-align: center;
+  display: inline-block;
+}
+
+.button-container button:hover {
+  background-color: #6cc8ec; /* Slightly darker blue on hover */
+}
+
+/* Red Logout button styling */
+.button-container .logout-button {
+  background-color: #c92e26; /* Red */
+  color: white;
+  padding: 10px 20px;
+  margin: 10px 10px 10px 0;
+  border: none;
+  cursor: pointer;
+  width: auto;
+  min-width: 150px;
+  font-size: 16px;
+  text-align: center;
+  display: inline-block;
+}
+
+.button-container .logout-button:hover {
+  background-color: #eb4e4e; /* Darker red on hover */
+}
+
+/* User information font styling */
+.user-info p {
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.user-info strong {
+  font-size: 20px;
+}

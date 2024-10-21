@@ -1,3 +1,5 @@
+"form_validation.js"
+
 document.addEventListener("DOMContentLoaded", function () {
     const firstNameInput = document.getElementById('signup-firstname');
     const lastNameInput = document.getElementById('signup-lastname');

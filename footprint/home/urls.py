@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from .views import login_view, homepage_view, signup_view, dashboard_view, logout_view, admin_dashboard_view,approve_user_view, example_view, password_reset_view, test_attribute_search,results_view, profile_view, change_password_view, delete_email_view, generate_persons, search_person, demo_input
+from .views import login_view, homepage_view, signup_view, dashboard_view, logout_view, admin_dashboard_view,approve_user_view, example_view, password_reset_view, test_attribute_search,results_view, profile_view, change_password, delete_email_view, generate_persons, search_person, demo_input, validate_current_password
 
 urlpatterns = [
     path('login/', login_view, name='login'),
@@ -30,12 +30,12 @@ urlpatterns = [
     path('test_search/', test_attribute_search, name='test_search'),
     path('results/', results_view, name='results'),
     path('profile/', profile_view, name='profile'),
-    path('change_password/', change_password_view, name='change_password'),
+    path('change_password/', change_password, name='change_password'),
     path('delete_email/', delete_email_view, name='delete_email'),
     path('generate_persons/', generate_persons, name='generate_persons'),
     path('search_person/', search_person, name='search_person'),
     path('demo_input/', demo_input, name='demo_input'),
-    
+    path('validate_current_password/', validate_current_password, name='demo_input'),
 
      
      

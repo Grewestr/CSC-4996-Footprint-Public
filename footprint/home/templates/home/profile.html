@@ -2,35 +2,114 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile Management</title>
+    {% load static %}
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="{% static 'css/change_password.css' %}">
+    <link rel="stylesheet" href="{% static 'css/delete_email.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
 </head>
 <body>
     <h1>Profile Management</h1>
 
     <!-- Display User Information -->
-    <div>
-        <p><strong>Full Name:</strong> {{ full_name }}</p> <!-- Dynamically display full name -->
-        <p><strong>Email:</strong> {{ email }}</p> <!-- Dynamically display email -->
-        <p><strong>Apartment Name:</strong> {{ apartment_name }}</p> <!-- Placeholder for apartment name -->
+    <div class="user-info">
+        <p><strong>Full Name:</strong> {{ full_name }}</p>
+        <p><strong>Email:</strong> {{ email }}</p>
+        <p><strong>Apartment Name:</strong> {{ apartment_name }}</p>
     </div>
 
-    <!-- Delete Email Form -->
-    <form method="post" action="{% url 'delete_email' %}">
-        {% csrf_token %}
-        <button type="submit">Delete Email</button>
-    </form>
+    <!-- Button Container -->
+    <div class="button-container">
+        <!-- Change Password Button -->
+        <button id="changePasswordButton">Change Password</button>
 
-    <!-- Change Password Form -->
-    <form method="post" action="{% url 'change_password' %}">
-        {% csrf_token %}
-        <input type="password" name="new_password" placeholder="New Password" required>
-        <button type="submit">Change Password</button>
-    </form>
+        <!-- Delete Account Button -->
+        <button id="deleteEmailButton">Delete Account</button>
 
-    <!-- Logout Button -->
-    <form method="post" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button type="submit">Logout</button>
-    </form>
+        <!-- Logout Button wrapped in the same container -->
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="logout-button">Logout</button>
+        </form>
+    </div>
+
+    <!-- Floating Window for Changing Password -->
+    <div id="changePasswordModal" class="modal {% if keep_modal_open %}open{% endif %}">
+        <div class="modal-content">
+            <span id="closeModal" class="close">&times;</span>
+            <h2>Change Password</h2>
+            <form method="post" action="{% url 'change_password' %}">
+                {% csrf_token %}
+                <!-- Current Password Input -->
+                <label for="current_password">Current Password:</label>
+                <input type="password" id="current_password" name="current_password" required><br>
+
+                <!-- New Password Input -->
+                <label for="new_password">New Password:</label>
+                <input type="password" id="new_password" name="new_password" required><br>
+
+                <!-- Password Requirements Section -->
+                <ul class="password-requirements">
+                    <li id="length" class="requirement">
+                        <i class="x-mark"></i> At least 8 characters
+                    </li>
+                    <li id="uppercase" class="requirement">
+                        <i class="x-mark"></i> At least one uppercase letter
+                    </li>
+                    <li id="lowercase" class="requirement">
+                        <i class="x-mark"></i> At least one lowercase letter
+                    </li>
+                </ul>
+
+                <!-- Retype New Password Input -->
+                <label for="retype_password">Retype New Password:</label>
+                <input type="password" id="retype_password" name="retype_password" required><br>
+
+                <!-- Error message for password mismatch -->
+                <p class="error-message" id="password-match-error" style="color: red; display: none;">Passwords do not match.</p>
+
+                <!-- Submit and Cancel Buttons -->
+                <button type="submit" id="submitPasswordChange" disabled>Submit</button>
+                <button type="button" id="cancelButton">Cancel</button>
+            </form>
+
+            <!-- Display any messages inside the modal -->
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <p class="{{ message.tags }}">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Floating Window for Email Deletion -->
+    <div id="deleteEmailModal" class="modal">
+        <div class="modal-content">
+            <span id="closeDeleteModal" class="close">&times;</span>
+            <h2>Delete Account</h2>
+            <form method="post" action="{% url 'delete_email' %}">
+                {% csrf_token %}
+                <label for="delete-email">Email:</label>
+                <input type="email" id="delete-email" name="email" required><br>
+
+                <label for="delete-current-password">Current Password:</label>
+                <input type="password" id="delete-current-password" name="current_password" required><br>
+
+                <p class="error-message" id="delete-password-error" style="color: red; display: none;">Incorrect email or password.</p>
+
+                <button type="submit" id="submitDeleteEmail" disabled>Delete Account</button>
+                <button type="button" id="cancelDeleteButton">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- External JavaScript Files -->
+    <script src="{% static 'js/change_password.js' %}"></script>
+    <script src="{% static 'js/delete_email.js' %}"></script>
 </body>
 </html>

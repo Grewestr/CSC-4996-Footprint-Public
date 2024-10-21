@@ -1,4 +1,5 @@
 
+import re
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from django.contrib import messages
@@ -8,6 +9,7 @@ import requests
 from datetime import datetime, timedelta
 import pytz
 import random
+from django.http import JsonResponse
 
 
 db = firestore.client()
@@ -255,8 +257,6 @@ def approve_user_view(request, email):
 
 
 def password_reset_view(request):
-    # The URL for sending the password reset request to Firebase API
-    reset_password_url = f'https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key={firebase_api_key}'
     
     # Check if the request method is POST (i.e., the form was submitted)
     if request.method == 'POST':
@@ -270,7 +270,7 @@ def password_reset_view(request):
         }
 
         # Send the password reset request to Firebase API
-        response = requests.post(reset_password_url, json=payload)
+        response = requests.post(url, json=payload)
 
         # Check if the request was successful (HTTP status 200)
         if response.status_code == 200:
@@ -343,56 +343,119 @@ def results_view(request):
 
 def delete_email_view(request):
     if request.method == 'POST':
-        user_email = request.session.get('email')
-        
-        if not user_email:
-            messages.error(request, "No email found in session.")
-            return redirect('profile')
+        session_email = request.session.get('email')
+        user_email = request.POST.get('email')
+        current_password = request.POST.get('current_password')
+
+        if not user_email or not current_password:
+            messages.error(request, "Email or password missing.")
+            return redirect('/profile/?delete_error=email_missing')  # Full URL with query string
+
+        # Check if the entered email matches the email in the session
+        if user_email != session_email:
+            messages.error(request, "The email you entered does not match the one associated with your account.")
+            return redirect('/profile/?delete_error=email_mismatch')  # Full URL with query string
 
         try:
-            # Delete the user from Firebase Authentication
-            user = auth.get_user_by_email(user_email)
-            auth.delete_user(user.uid)
-            
-            # Delete the user document from Firestore
-            db.collection('users').document(user_email).delete()
+            # Re-authenticate the user by checking the current password
+            payload = {
+                'email': user_email,
+                'password': current_password,
+                'returnSecureToken': True
+            }
+            response = requests.post(url, json=payload)
 
-            messages.success(request, "Your account has been successfully deleted.")
-            # Call logout_view to handle session clearing and redirection
-            return logout_view(request)
-        
+            if response.status_code == 200:
+                # If the password is correct, delete the user from Firebase
+                user = auth.get_user_by_email(user_email)
+                auth.delete_user(user.uid)
+                
+                # Delete user document from Firestore
+                db.collection('users').document(user_email).delete()
+
+                messages.success(request, "Your account has been successfully deleted.")
+                return logout_view(request)  # Log out the user and clear session
+            else:
+                # If password is incorrect or email not found
+                messages.error(request, "Incorrect password or email.")
+                return redirect('/profile/?delete_error=password_mismatch')  # Full URL with query string
+
         except firebase_admin.auth.UserNotFoundError:
             messages.error(request, "User not found.")
         except Exception as e:
             messages.error(request, f"Error deleting account: {str(e)}")
+
+    return redirect('/profile/')
+
+
+
+def validate_current_password(user_email, current_password):
+    try:
+        payload = {
+            'email': user_email,
+            'password': current_password,
+            'returnSecureToken': True
+        }
+        response = requests.post(url, json=payload)
+        if response.status_code == 200:
+            return True  # Current password is correct
+        else:
+            return False  # Incorrect password
+    except Exception as e:
+        return False
     
-    return redirect('profile')
 
 
-def change_password_view(request):
+def change_password(request):
     if request.method == 'POST':
-        # Retrieve the user's email and new password from the session and form
-        user_email = request.session.get('email')
+        current_password = request.POST.get('current_password')
         new_password = request.POST.get('new_password')
+        retype_password = request.POST.get('retype_password')
 
-        if not user_email:
-            messages.error(request, "No email found in session.")
-            return redirect('profile')
+        # Validate that new passwords match
+        if new_password != retype_password:
+            messages.error(request, 'New password and retyped password do not match.')
+            return render(request, 'profile.html', {'keep_modal_open': True})  # Keep modal open on error
+
+        # Validate new password format
+        if not re.search(r'^(?=.*[a-z])(?=.*[A-Z]).{8,}$', new_password):
+            messages.error(request, 'Password must be at least 8 characters with one lowercase and one uppercase letter.')
+            return render(request, 'home/profile.html', {'keep_modal_open': True})  # Keep modal open on error
 
         try:
-            # Retrieve the user by email and update the password
-            user = auth.get_user_by_email(user_email)
-            auth.update_user(user.uid, password=new_password)
+            # Re-authenticate the user with the current password using Firebase
+            user_email = request.session.get('email')
+            payload = {
+                'email': user_email,
+                'password': current_password,
+                'returnSecureToken': True
+            }
+            response = requests.post(url, json=payload)
 
-            messages.success(request, "Your password has been successfully changed.")
-            return redirect('profile')
-        
+            if response.status_code == 200:
+                # If current password is correct, update to new password
+                user = auth.get_user_by_email(user_email)
+                auth.update_user(user.uid, password=new_password)
+                messages.success(request, 'Password changed successfully.')
+            else:
+                # Handle incorrect current password case
+                messages.error(request, 'Current password is incorrect.')
+                return render(request, 'home/profile.html', {'keep_modal_open': True})  # Keep modal open on error
+
         except firebase_admin.auth.UserNotFoundError:
-            messages.error(request, "User not found.")
+            messages.error(request, 'User not found.')
+            return render(request, 'home/profile.html', {'keep_modal_open': True})  # Keep modal open on error
+
         except Exception as e:
-            messages.error(request, f"Error changing password: {str(e)}")
-    
+            messages.error(request, f'Error occurred: {str(e)}')
+            return render(request, 'home/profile.html', {'keep_modal_open': True})  # Keep modal open on error
+
+        return redirect('profile')  # Redirect on success
+
     return redirect('profile')
+
+
+
 
 
 
