@@ -258,6 +258,9 @@ def approve_user_view(request, email):
 
 def password_reset_view(request):
     
+    # The URL for sending the password reset request to Firebase API
+    reset_password_url = f'https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key={firebase_api_key}'
+
     # Check if the request method is POST (i.e., the form was submitted)
     if request.method == 'POST':
         # Retrieve the email address from the submitted form
@@ -270,7 +273,7 @@ def password_reset_view(request):
         }
 
         # Send the password reset request to Firebase API
-        response = requests.post(url, json=payload)
+        response = requests.post(reset_password_url, json=payload)
 
         # Check if the request was successful (HTTP status 200)
         if response.status_code == 200:
@@ -387,23 +390,6 @@ def delete_email_view(request):
 
     return redirect('/profile/')
 
-
-
-def validate_current_password(user_email, current_password):
-    try:
-        payload = {
-            'email': user_email,
-            'password': current_password,
-            'returnSecureToken': True
-        }
-        response = requests.post(url, json=payload)
-        if response.status_code == 200:
-            return True  # Current password is correct
-        else:
-            return False  # Incorrect password
-    except Exception as e:
-        return False
-    
 
 
 def change_password(request):
