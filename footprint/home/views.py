@@ -10,9 +10,17 @@ from datetime import datetime, timedelta
 import pytz
 import random
 from django.http import JsonResponse
+import os
+from google.cloud import firestore
+from google.oauth2 import service_account
+from google.cloud.firestore_v1 import FieldFilter
 
 
-db = firestore.client()
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+key_path = os.path.join(BASE_DIR, 'footprint', 'Firebase', 'serviceAccountKey.json')
+credentials = service_account.Credentials.from_service_account_file(key_path)
+db = firestore.Client(credentials=credentials)
+
 
 firebase_api_key = 'AIzaSyBrnuE0rPIse9NIoJiV0kw2FMEGDXShjBQ'
 url = f'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={firebase_api_key}'
@@ -582,3 +590,135 @@ def demo_input(request):
 
     # Call the search_person function with the summarized input
     return search_person(request, summary)
+
+def search_attributes(request):
+    if request.method == 'POST':
+        # Retrieve all selections from the form data
+        top_attribute = request.POST.get('top_attribute')
+        top_color = request.POST.get('top_color')
+        middle_attribute = request.POST.get('middle_attribute')
+        middle_color = request.POST.get('middle_color')
+        bottom_attribute = request.POST.get('bottom_attribute')
+        bottom_color = request.POST.get('bottom_color')
+        from_date = request.POST.get('from_date')
+        from_time = request.POST.get('from_time')
+        to_date = request.POST.get('to_date')
+        to_time = request.POST.get('to_time')
+        camera = request.POST.get('camera')
+
+        # Combine date and time into datetime objects
+        try:
+            from_datetime_str = f"{from_date} {from_time}"
+            to_datetime_str = f"{to_date} {to_time}"
+            from_datetime = datetime.strptime(from_datetime_str, '%Y-%m-%d %H:%M')
+            to_datetime = datetime.strptime(to_datetime_str, '%Y-%m-%d %H:%M')
+
+            # Convert to UTC timezone
+            from_datetime = pytz.utc.localize(from_datetime)
+            to_datetime = pytz.utc.localize(to_datetime)
+        except Exception as e:
+            messages.error(request, f"Error parsing dates: {str(e)}")
+            return render(request, 'home/dashboard.html')
+
+        # Build the query based on provided attributes and timestamp range
+        query = db.collection('search_test')
+
+        # query parameters for printing
+        query_params = []
+
+        # Include top attribute and color in the query
+        if top_attribute:
+            query = query.where(filter=FieldFilter('top_type', '==', top_attribute.lower()))
+            query_params.append(f"top_type == {top_attribute.lower()}")
+        if top_color:
+            query = query.where(filter=FieldFilter('top_color', '==', top_color.lower()))
+            query_params.append(f"top_color == {top_color.lower()}")
+
+        # Include middle attribute and color
+        if middle_attribute:
+            query = query.where(filter=FieldFilter('middle_type', '==', middle_attribute.lower()))
+            query_params.append(f"middle_type == {middle_attribute.lower()}")
+        if middle_color:
+            query = query.where(filter=FieldFilter('middle_color', '==', middle_color.lower()))
+            query_params.append(f"middle_color == {middle_color.lower()}")
+
+        # Include bottom attribute and color
+        if bottom_attribute:
+            query = query.where(filter=FieldFilter('bottom_type', '==', bottom_attribute.lower()))
+            query_params.append(f"bottom_type == {bottom_attribute.lower()}")
+        if bottom_color:
+            query = query.where(filter=FieldFilter('bottom_color', '==', bottom_color.lower()))
+            query_params.append(f"bottom_color == {bottom_color.lower()}")
+
+        # Include camera
+        if camera:
+            query = query.where(filter=FieldFilter('camera', '==', camera))
+            query_params.append(f"camera == {camera}")
+
+        # Add timestamp filtering
+        query = query.where(filter=FieldFilter('timestamp', '>=', from_datetime))
+        query = query.where(filter=FieldFilter('timestamp', '<=', to_datetime))
+        query_params.append(f"timestamp >= {from_datetime}")
+        query_params.append(f"timestamp <= {to_datetime}")
+
+        # Printing the search parameters to the terminal
+        print("Search Parameters:")
+        print(f"From datetime: {from_datetime}")
+        print(f"To datetime: {to_datetime}")
+        print(f"Camera: {camera}")
+        print("Query Parameters:")
+        for param in query_params:
+            print(f"- {param}")
+
+        # Execute the query
+        results = []
+        try:
+            print("Entered the try block.")
+            docs = query.stream()
+            print("Query executed successfully.")
+            for doc in docs:
+                doc_data = doc.to_dict()
+                print(f"Retrieved Document ID: {doc.id}, Data: {doc_data}")
+                timestamp = doc_data.get('timestamp')
+                if timestamp:
+                    # Ensure timestamp is timezone-aware
+                    if not timestamp.tzinfo:
+                        timestamp = timestamp.replace(tzinfo=pytz.utc)
+                    timestamp_dt = timestamp
+
+                    results.append({
+                        'timestamp': timestamp_dt,
+                        'photo': doc_data.get('photo'),
+                        'camera': doc_data.get('camera'),
+                        'top_type': doc_data.get('top_type'),
+                        'top_color': doc_data.get('top_color'),
+                        'middle_type': doc_data.get('middle_type'),
+                        'middle_color': doc_data.get('middle_color'),
+                        'bottom_type': doc_data.get('bottom_type'),
+                        'bottom_color': doc_data.get('bottom_color')
+                    })
+            print(f"Number of results found: {len(results)}")
+        except Exception as e:
+            print(f"Exception occurred: {e}")
+            messages.error(request, f"Error querying database: {str(e)}")
+            return render(request, 'home/dashboard.html')
+
+        # Pass the results to the template
+        context = {
+            'results': results,
+            'selections': {
+                'top': {'attribute': top_attribute, 'color': top_color},
+                'middle': {'attribute': middle_attribute, 'color': middle_color},
+                'bottom': {'attribute': bottom_attribute, 'color': bottom_color},
+                'timeframe': f"From {from_date} {from_time} to {to_date} {to_time}",
+                'camera': camera
+            },
+            'from_date': from_date,
+            'from_time': from_time,
+            'to_date': to_date,
+            'to_time': to_time
+        }
+
+        return render(request, 'home/dashboard.html', context)
+    else:
+        return redirect('dashboard')

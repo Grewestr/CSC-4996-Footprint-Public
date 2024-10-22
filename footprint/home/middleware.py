@@ -11,7 +11,7 @@ class AuthenticationMiddleware:
         public_urls = ['/', '/login/', '/signup/','/example/','/password_reset/', '/test_search/','/results/','/generate_persons/','/demo_input/','/search_person/'] 
 
         # URLs accessible by regular users
-        user_allowed_urls = ['/dashboard/','/logout/','/profile/','/change_password/','/delete_email/']
+        user_allowed_urls = ['/dashboard/','/logout/','/profile/','/change_password/','/delete_email/','/search_attributes/']
 
         # URLs accessible by admins
         admin_allowed_urls = ['/admin_dashboard/','/logout/','/approve_user/',]

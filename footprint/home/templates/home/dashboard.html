@@ -2,10 +2,317 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* ================================
+           Dashboard Page Styles
+           This will not be here in  the future, just for temp css for protype 2
+        ================================ */
+
+        /* General Styles */
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #ffffff;
+            color: #000000;
+            margin: 0;
+        }
+
+        .container {
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        /* Header Styles */
+        header {
+            position: sticky;
+            top: 0;
+            background-color: #fff;
+            border-bottom: 2px solid #000;
+            padding: 20px 0;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-and-title {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-link {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        .logo-image {
+            max-width: 100px;
+            width: 100%;
+            height: auto;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .logo-image:hover {
+            opacity: 0.8;
+        }
+
+        .site-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #000;
+            margin: 0;
+        }
+
+        /* Navigation Styles */
+        nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #000;
+            text-decoration: none;
+            font-weight: bold;
+            margin-left: 20px;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .nav-link:first-child {
+            margin-left: 0;
+        }
+
+        .nav-link:hover {
+            color: #ff0000;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            grid-template-rows: auto auto auto auto;
+            gap: 20px;
+            padding: 40px 0;
+            background-color: #ffffff;
+        }
+
+        /* Style attribute buttons to start as grey */
+        .attribute-btn {
+            background-color: grey;
+            color: white;
+            padding: 10px;
+            border: none;
+            margin: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+
+        /* Change background to black when selected */
+        .attribute-btn.selected {
+            background-color: black;
+            color: white;
+        }
+
+        /* Adjusted grid areas for the layout */
+        .attributes-section,
+        .summary-section,
+        .time-frame-section,
+        .results-section,
+        .image-gallery-section {
+            background-color: #ffffff;
+            border: 2px solid #000;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .attributes-section {
+            grid-column: 1 / 2;
+        }
+
+        .summary-section {
+            grid-column: 1 / 2;
+        }
+
+        .time-frame-section {
+            grid-column: 1 / 2;
+        }
+
+        .results-section {
+            grid-column: 2 / 3;
+            grid-row: 1 / 4;
+        }
+
+        .image-gallery-section {
+            grid-column: 2 / 3;
+            grid-row: 4 / 5;
+        }
+
+        /* Section titles */
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 700;
+            color: #000;
+        }
+
+        /* Button styling */
+        .submit-button,
+        .reset-button {
+            background-color: #000;
+            color: white;
+            padding: 10px 20px;
+            border: 2px solid #000;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: bold;
+        }
+
+        .submit-button:hover,
+        .reset-button:hover {
+            background-color: #ff0000;
+        }
+
+        .color-selection label {
+            font-weight: bold;
+        }
+
+        /* Adjusted styles for the Results Section */
+        .result-content {
+            display: flex;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            padding: 15px;
+            border-bottom: 1px solid #000;
+        }
+
+        .result-image {
+            max-width: 100px;
+            width: 100%;
+            height: auto;
+            margin-right: 20px;
+            border-radius: 5px;
+            border: 2px solid #000;
+        }
+
+        .result-text {
+            flex: 1;
+        }
+
+        .result-text p {
+            margin: 5px 0;
+            font-weight: 500;
+        }
+
+        /* Image grid */
+        .image-placeholder {
+            background-color: #e0e0e0;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 5px;
+            text-align: center;
+            width: 100%;
+            height: 200px;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        /* Section Heading Styles */
+        h3 {
+            font-size: 1.5em;
+            margin: 10px 0;
+            font-weight: 700;
+            position: relative;
+        }
+
+        /* Time Frame Section styling */
+        .time-frame-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .datetime-select {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .datetime-select label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .camera-select {
+            margin-top: 10px;
+        }
+
+        /* Summary content styling */
+        .summary-content p {
+            margin: 5px 0;
+            font-weight: bold;
+        }
+
+        /* Style for selected attribute buttons */
+        .attribute-btn.selected {
+            background-color: #000;
+            color: white;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 800px) {
+            .dashboard-layout {
+                grid-template-columns: 1fr;
+            }
+            .attributes-section,
+            .summary-section,
+            .time-frame-section,
+            .results-section,
+            .image-gallery-section {
+                grid-column: 1 / -1;
+                grid-row: auto;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-link {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+
+            .result-content {
+                flex-direction: column;
+            }
+
+            .result-image {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+
+            .image-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header Section -->
@@ -19,131 +326,176 @@
                 <!-- Site Title -->
                 <h1 class="site-title">Dashboard</h1>
             </div>
-            <!-- Profile Button -->
+            <nav>
+
                 <a href="{% url 'profile' %}" class="nav-link">Profile</a>
-                <a href="{% url 'homepage' %}" class="nav-link">Homepage</a>
                 <a href="{% url 'logout' %}" class="nav-link">Logout</a>
-            </div>
+                
+            </nav>
         </div>
     </header>
 
-    <div class="dashboard-layout">
-        <!-- Attributes Section -->
-        <aside class="attributes-section">
-            <h2>Attributes</h2>
+    <!-- Dashboard Layout -->
+    <div class="dashboard-layout container">
+        <form method="POST" action="{% url 'search_attributes' %}">
+            <!-- Include CSRF token for Django -->
+            {% csrf_token %}
+            <input type="hidden" name="top_attribute" id="top-attribute-input">
+            <input type="hidden" name="top_color" id="top-color-input">
+        
+            <input type="hidden" name="middle_attribute" id="middle-attribute-input">
+            <input type="hidden" name="middle_color" id="middle-color-input">
+        
+            <input type="hidden" name="bottom_attribute" id="bottom-attribute-input">
+            <input type="hidden" name="bottom_color" id="bottom-color-input">
+        
+            <!-- Attributes Section -->
+            <aside class="attributes-section">
+                <h2>Attributes</h2>
+                <!-- Top Attributes -->
+                <div class="attribute-group">
+                    <h3>TOP</h3>
+                    <div class="top-attributes">
+                        <button type="button" class="attribute-btn" data-attribute="short_hair" data-category="top">Short Hair</button>
+                        <button type="button" class="attribute-btn" data-attribute="medium_hair" data-category="top">Medium Hair</button>
+                        <button type="button" class="attribute-btn" data-attribute="long_hair" data-category="top">Long Hair</button>
+                        <button type="button" class="attribute-btn" data-attribute="bald" data-category="top">Bald</button>
+                    </div>
 
-            <!-- Top Attributes -->
-            <div class="attribute-group">
-                <h3>TOP</h3>
-                <div class="top-attributes">
-                    <button>Short Hair</button>
-                    <button>Medium Hair</button>
-                    <button>Long Hair</button>
-                    <button>Bald</button>
+                    <div class="color-selection">
+                        <label for="top-color">Color:</label>
+                        <select id="top-color" name="top_color" class="color-select" data-category="top">
+                            <option value="">Select Color</option>
+                            <option value="black">Black</option>
+                            <option value="brown">Brown</option>
+                            <option value="blonde">Blonde</option>
+                            <option value="red">Red</option>
+                            <option value="gray">Gray</option>
+                        </select>                   
+                    </div>
                 </div>
-                <div class="color-options">
-                    <button class="color brown"></button>
-                    <button class="color black"></button>
-                    <button class="color blonde"></button>
-                    <button class="color gray"></button>
-                    <button class="color mixed"></button>
+
+                <!-- Middle Attributes -->
+                <div class="attribute-group">
+                    <h3>MIDDLE</h3>
+                    <div class="middle-attributes">
+                        <button type="button" class="attribute-btn" data-attribute="short_shirt" data-category="middle">Short Shirt</button>
+                        <button type="button" class="attribute-btn" data-attribute="long_shirt" data-category="middle">Long Shirt</button>
+                        <button type="button" class="attribute-btn" data-attribute="tank_top" data-category="middle">Tank Top</button>
+                        <button type="button" class="attribute-btn" data-attribute="outerwear" data-category="middle">Outerwear</button>
+                    </div>
+                    
+                    <div class="color-selection">
+                        <label for="middle-color">Color:</label>
+                        <select id="middle-color" name="middle_color" class="color-select" data-category="middle">
+                            <option value="">Select Color</option>
+                            <option value="red">Red</option>
+                            <option value="orange">Orange</option>
+                            <option value="yellow">Yellow</option>
+                            <option value="green">Green</option>
+                            <option value="blue">Blue</option>
+                            <option value="purple">Purple</option>
+                            <option value="black">Black</option>
+                            <option value="white">White</option>
+                        </select>                        
+                    </div>
                 </div>
-            </div>
 
-            <!-- Middle Attributes -->
-            <div class="attribute-group">
-                <h3>MIDDLE</h3>
-                <div class="middle-attributes">
-                    <button>Short Shirt</button>
-                    <button>Long Shirt</button>
-                    <button>Tank Top</button>
-                    <button>Outerwear</button>
+                <!-- Bottom Attributes -->
+                <div class="attribute-group">
+                    <h3>BOTTOM</h3>
+                    <div class="bottom-attributes">
+                        <button type="button" class="attribute-btn" data-attribute="long_pants" data-category="bottom">Long Pants</button>
+                        <button type="button" class="attribute-btn" data-attribute="shorts" data-category="bottom">Shorts</button>
+                        <button type="button" class="attribute-btn" data-attribute="skirt" data-category="bottom">Skirt</button>
+                        <button type="button" class="attribute-btn" data-attribute="dress" data-category="bottom">Dress</button>
+                    </div>
+                    <div class="color-selection">
+                        <label for="bottom-color">Color:</label>
+                        <select id="bottom-color" name="bottom_color" class="color-select" data-category="bottom">
+                            <option value="">Select Color</option>
+                            <option value="black">Black</option>
+                            <option value="blue">Blue</option>
+                            <option value="gray">Gray</option>
+                            <option value="khaki">Khaki</option>
+                            <option value="white">White</option>
+                            <option value="green">Green</option>
+                        </select>
+                        
+                    </div>
                 </div>
-                <div class="color-options">
-                    <button class="color red"></button>
-                    <button class="color blue"></button>
-                    <button class="color yellow"></button>
-                    <button class="color green"></button>
-                    <button class="color mixed"></button>
+            </aside>
+
+            <!-- Time Frame Section -->
+            <section class="time-frame-section">
+                <h2>Time Frame</h2>
+                <div class="time-frame-container">
+                    <!-- Calendar for selecting the date -->
+                    <div class="datetime-select">
+                        <label for="from-date">From:</label>
+                        <input type="date" id="from-date" name="from_date" required>
+                        <input type="time" id="from-time" name="from_time" required>
+                    </div>
+                    <div class="datetime-select">
+                        <label for="to-date">To:</label>
+                        <input type="date" id="to-date" name="to_date" required>
+                        <input type="time" id="to-time" name="to_time" required>
+                    </div>
+                    <!-- Camera Selection -->
+                    <div class="camera-select">
+                        <label for="camera">Camera:</label>
+                        <select id="camera" name="camera" required>
+                            <option value="">Select Camera</option>
+                            <option value="1">Camera #1</option>
+                            <option value="2">Camera #2</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
+            </section>
 
-            <!-- Bottom Attributes -->
-            <div class="attribute-group">
-                <h3>BOTTOM</h3>
-                <div class="bottom-attributes">
-                    <button>Pants</button>
-                    <button>Shorts</button>
-                    <button>Skirt</button>
-                    <button>Dress</button>
+            <!-- Summary Section -->
+            <section class="summary-section">
+                <h2>Summary</h2>
+                <div class="summary-content">
+                    <p id="summary-top">Top: </p>
+                    <p id="summary-middle">Middle: </p>
+                    <p id="summary-bottom">Bottom: </p>
+                    <p id="summary-timeframe">Time Frame: </p>
+                    <p id="summary-camera">Camera: </p>
+                    <button type="reset" class="reset-button">Reset</button>
+                    <button type="submit" class="submit-button">Submit</button>
                 </div>
-                <div class="color-options">
-                    <button class="color black"></button>
-                    <button class="color brown"></button>
-                    <button class="color gray"></button>
-                    <button class="color mixed"></button>
-                </div>
-            </div>
+            </section>
+        </form>
 
-            <!-- Video Feed Selector -->
-            <div class="video-feed">
-                <label for="video-feed-select">Video Feed</label>
-                <select id="video-feed-select">
-                    <option value="camera1">Camera 1</option>
-                    <option value="camera2">Camera 2</option>
-                </select>
-            </div>
-        </aside>
-
-        <!-- Time Frame Section -->
-        <section class="time-frame">
-            <h2>Time Frame</h2>
-            <div class="calendar">
-                <input type="date" value="2024-07-19">
-                <input type="date" value="2024-07-21">
-            </div>
-        </section>
-
-        <!-- Summary Section -->
-        <section class="summary">
-            <h2>Summary</h2>
-            <div class="summary-content">
-                <p>Top: Short Hair, Brown</p>
-                <p>Middle: Short Shirt, Red</p>
-                <p>Bottom: Long Pants, Black</p>
-                <button class="reset-button">Reset</button>
-                <button class="submit-button">Submit</button>
-            </div>
-        </section>
-
-        <!-- Results Section -->
-        <section class="results">
+        <section class="results-section">
             <h2>Results</h2>
-            <div class="result-content">
-                <p>Top: Short Hair, Brown</p>
-                <p>Middle: Short Shirt, Red</p>
-                <p>Bottom: Long Pants, Black</p>
-                <p>Time Detected: July 20, 2024 - 14:30</p>
-                <p>Location: Camera #5 - Main Lobby, Building A</p>
-                <p>Image Hash: bb10c8a4</p>
-                <button>Previous</button>
-                <button>Next</button>
+            <div id="results-content">
+                {% if results %}
+                    <p>Number of results found: {{ results|length }}</p>
+                    {% for result in results %}
+                        <div class="result-content">
+                            <img src="{{ result.photo }}" alt="Result Image" class="result-image">
+                            <div class="result-text">
+                                <p><strong>Top:</strong> {{ result.top_type }}, {{ result.top_color }}</p>
+                                <p><strong>Middle:</strong> {{ result.middle_type }}, {{ result.middle_color }}</p>
+                                <p><strong>Bottom:</strong> {{ result.bottom_type }}, {{ result.bottom_color }}</p>
+                                <p><strong>Time Detected:</strong> {{ result.timestamp }}</p>
+                                <p><strong>Camera:</strong> Camera {{ result.camera }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No results found.</p>
+                {% endif %}
             </div>
         </section>
 
-        <!-- Image Gallery -->
-        <section class="image-gallery">
+        <!-- Image Gallery To be completed-->
+        <section class="image-gallery-section">
             <h2>Image Gallery</h2>
             <div class="image-grid">
                 <div class="image-placeholder">Image 1</div>
-                <div class="image-placeholder">Image 2</div>
-                <div class="image-placeholder">Image 3</div>
-                <!-- Additional images -->
-            </div>
-            <div class="pagination">
-                <button>Previous</button>
-                <span>1 of 50</span>
-                <button>Next</button>
             </div>
         </section>
     </div>
@@ -151,7 +503,199 @@
     <footer>
         <p>2024 FOOTPRINT. Last Updated: July 23, 2024 13:00</p>
     </footer>
+    <!-- Script to update summary dynamically, handle submit, and enforce validation -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Select relevant elements
+            const attributeButtons = document.querySelectorAll('.attribute-btn');
+            const colorSelects = document.querySelectorAll('.color-select');
+            const fromDateInput = document.getElementById('from-date');
+            const fromTimeInput = document.getElementById('from-time');
+            const toDateInput = document.getElementById('to-date');
+            const toTimeInput = document.getElementById('to-time');
+            const cameraSelect = document.getElementById('camera');
 
-    <script src="{% static 'js/dashboard.js' %}"></script>
+            const summaryTop = document.getElementById('summary-top');
+            const summaryMiddle = document.getElementById('summary-middle');
+            const summaryBottom = document.getElementById('summary-bottom');
+            const summaryTimeFrame = document.getElementById('summary-timeframe');
+            const summaryCamera = document.getElementById('summary-camera');
+
+            // Reference to the form
+            const form = document.querySelector('form');
+
+            // Initialize date and time inputs with current date and time
+            function initializeDateTimeInputs() {
+                const now = new Date();
+                const formattedDate = now.toISOString().substr(0, 10);
+                const formattedTime = now.toTimeString().substr(0, 5);
+
+                fromDateInput.value = formattedDate;
+                fromTimeInput.value = formattedTime;
+                toDateInput.value = formattedDate;
+                toTimeInput.value = formattedTime;
+            }
+            initializeDateTimeInputs();
+
+            // Object to store current selections
+            let selections = {
+                top: { attribute: '', color: '' },
+                middle: { attribute: '', color: '' },
+                bottom: { attribute: '', color: '' },
+                timeframe: '',
+                camera: ''
+            };
+
+            function updateSummary(category) {
+                const attribute = selections[category].attribute;
+                const color = selections[category].color;
+                const summaryElement = document.getElementById(`summary-${category}`);
+                let summaryText = category.charAt(0).toUpperCase() + category.slice(1) + ': ';
+
+                if (attribute && color) {
+                    summaryText += `${attribute}, ${color}`;
+                } else if (attribute) {
+                    summaryText += `${attribute}`;
+                } else if (color) {
+                    summaryText += `Color: ${color}`;
+                } else {
+                    summaryText += '';
+                }
+
+                summaryElement.textContent = summaryText;
+
+                // Set the hidden input value for attribute
+                document.getElementById(`${category}-attribute-input`).value = attribute || '';
+
+                // Set the hidden input value for color (ensure it's in lowercase)
+                document.getElementById(`${category}-color-input`).value = color.toLowerCase() || '';
+            }
+
+
+            attributeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const category = this.getAttribute('data-category');
+                    const attribute = this.getAttribute('data-attribute');
+                    selections[category].attribute = attribute;
+
+                    // Remove 'selected' class from other buttons in the same category
+                    document.querySelectorAll(`.attribute-btn[data-category="${category}"]`).forEach(btn => {
+                        btn.classList.remove('selected');
+                    });
+                    // Add 'selected' class to the clicked button
+                    this.classList.add('selected');
+
+                    updateSummary(category);
+                });
+            });
+
+            // Add event listeners to color selects
+            colorSelects.forEach(select => {
+                select.addEventListener('change', function() {
+                    const category = this.getAttribute('data-category');
+                    const color = this.value;
+                    selections[category].color = color;
+                    updateSummary(category);
+                });
+            });
+
+            // Update time frame and camera in the summary
+            function updateTimeFrameAndCamera() {
+                const fromDate = fromDateInput.value;
+                const fromTime = fromTimeInput.value;
+                const toDate = toDateInput.value;
+                const toTime = toTimeInput.value;
+                const camera = cameraSelect.value;
+
+                selections.timeframe = `From ${fromDate} ${fromTime} to ${toDate} ${toTime}`;
+                selections.camera = camera;
+
+                summaryTimeFrame.textContent = `Time Frame: ${selections.timeframe}`;
+                summaryCamera.textContent = `Camera: ${selections.camera}`;
+            }
+
+            // Add event listeners to time and camera inputs
+            [fromDateInput, fromTimeInput, toDateInput, toTimeInput, cameraSelect].forEach(element => {
+                element.addEventListener('change', updateTimeFrameAndCamera);
+            });
+
+            // Reset the summary content
+            document.querySelector('.reset-button').addEventListener('click', () => {
+                selections = {
+                    top: { attribute: '', color: '' },
+                    middle: { attribute: '', color: '' },
+                    bottom: { attribute: '', color: '' },
+                    timeframe: '',
+                    camera: ''
+                };
+
+                // Reset summary
+                summaryTop.textContent = 'Top: ';
+                summaryMiddle.textContent = 'Middle: ';
+                summaryBottom.textContent = 'Bottom: ';
+                summaryTimeFrame.textContent = 'Time Frame: ';
+                summaryCamera.textContent = 'Camera: ';
+
+                // Reset color selects
+                colorSelects.forEach(select => {
+                    select.value = '';
+                });
+
+                // Reset date and time inputs
+                initializeDateTimeInputs();
+
+                // Reset camera select
+                cameraSelect.value = '';
+
+                // Deselect attribute buttons
+                attributeButtons.forEach(button => {
+                    button.classList.remove('selected');
+                });
+            });
+
+            // Form submission with validation
+            form.addEventListener('submit', function(event) {
+                // Prevent default form submission
+                event.preventDefault();
+
+                // Validate required fields
+                let valid = true;
+                let errorMessage = '';
+
+                // Check if attributes and colors are selected
+                const categories = ['top', 'middle', 'bottom'];
+                categories.forEach(category => {
+                    if (!selections[category].attribute) {
+                        valid = false;
+                        errorMessage += `Please select a ${category} attribute.\n`;
+                    }
+                    if (!selections[category].color) {
+                        valid = false;
+                        errorMessage += `Please select a ${category} color.\n`;
+                    }
+                });
+
+                // Check if date and time inputs are filled
+                if (!fromDateInput.value || !fromTimeInput.value || !toDateInput.value || !toTimeInput.value) {
+                    valid = false;
+                    errorMessage += 'Please fill out the time frame completely.\n';
+                }
+
+                // Check if camera is selected
+                if (!cameraSelect.value) {
+                    valid = false;
+                    errorMessage += 'Please select a camera.\n';
+                }
+
+                if (valid) {
+                    // If valid, submit the form
+                    form.submit();
+                } else {
+                    // Display error message
+                    alert(errorMessage);
+                }
+            });
+        });
+    </script>
 </body>
 </html>
