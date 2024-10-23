@@ -1,189 +1,208 @@
-/* =========================================
-   Genral Login Page Styles
-   These styles apply to the overall page, setting the default font, backgroud color, text color, margin, and padding
-========================================= */
-.login-page {
-  font-family: 'Courier New', Courier, monospace; /* Font updated to match other pages */
-  background-color: #ffffff; /* Match the backgroud color of other pages */
-  color: #000000;
-  margin: 0;
-  padding: 0;
-}
+/* ================================
+   General Login Page Styles
+=============================== */
 
-/* =========================================
-   Header Styles
-   Controls the layout and appearence of the header
-========================================= */
-.login-header {
-  text-align: center;
-  width: 100%; /* Added width to match signup page */
-  padding: 20px 0;
-  border-bottom: 2px solid #000; /* Border to match other pages */
-}
+/* Reset box-sizing for consistency */
+*, *::before, *::after {
+    box-sizing: border-box;
+  }
+  
+  html, body {
+    height: 100%;
+  }
+  
+  .login-page {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #d3d3d3; /* Slightly darker grey background */
+    color: #000000;
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
 
-.login-header h1 {
-  color: #000;
-  font-size: 2em;
-  font-weight: bold;
-}
-
-/* =========================================
-   Main Content Styles
-   Controls the layout and styling of the main content area
-========================================= */
-.login-main {
-  width: 100%; /* Match signup page */
-  max-width: 800px; /* Increased max-width to match signup page */
-  margin: 20px auto;
-  padding: 0 20px; /* Adds padding around the content */
-}
-
-.login-form {
-  background-color: #fff;
-  padding: 30px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.login-form h2 {
-  color: #000; /* Updated color to match signup page */
-  font-size: 1.2em; /* Adjusted font size to match signup page */
-  margin-bottom: 20px;
-  font-weight: bold; /* Added font-weight to match signup page */
-}
-
-/* =========================================
-   Form Input Styles
-   Styles for text, email, and password input feilds
-========================================= */
-.login-form label {
-  font-size: 1em;
-  margin-bottom: 5px;
-  color: #333;
-}
-
-.login-form input[type="email"],
-.login-form input[type="password"] {
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1em;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.login-form input[type="email"]:focus,
-.login-form input[type="password"]:focus {
-  border-color: #000; /* Black focus border to match overall color scheme */
-  outline: none;
-}
-
-/* =========================================
-   Button Styles
-   Styles for the submit button
-========================================= */
-.login-form button[type="submit"] {
-  background-color: #000; /* Black backgroud to match other pages */
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1em;
-}
-
-.login-form button[type="submit"]:hover {
-  background-color: #333; /* Slightly lighter on hover */
-}
-
-/* =========================================
-   Error Message Styles
-   Controls the apperance of error messages
-========================================= */
-.error-messages {
-  list-style-type: none;
-  padding: 0;
-  margin-top: 15px;
-  color: red;
-  font-size: 0.9em;
-}
-
-.error-messages li {
-  margin-bottom: 5px;
-}
-
-/* =========================================
-   Redirect Section Styles
-   Styles for the redirect message
-========================================= */
-.redirect-section p {
-  font-size: 1em;
-  margin: 10px 0;
-}
-
-/* =========================================
-   Link Styles
-   General link styling for links across the page
-========================================= */
-a {
-  color: #007BFF;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-/* =========================================
-   Footer Styles
-   Controls the layout and apperance of the footer, including border, padding, and text alignment
-========================================= */
-.login-footer {
-  width: 100%;
-  text-align: center;
-  color: #666;
-  padding: 10px 0;
-  border-top: 2px solid #000; /* Added border to match signup page */
-}
-
-.login-footer p {
-  margin: 0;
-  font-size: 0.9em;
-}
-
-
-
-
-.logo-and-title {
-  display: flex;
-  align-items: center;
-}
-
-/* Styles for the clickable logo in the header */
-.logo-link {
-  display: inline-block;
-  margin-right: 20px;
-}
-
-/* Styles for the logo image, including hover effects */
-.logo-image {
-  max-width: 100px;
-  height: auto;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: opacity 0.3s;
-}
-
-.logo-image:hover {
-  opacity: 0.8;
-}
-
-/* Styling for the site tittle, setting font size and weight */
-.site-title {
-  font-size: 1.8em;
-  font-weight: 700;  
-  color: #000;
-  margin: 0;
-}
+  /* ================================
+     Main Content Styles
+  =============================== */
+  
+  main {
+    padding-top: 190px; 
+    padding-left: 20px; 
+    padding-right: 20px; 
+    padding-bottom: 60px;
+    flex: 1;
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+  }
+  
+  .login-form {
+    background-color: #fff;
+    padding: 20px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 100%;
+    max-width: 400px; 
+    margin-bottom: 20px;
+  }
+  
+  .login-form h2 {
+    color: #000;
+    font-size: 1.6em;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  
+  .login-form form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .login-form label {
+    font-size: 1.1em;
+    margin-bottom: 5px;
+    color: #333;
+    font-weight: bold;
+  }
+  
+  /* ================================
+     Input Styles
+  =============================== */
+  
+  .login-form input[type="email"],
+  .login-form input[type="password"] {
+    padding: 10px; 
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .login-form input[type="email"]:focus,
+  .login-form input[type="password"]:focus {
+    border-color: #000;
+    outline: none;
+  }
+  
+  /* ================================
+     Button Styles
+  =============================== */
+  
+  .login-form button[type="submit"] {
+    background-color: #3fb2d8;
+    color: #000;
+    padding: 12px;
+    border: 2px solid #000;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    transition: transform 0.3s, background-color 0.3s;
+  }
+  
+  .login-form button[type="submit"]:hover {
+    background-color: #6cc8ec;
+    transform: scale(1.1);
+  }
+  
+  /* ================================
+     Redirect Section Styles
+  =============================== */
+  
+  .redirect-section {
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .redirect-section p {
+    font-size: 1.1em;
+    margin: 10px 0;
+  }
+  
+  /* ================================
+     Error Messages Styles
+  =============================== */
+  
+  .error-messages {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 10px;
+    color: #ff0000; 
+  }
+  
+  .error-messages li {
+    margin-bottom: 5px;
+  }
+  
+  /* ================================
+     Footer Styles
+  =============================== */
+  
+  .login-footer {
+    width: 100%;
+    text-align: center;
+    color: #666;
+    padding: 10px 0;
+    background-color: #ffffff; 
+    border-top: 2px solid #000;
+    margin-top: auto;
+  }
+  
+  .login-footer p {
+    margin: 0;
+    font-size: 1em;
+  }
+  
+  /* ================================
+     Responsive Styles
+  =============================== */
+  
+  @media (max-width: 768px) {
+    .login-main {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+  
+    .login-form {
+      padding: 15px;
+      max-width: 300px; 
+    }
+  
+    .site-title {
+      font-size: 1.3em;
+    }
+  
+    .nav-link {
+      font-size: 1em;
+      margin-left: 15px;
+    }
+  
+    .login-form h2 {
+      font-size: 1.4em;
+    }
+  
+    .login-form input[type="email"],
+    .login-form input[type="password"] {
+      padding: 8px;
+      font-size: 0.9em;
+    }
+  
+    .login-form button[type="submit"] {
+      padding: 10px;
+      font-size: 1em;
+    }
+  
+    .redirect-section p {
+      font-size: 1em;
+    }
+  
+    .login-footer p {
+      font-size: 0.9em;
+    }
+  }
+  

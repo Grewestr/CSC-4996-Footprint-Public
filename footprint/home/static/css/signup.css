@@ -1,41 +1,31 @@
-/* =========================================
-   Genral Signup Page Styles
-   These styles apply to the overall page, setting the default font, backgroud color, text color, margin, and padding
-========================================= */
+/* ================================
+   General Signup Page Styles
+================================ */
+html, body {
+  height: 100%;
+}
+
 .signup-page {
-  font-family: 'Courier New', Courier, monospace; /* Font updated to match other pages */
-  background-color: #ffffff; /* Match the backgroud color of other pages */
+  font-family: 'Courier New', Courier, monospace;
+  background-color: #e0e0e0; 
   color: #000000;
   margin: 0;
   padding: 0;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-/* =========================================
-   Header Styles
-   Controls the layout and appearence of the header
-========================================= */
-.signup-page header {
-  text-align: center;
-  width: 100%;
-  padding: 20px 0;
-  border-bottom: 2px solid #000; /* Border to match other pages */
-}
-
-.signup-page h1 {
-  color: #000;
-  font-size: 2em;
-  font-weight: bold;
-}
-
-/* =========================================
+/* ================================
    Main Content Styles
-   Controls the layout and styling of the main content area
-========================================= */
-.signup-page main {
+================================ */
+main {
   width: 100%;
-  max-width: 800px;
-  margin: 20px auto;
-  padding: 0 20px; 
+  max-width: 1200px; 
+  margin: 120px auto 20px; 
+  padding: 0 20px;
+  flex: 1;
+  padding-top: 190px;
 }
 
 .signup-form-section {
@@ -48,7 +38,7 @@
 
 .signup-page h2 {
   color: #000;
-  font-size: 1.2em;
+  font-size: 1.6em;
   margin-bottom: 20px;
   font-weight: bold;
 }
@@ -59,19 +49,19 @@
 }
 
 .signup-page label {
-  font-size: 1em;
+  font-size: 1.1em;
   margin-bottom: 5px;
   color: #333;
+  font-weight: bold;
 }
 
-/* =========================================
+/* ================================
    Input Styles
-   Styles for text, email, and password input feilds
-========================================= */
+================================ */
 .signup-page input[type="text"], 
 .signup-page input[type="email"], 
 .signup-page input[type="password"] {
-  padding: 10px;
+  padding: 12px;
   margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -83,34 +73,36 @@
 .signup-page input[type="text"]:focus, 
 .signup-page input[type="email"]:focus, 
 .signup-page input[type="password"]:focus {
-  border-color: #000; /* Black focus border to match overall color scheme */
+  border-color: #000;
   outline: none;
 }
 
-/* =========================================
+/* ================================
    Button Styles
-   Styles for the submit button
-========================================= */
+================================ */
 .signup-page button[type="submit"] {
-  background-color: #000; /* Black backgroud to match other pages */
-  color: white;
-  padding: 10px;
-  border: none;
+  background-color: #3fb2d8;
+  color: #000;
+  padding: 12px;
+  border: 2px solid #000;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 1em;
+  font-size: 1.1em;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  transition: transform 0.3s, background-color 0.3s;
 }
 
 .signup-page button[type="submit"]:hover {
-  background-color: #333; /* Slightly lighter on hover */
+  background-color: #6cc8ec;
+  transform: scale(1.1);
 }
 
-/* =========================================
+/* ================================
    Redirect Section
-   Styles for the redirect message and link
-========================================= */
+================================ */
 .redirect-section p {
-  font-size: 1em;
+  font-size: 1.1em;
   margin: 10px 0;
 }
 
@@ -124,52 +116,22 @@ a:hover {
   text-decoration: underline;
 }
 
-/* =========================================
+/* ================================
    Footer Styles
-   Controls the layout and apperance of the footer, including border, padding, and text alignment
-========================================= */
+================================ */
 .signup-page footer {
   width: 100%;
   text-align: center;
   color: #666;
   padding: 10px 0;
-  border-top: 2px solid #000; /* Add top border to match other pages */
+  background-color: #fff;
+  border-top: 2px solid #000;
+  margin-top: auto;
+  position: fixed; 
+  bottom: 0;
 }
 
 .signup-page footer p {
   margin: 0;
-  font-size: 0.9em;
-}
-
-
-.logo-and-title {
-  display: flex;
-  align-items: center;
-}
-
-/* Styles for the clickable logo in the header */
-.logo-link {
-  display: inline-block;
-  margin-right: 20px;
-}
-
-/* Styles for the logo image, including hover effects */
-.logo-image {
-  max-width: 100px;
-  height: auto;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: opacity 0.3s;
-}
-
-.logo-image:hover {
-  opacity: 0.8;
-}
-
-/* Styling for the site tittle, setting font size and weight */
-.site-title {
-  font-size: 1.8em;
-  font-weight: 700;  
-  color: #000;
-  margin: 0;
+  font-size: 1em;
 }

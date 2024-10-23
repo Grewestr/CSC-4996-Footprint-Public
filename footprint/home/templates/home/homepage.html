@@ -7,26 +7,22 @@
     <!-- Load static files for CSS and JavaScript -->
     {% load static %}  <!-- Ensure static tag is loaded -->
     <link rel="stylesheet" href="{% static 'css/homepage.css' %}">
+    <link rel="stylesheet" href="{% static 'css/header.css' %}">
     <script src="{% static 'js/script.js' %}" defer></script>
 </head>
 <body>
-
-    <!-- Header Section -->
-    <header>
+    <!-- Header -->
+    <header class="header">
         <div class="container">
             <div class="logo-and-title">
-                <!-- Logo linked to homepage -->
                 <a href="{% url 'homepage' %}" class="logo-link">
-                    <img src="{% static 'images/logo.png' %}" alt="Footprint Logo" class="logo-image">
+                    <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-image">
                 </a>
-                <!-- Site Title -->
                 <h1 class="site-title">Footprint</h1>
             </div>
-            <!-- Navigation Links -->
-            <nav>
+            <nav class="nav">
                 <a href="{% url 'login' %}" class="nav-link">Login</a>
                 <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
-
             </nav>
         </div>
     </header>
@@ -88,7 +84,7 @@
     <!-- Footer Section -->
     <footer>
         <div class="container">
-            <p>2024 FOOTPRINT.</p>
+            <p>2024 FOOTPRINT</p>
         </div>
     </footer>
 </body>

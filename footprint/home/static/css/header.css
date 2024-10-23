@@ -1,0 +1,147 @@
+/* ================================
+   Header Styles (header.css)
+=============================== */
+
+/* Reset box-sizing for consistency */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* Root Variables for Consistency */
+:root {
+    --primary-color: #000000;
+    --secondary-color: #ff0000;
+    --background-color: #fff;
+    --header-padding-vertical: 10px;
+    --header-padding-horizontal: 20px;
+    --header-height: 140px;
+    --nav-gap: 120px; /* Doubled gap between logo/title and nav */
+    --nav-link-gap: 20px; /* Space between nav links */
+    --logo-max-height: 150px;
+    --logo-max-height-mobile: 80px;
+    --site-title-font-size: 1.85em;
+    --nav-link-font-size: 1.52em;
+    --nav-link-font-size-mobile: 1em;
+}
+
+/* Header Container */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--background-color);
+    border-bottom: 2px solid #000;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 0; /* Removed padding here; applied to .container instead */
+}
+
+/* Flex Container for Header Content */
+.header .container {
+    display: flex; /* Flex container for alignment */
+    align-items: center; /* Vertically centers flex items */
+    justify-content: center; /* Centers items horizontally */
+    gap: var(--nav-gap); /* Uses the updated CSS variable for spacing */
+    padding: var(--header-padding-vertical) var(--header-padding-horizontal); /* Adjusted padding */
+    min-height: var(--header-height); /* Maintained to accommodate larger logo */
+}
+
+/* Logo and Title Section */
+.logo-and-title {
+    display: flex;
+    align-items: center; /* Vertically centers logo and title */
+}
+
+/* Logo Link */
+.logo-link {
+    display: inline-block;
+    /* Removed margin-right: 20px; */
+}
+
+/* Logo Image */
+.logo-image {
+    display: block; /* Prevents extra space below the image */
+    max-height: var(--logo-max-height); /* From 150px */
+    width: auto;
+    border-radius: 50%; /* Maintains circular shape if the logo is square */
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.logo-image:hover {
+    opacity: 0.8;
+}
+
+/* Site Title */
+.site-title {
+    font-size: var(--site-title-font-size); /* From 1.5em */
+    font-weight: 700;
+    color: var(--primary-color);
+    margin: 0;
+    line-height: 1; /* Prevents extra vertical spacing */
+}
+
+/* Navigation Bar */
+.nav {
+    display: flex;
+    align-items: center; /* Vertically centers nav links */
+    gap: var(--nav-link-gap); /* Adds space between nav links */
+    /* Removed justify-content: flex-end; */
+}
+
+/* Navigation Links */
+.nav-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: var(--nav-link-font-size); /* From 1.2em */
+    /* Removed margin-left: 20px; */
+    transition: color 0.3s;
+}
+
+.nav-link:hover {
+    color: var(--secondary-color);
+}
+
+/* Body Padding to Prevent Content Overlap */
+body {
+    margin-top: var(--header-height); /* From 140px */
+}
+
+@media (max-width: 768px) {
+    .header .container {
+        flex-direction: column;
+        align-items: center; /* Centers items in column layout */
+        gap: 40px; /* Reduced gap from 120px to 40px for smaller screens */
+        padding: 5px 15px; /* Further reduced padding */
+        min-height: auto; /* Allows header to adjust height based on content */
+    }
+
+    .logo-and-title {
+        /* No margin-bottom needed since gap handles spacing */
+    }
+
+    .logo-image {
+        max-height: var(--logo-max-height-mobile); /* From 80px */
+    }
+
+    .site-title {
+        font-size: 1.2em; /* Adjust font size for smaller screens */
+    }
+
+    .nav {
+        width: 100%;
+        justify-content: center; /* Centers nav links in column layout */
+        gap: 15px; /* Reduced nav-link-gap for smaller screens */
+    }
+
+    .nav-link {
+        font-size: var(--nav-link-font-size-mobile); /* From 1em */
+    }
+
+    body {
+        margin-top: 130px; /* Adjust if header height changes */
+    }
+}

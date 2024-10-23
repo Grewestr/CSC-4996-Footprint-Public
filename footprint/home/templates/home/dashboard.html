@@ -6,331 +6,22 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        /* ================================
-           Dashboard Page Styles
-           This will not be here in  the future, just for temp css for protype 2
-        ================================ */
+    <link rel="stylesheet" href="{% static 'css/header.css' %}">
 
-        /* General Styles */
-        body {
-            font-family: 'Courier New', Courier, monospace;
-            background-color: #ffffff;
-            color: #000000;
-            margin: 0;
-        }
-
-        .container {
-            width: 90%;
-            margin: 0 auto;
-        }
-
-        /* Header Styles */
-        header {
-            position: sticky;
-            top: 0;
-            background-color: #fff;
-            border-bottom: 2px solid #000;
-            padding: 20px 0;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo-and-title {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo-link {
-            display: inline-block;
-            margin-right: 20px;
-        }
-
-        .logo-image {
-            max-width: 100px;
-            width: 100%;
-            height: auto;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: opacity 0.3s;
-        }
-
-        .logo-image:hover {
-            opacity: 0.8;
-        }
-
-        .site-title {
-            font-size: 1.8em;
-            font-weight: 700;
-            color: #000;
-            margin: 0;
-        }
-
-        /* Navigation Styles */
-        nav {
-            display: flex;
-            align-items: center;
-        }
-
-        .nav-link {
-            color: #000;
-            text-decoration: none;
-            font-weight: bold;
-            margin-left: 20px;
-            position: relative;
-            transition: color 0.3s;
-        }
-
-        .nav-link:first-child {
-            margin-left: 0;
-        }
-
-        .nav-link:hover {
-            color: #ff0000;
-        }
-
-        /* Dashboard Layout */
-        .dashboard-layout {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            grid-template-rows: auto auto auto auto;
-            gap: 20px;
-            padding: 40px 0;
-            background-color: #ffffff;
-        }
-
-        /* Style attribute buttons to start as grey */
-        .attribute-btn {
-            background-color: grey;
-            color: white;
-            padding: 10px;
-            border: none;
-            margin: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            border-radius: 5px;
-        }
-
-        /* Change background to black when selected */
-        .attribute-btn.selected {
-            background-color: black;
-            color: white;
-        }
-
-        /* Adjusted grid areas for the layout */
-        .attributes-section,
-        .summary-section,
-        .time-frame-section,
-        .results-section,
-        .image-gallery-section {
-            background-color: #ffffff;
-            border: 2px solid #000;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .attributes-section {
-            grid-column: 1 / 2;
-        }
-
-        .summary-section {
-            grid-column: 1 / 2;
-        }
-
-        .time-frame-section {
-            grid-column: 1 / 2;
-        }
-
-        .results-section {
-            grid-column: 2 / 3;
-            grid-row: 1 / 4;
-        }
-
-        .image-gallery-section {
-            grid-column: 2 / 3;
-            grid-row: 4 / 5;
-        }
-
-        /* Section titles */
-        h2 {
-            font-size: 1.8rem;
-            margin-bottom: 15px;
-            text-align: center;
-            font-weight: 700;
-            color: #000;
-        }
-
-        /* Button styling */
-        .submit-button,
-        .reset-button {
-            background-color: #000;
-            color: white;
-            padding: 10px 20px;
-            border: 2px solid #000;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            font-weight: bold;
-        }
-
-        .submit-button:hover,
-        .reset-button:hover {
-            background-color: #ff0000;
-        }
-
-        .color-selection label {
-            font-weight: bold;
-        }
-
-        /* Adjusted styles for the Results Section */
-        .result-content {
-            display: flex;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-            padding: 15px;
-            border-bottom: 1px solid #000;
-        }
-
-        .result-image {
-            max-width: 100px;
-            width: 100%;
-            height: auto;
-            margin-right: 20px;
-            border-radius: 5px;
-            border: 2px solid #000;
-        }
-
-        .result-text {
-            flex: 1;
-        }
-
-        .result-text p {
-            margin: 5px 0;
-            font-weight: 500;
-        }
-
-        /* Image grid */
-        .image-placeholder {
-            background-color: #e0e0e0;
-            padding: 20px;
-            margin: 10px;
-            border-radius: 5px;
-            text-align: center;
-            width: 100%;
-            height: 200px;
-        }
-
-        .image-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-
-        /* Section Heading Styles */
-        h3 {
-            font-size: 1.5em;
-            margin: 10px 0;
-            font-weight: 700;
-            position: relative;
-        }
-
-        /* Time Frame Section styling */
-        .time-frame-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .datetime-select {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .datetime-select label {
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .camera-select {
-            margin-top: 10px;
-        }
-
-        /* Summary content styling */
-        .summary-content p {
-            margin: 5px 0;
-            font-weight: bold;
-        }
-
-        /* Style for selected attribute buttons */
-        .attribute-btn.selected {
-            background-color: #000;
-            color: white;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 800px) {
-            .dashboard-layout {
-                grid-template-columns: 1fr;
-            }
-            .attributes-section,
-            .summary-section,
-            .time-frame-section,
-            .results-section,
-            .image-gallery-section {
-                grid-column: 1 / -1;
-                grid-row: auto;
-            }
-
-            header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .nav-link {
-                margin-left: 0;
-                margin-top: 10px;
-            }
-
-            .result-content {
-                flex-direction: column;
-            }
-
-            .result-image {
-                margin-right: 0;
-                margin-bottom: 10px;
-            }
-
-            .image-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-    </style>
 </head>
 <body>
-    <!-- Header Section -->
-    <header>
+    <!-- Header -->
+    <header class="header">
         <div class="container">
             <div class="logo-and-title">
-                <!-- Logo linked to homepage -->
                 <a href="{% url 'homepage' %}" class="logo-link">
-                    <img src="{% static 'images/logo.png' %}" alt="Footprint Logo" class="logo-image">
+                    <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-image">
                 </a>
-                <!-- Site Title -->
-                <h1 class="site-title">Dashboard</h1>
+                <h1 class="site-title">Footprint</h1>
             </div>
-            <nav>
-
+            <nav class="nav">
                 <a href="{% url 'profile' %}" class="nav-link">Profile</a>
                 <a href="{% url 'logout' %}" class="nav-link">Logout</a>
-                
             </nav>
         </div>
     </header>
@@ -491,17 +182,18 @@
             </div>
         </section>
 
-        <!-- Image Gallery To be completed-->
+        <!-- Image Gallery To be completed-
         <section class="image-gallery-section">
             <h2>Image Gallery</h2>
             <div class="image-grid">
                 <div class="image-placeholder">Image 1</div>
             </div>
         </section>
+    -->
     </div>
 
     <footer>
-        <p>2024 FOOTPRINT. Last Updated: July 23, 2024 13:00</p>
+        <p>2024 FOOTPRINT</p>
     </footer>
     <!-- Script to update summary dynamically, handle submit, and enforce validation -->
     <script>

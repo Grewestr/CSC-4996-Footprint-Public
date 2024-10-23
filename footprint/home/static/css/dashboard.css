@@ -1,216 +1,254 @@
-/* =========================================
-   Genral Styles
-   These styles apply to the overall page, setting the default font, backgroud color, text color, margin, and padding
-========================================= */
+/* ================================
+   Dashboard Page Styles
+================================ */
 
+/* General Styles */
 body {
     font-family: 'Courier New', Courier, monospace;
-    background-color: #ffffff;
-    color: #000000;
-    margin: 0;
-    padding: 20px;
-}
-
-/* =========================================
-   Header Styles
-   Controls the layout and appearence of the header, including logo and tittle
-========================================= */
-
-header {
-    position: sticky;
-    top: 0;
-    background-color: #fff;
-    border-bottom: 2px solid #000;
-    padding: 20px 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.logo-and-title {
-    display: flex;
-    align-items: center;
-}
-
-.logo-link {
-    display: inline-block;
-    margin-right: 20px;
-}
-
-.logo-image {
-    max-width: 100px;
-    height: auto;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: opacity 0.3s;
-}
-
-.logo-image:hover {
-    opacity: 0.8;
-}
-
-.site-title {
-    font-size: 1.8em;
-    font-weight: 700;  
+    background-color: #e0e0e0; 
     color: #000;
     margin: 0;
-}
-
-/* =========================================
-   Navigatoin Styles
-   Controls the layout and appearence of navigation links
-========================================= */
-
-nav {
+    min-height: 100vh;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    
 }
 
-.nav-link {
-    color: #000;
-    text-decoration: none;
-    font-weight: bold;
-    margin-left: 20px;
-    position: relative;
-    transition: color 0.3s;
+.container {
+    width: 90%;
+    margin: 0 auto;
 }
 
-.nav-link:first-child {
-    margin-left: 0;
-}
 
-.nav-link:hover {
-    color: #ff0000;
-}
-
-/* =========================================
-   Main Layout Styles
-   Controls the layout of the dashboard page, including menu and content areas
-========================================= */
-
+/* Dashboard Layout */
 .dashboard-layout {
     display: grid;
-    grid-template-columns: 1fr 3fr;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: auto auto auto auto;
     gap: 20px;
-    padding: 20px;
+    padding: 40px 0;
+    flex-grow: 1;
 }
 
-/* =========================================
-   Menu Styles
-   Styles for the side menu and dropdown
-========================================= */
+/* Style attribute buttons to start as grey */
+.attribute-btn {
+    background-color: grey;
+    color: white;
+    padding: 10px;
+    border: none;
+    margin: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 5px;
+}
 
-.menu {
+/* Change background to black when selected */
+.attribute-btn.selected {
+    background-color: black;
+    color: white;
+}
+
+/* Adjusted grid areas for the layout */
+.attributes-section,
+.summary-section,
+.time-frame-section,
+.results-section,
+.image-gallery-section {
     background-color: #fff;
+    border: 2px solid #000;
+    border-radius: 10px;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.menu ul {
-    list-style: none;
-    padding: 0;
+.attributes-section {
+    grid-column: 1 / 2;
 }
 
-.menu ul li {
-    margin-bottom: 10px;
+.summary-section {
+    grid-column: 1 / 2;
 }
 
-.dropdown-btn {
-    background-color: #000000; /* Change to black */
+.time-frame-section {
+    grid-column: 1 / 2;
+}
+
+.results-section {
+    grid-column: 2 / 3;
+    grid-row: 1 / 4;
+    max-height: 968px;
+    overflow-y: auto;
+}
+
+.image-gallery-section {
+    grid-column: 2 / 3;
+    grid-row: 4 / 5;
+}
+
+/* Section titles */
+h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: 700;
+    color: #000;
+}
+
+/* Button styling */
+.submit-button,
+.reset-button {
+    background-color: #000;
     color: white;
     padding: 10px 20px;
-    border: none;
+    border: 2px solid #000;
+    border-radius: 5px;
     cursor: pointer;
-    width: 100%;
-    text-align: left;
-    border-radius: 5px;
-    font-size: 1em;
-    outline: none;
-}
-
-.dropdown-content {
-    display: none;
-    list-style: none;
-    padding-left: 15px;
-    margin-top: 10px;
-    background-color: #f4f4f4;
-    border-radius: 5px;
-}
-
-.dropdown-content li {
-    margin-bottom: 8px;
-}
-
-.dropdown-content li a {
+    transition: background-color 0.3s;
     font-weight: bold;
-    color: #000; /* Make link color black */
 }
 
-.dropdown-content li a:hover {
-    text-decoration: underline;
+.submit-button:hover,
+.reset-button:hover {
+    background-color: #ff0000;
 }
 
-/* Show dropdown content when active */
-.active + .dropdown-content {
-    display: block;
+.color-selection label {
+    font-weight: bold;
 }
 
-/* =========================================
-   Content Styles
-   Controls the layout and styling of content areas such as video and table
-========================================= */
-
-.content {
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-    gap: 20px;
-}
-
-.video-area, .table-area {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.video-content, .table-content {
-    background-color: #f9f9f9;
+/* Adjusted styles for the Results Section */
+.result-content {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
     padding: 15px;
+    border-bottom: 1px solid #000;
+}
+
+.result-image {
+    max-width: 300px; 
+    width: 100%;
+    height: auto;
+    margin-right: 20px;
     border-radius: 5px;
+    border: 2px solid #000;
 }
 
-h2.main-heading {
-    font-size: 2em;
-    margin-bottom: 20px;
-    font-weight: 700;  
+.result-text {
+    flex: 1;
 }
 
-/* =========================================
-   Footer Styles
-   Controls the layout and apperance of the footer, including text alignment and margins
-========================================= */
+.result-text p {
+    margin: 5px 0;
+    font-weight: 500;
+}
 
-footer {
-    text-align: center;
+/* Image grid */
+.image-placeholder {
+    background-color: #e0e0e0;
     padding: 20px;
-    background-color: #fff;
+    margin: 10px;
+    border-radius: 5px;
+    text-align: center;
+    width: 100%;
+    height: 200px;
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+/* Section Heading Styles */
+h3 {
+    font-size: 1.5em;
+    margin: 10px 0;
+    font-weight: 700;
+    position: relative;
+}
+
+/* Time Frame Section styling */
+.time-frame-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.datetime-select {
+    display: flex;
+    flex-direction: column;
+}
+
+.datetime-select label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.camera-select {
+    margin-top: 10px;
+}
+
+/* Summary content styling */
+.summary-content p {
+    margin: 5px 0;
+    font-weight: bold;
+}
+
+/* Style for selected attribute buttons */
+.attribute-btn.selected {
+    background-color: #000;
+    color: white;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 800px) {
+    .dashboard-layout {
+        grid-template-columns: 1fr;
+    }
+    .attributes-section,
+    .summary-section,
+    .time-frame-section,
+    .results-section,
+    .image-gallery-section {
+        grid-column: 1 / -1;
+        grid-row: auto;
+    }
+
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-link {
+        margin-left: 0;
+        margin-top: 10px;
+    }
+
+    .result-content {
+        flex-direction: column;
+    }
+
+    .result-image {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .image-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Footer Styles */
+footer {
     border-top: 2px solid #000;
-    margin-top: 40px;
-    font-size: 0.9em;
-    color: #666;
-}
-
-/* =========================================
-   Link Styles
-   General link styling for links accross the page
-========================================= */
-
-a {
-    color: inherit;
-    text-decoration: none;
-}
-
-a:hover {
-    color: #ff0000;
+    padding: 20px 0;
+    text-align: center;
+    margin-top: auto;
+    background-color: #fff;
 }

@@ -7,103 +7,93 @@
     {% load static %}
     <!-- External Stylesheets -->
     <link rel="stylesheet" href="{% static 'css/passw_validation.css' %}">
+    <link rel="stylesheet" href="{% static 'css/header.css' %}">
     <link rel="stylesheet" href="{% static 'css/signup.css' %}">
     <link rel="stylesheet" href="{% static 'css/name-validation.css' %}">
-    
-    <!-- Container and Header-->
-
-    <div class="container">
-        <div class="logo-and-title">
-            <!-- Logo linked to homepage -->
-            <a href="{% url 'homepage' %}" class="logo-link">
-                <img src="{% static 'images/logo.png' %}" alt="Footprint Logo" class="logo-image">
-            </a>
-            <!-- Site Title -->
-            <h1 class="site-title">Footprint</h1>
-        </div>
-        <!-- Navigation Links -->
-        <nav>
-            <a href="{% url 'login' %}" class="nav-link">Login</a>
-            <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
-            <a href="{% url 'homepage' %}" class="nav-link">Homepage</a>
-            <a href="{% url 'logout' %}" class="nav-link">Logout</a>
-        </nav>
-    </div>
 </head>
 <body class="signup-page">
-    
-    
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo-and-title">
+                <a href="{% url 'homepage' %}" class="logo-link">
+                    <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-image">
+                </a>
+                <h1 class="site-title">Footprint</h1>
+            </div>
+            <nav class="nav">
+                <a href="{% url 'homepage' %}" class="nav-link">Homepage</a>
+                <a href="{% url 'login' %}" class="nav-link">Login</a>
+            </nav>
+        </div>
+    </header>
 
-        <!-- ================================
-             Section 2: Main Content
-        =================================== -->
-        <main>
-            <!-- Sign Up Form Section -->
-            <section class="signup-form-section">
-                <h2>Create Your Account</h2>
-                <form method="POST" action="">
-                    {% csrf_token %}
-                    <!-- First Name Input -->
-                    <label for="signup-firstname">First Name:</label>
-                    <input type="text" id="signup-firstname" name="first_name" required value="{{ first_name }}" />
-                    <p class="error-message" id="first-name-error">Name should only contain letters.</p>
+    <!-- Main Content -->
+    <main>
+        <!-- Sign Up Form Section -->
+        <section class="signup-form-section">
+            <h2>Create Your Account</h2>
+            <form method="POST" action="">
+                {% csrf_token %}
+                <!-- First Name Input -->
+                <label for="signup-firstname">First Name:</label>
+                <input type="text" id="signup-firstname" name="first_name" required value="{{ first_name }}" />
+                <p class="error-message" id="first-name-error">Name should only contain letters.</p>
 
-                    <!-- Last Name Input -->
-                    <label for="signup-lastname">Last Name:</label>
-                    <input type="text" id="signup-lastname" name="last_name"  required value="{{ last_name }}" />
-                    <p class="error-message" id="last-name-error">Name should only contain letters.</p>
+                <!-- Last Name Input -->
+                <label for="signup-lastname">Last Name:</label>
+                <input type="text" id="signup-lastname" name="last_name"  required value="{{ last_name }}" />
+                <p class="error-message" id="last-name-error">Name should only contain letters.</p>
 
-                    <!-- Email Input -->
-                    <label for="signup-email">Email:</label>
-                    <input type="email" id="signup-email" name="email" required value="{{ email }}" />
+                <!-- Email Input -->
+                <label for="signup-email">Email:</label>
+                <input type="email" id="signup-email" name="email" required value="{{ email }}" />
 
-                    <!-- Password Input -->
-                    <label for="signup-password">Password:</label>
-                    <input type="password" id="signup-password" name="password" required >
+                <!-- Password Input -->
+                <label for="signup-password">Password:</label>
+                <input type="password" id="signup-password" name="password" required >
 
-                     <!-- Retype Password Input -->
-                    <label for="signup-password-confirm">Retype Password:</label>
-                    <input type="password" id="signup-password-confirm" name="password_confirm"  required />
-                    <p class="error-message" id="password-match-error" style="color: red; display: none;">Passwords do not match.</p>
+                <!-- Retype Password Input -->
+                <label for="signup-password-confirm">Retype Password:</label>
+                <input type="password" id="signup-password-confirm" name="password_confirm"  required />
+                <p class="error-message" id="password-match-error" style="color: red; display: none;">Passwords do not match.</p>
 
-                    <!-- Password Requirements -->
-                    <ul class="password-requirements">
-                        <li id="length" class="requirement">
-                            <i class="x-mark"></i> At least 8 characters
-                        </li>
-                        <li id="uppercase" class="requirement">
-                            <i class="x-mark"></i> One uppercase letter
-                        </li>
-                        <li id="lowercase" class="requirement">
-                            <i class="x-mark"></i> One lowercase letter
-                        </li>
-                    </ul>
+                <!-- Password Requirements -->
+                <ul class="password-requirements">
+                    <li id="length" class="requirement">
+                        <i class="x-mark"></i> At least 8 characters
+                    </li>
+                    <li id="uppercase" class="requirement">
+                        <i class="x-mark"></i> One uppercase letter
+                    </li>
+                    <li id="lowercase" class="requirement">
+                        <i class="x-mark"></i> One lowercase letter
+                    </li>
+                </ul>
 
-                    <!-- Error Handling for Invalid Password -->
-                    {% if invalid_password_message %}
-                        <p style="color: red;">{{ invalid_password_message }}</p>
-                    {% endif %}
+                <!-- Error Handling for Invalid Password -->
+                {% if invalid_password_message %}
+                    <p style="color: red;">{{ invalid_password_message }}</p>
+                {% endif %}
 
-                    <!-- Submit Button -->
-                    <button type="submit" id="submit-button">Sign Up</button>
-                </form>
-            </section>
+                <!-- Submit Button -->
+                <button type="submit" id="submit-button">Sign Up</button>
+            </form>
+        </section>
 
-            <!-- Redirect to Login -->
-            <section class="redirect-section">
-                <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
-            </section>
-        </main>
+        <!-- Redirect to Login -->
+        <section class="redirect-section">
+            <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+        </section>
+    </main>
 
-        <!-- Section 3: Footer -->
-        <footer>
-            <p>&copy; 2024 FOOTPRINT.</p>
-        </footer>
-    </div> <!-- End of container div -->
+    <!-- Footer -->
+    <footer>
+        <p>2024 FOOTPRINT</p>
+    </footer>
 
     <!-- External JavaScript Files -->
     <script src="{% static 'js/form_validation.js' %}"></script>
     <script src="{% static 'js/passw_validation.js' %}"></script>
-    
 </body>
 </html>

@@ -5,25 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     {% load static %}
-   
+    <!-- External Stylesheet -->
+    <link rel="stylesheet" href="{% static 'css/admin_dash.css' %}">
+    <link rel="stylesheet" href="{% static 'css/header.css' %}">
 </head>
 <body>
     <!-- Header -->
-    <header>
-        <h1>Admin Dashboard</h1>
-
-        <nav>
-            <a href="{% url 'login' %}" class="nav-link">Login</a>
-            <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
-            <a href="{% url 'homepage' %}" class="nav-link">Homepage</a>
-            <a href="{% url 'logout' %}" class="nav-link">Logout</a>
-        </nav>
-        
-        
+    <header class="header">
+        <div class="container">
+            <div class="logo-and-title">
+                <a href="{% url 'homepage' %}" class="logo-link">
+                    <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-image">
+                </a>
+                <h1 class="site-title">Footprint</h1>
+            </div>
+            <nav class="nav">
+                <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+            </nav>
+        </div>
     </header>
 
     <!-- Main Content -->
-    <main>
+    <main class="container">
         <section>
             <p>Approve or reject pending user registrations.</p>
             <h2>Pending Registrations</h2>
@@ -57,7 +60,7 @@
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2024 FOOTPRINT Admin Panel</p>
+        <p>2024 FOOTPRINT</p>
     </footer>
 </body>
 </html>
