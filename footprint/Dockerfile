@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libglib2.0-0 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies, including those for Image_classification.py
+# Install Python dependencies, including those for Image_classification and CSV_To_Firestore
 RUN pip install --no-cache-dir \
     torch \
     opencv-python-headless \
@@ -20,7 +20,9 @@ RUN pip install --no-cache-dir \
     inference_sdk \
     pandas \
     scikit-learn \
-    colormath
+    colormath \
+    google-cloud-firestore \
+    firebase-admin
 
 # Copy app code
 COPY . .

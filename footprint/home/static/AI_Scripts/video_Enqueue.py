@@ -1,9 +1,10 @@
 import sys
-import os  # Import os for file path handling
+import os
 import time
 from Video_processing import q, process_video_url
 from rq.job import Job
 import Image_classification
+import CSV_To_Firestore  # Import CSV_To_Firestore for final processing
 
 # Path to tempdata.csv
 tempdata_file = "/AI_Scripts/Identified_Person/tempdata.csv"
@@ -85,6 +86,11 @@ if __name__ == "__main__":
             print("Starting image classification...")
             Image_classification.main()
             print("Image classification completed.")
+            
+            # Step 5: Start CSV to Firestore upload
+            print("Starting CSV to Firestore upload...")
+            CSV_To_Firestore.main()
+            print("CSV to Firestore upload completed.")
         else:
             print("Error: tempdata.csv was not ready, skipping image classification.")
     else:
