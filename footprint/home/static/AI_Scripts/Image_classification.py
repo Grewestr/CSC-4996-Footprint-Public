@@ -170,7 +170,7 @@ def process_image_for_attributes(image_path):
     video_link = f"{video_url}&t={int(float(timestamp))}s" if timestamp != "Unknown" else "Unknown"
     return {
         "Image Name": os.path.basename(image_path),
-        "Image Hash": normalize_name(image_path),
+        "Image Hash": os.path.splitext(normalize_name(image_path))[0],
         "Top Type": top_type,
         "Top Color": top_color,
         "Middle Type": middle_type,
