@@ -8,10 +8,10 @@ class AuthenticationMiddleware:
 
     def __call__(self, request):
         # List of public URLs that don't require authentication
-        public_urls = ['/', '/login/', '/signup/','/example/','/password_reset/', '/test_search/','/results/','/generate_persons/','/demo_input/','/search_person/'] 
+        public_urls = ['/', '/login/', '/signup/','/example/','/password_reset/', '/test_search/','/results/', '/generate_persons/','/demo_input/','/search_person/'] 
 
         # URLs accessible by regular users
-        user_allowed_urls = ['/dashboard/','/logout/','/profile/','/change_password/','/delete_email/','/search_attributes/']
+        user_allowed_urls = ['/dashboard/','/logout/','/profile/','/change_password/','/delete_email/','/search_attributes/', '/upload/']
 
         # URLs accessible by admins
         admin_allowed_urls = ['/admin_dashboard/','/logout/','/approve_user/',]

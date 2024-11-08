@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from .views import login_view, homepage_view, signup_view, dashboard_view, logout_view, admin_dashboard_view,approve_user_view, example_view, password_reset_view, test_attribute_search,results_view, profile_view, change_password, delete_email_view, generate_persons, search_person, demo_input, search_attributes
+from .views import login_view, homepage_view, signup_view, dashboard_view, logout_view, admin_dashboard_view, upload_view, approve_user_view, example_view, password_reset_view, results_view, profile_view, change_password, delete_email_view,  search_person, demo_input, search_attributes
 
 urlpatterns = [
     path('login/', login_view, name='login'),
@@ -27,15 +27,14 @@ urlpatterns = [
     path('approve_user/<str:email>/', approve_user_view, name='approve_user'),
     path('example/', example_view, name='example'),
     path('password_reset/', password_reset_view, name='password_reset'),
-    path('test_search/', test_attribute_search, name='test_search'),
     path('results/', results_view, name='results'),
     path('profile/', profile_view, name='profile'),
     path('change_password/', change_password, name='change_password'),
     path('delete_email/', delete_email_view, name='delete_email'),
-    path('generate_persons/', generate_persons, name='generate_persons'),
     path('search_person/', search_person, name='search_person'),
     path('demo_input/', demo_input, name='demo_input'),
     path('search_attributes/', search_attributes, name='search_attributes'),
+    path('upload/', upload_view, name='upload'),
 
      
      

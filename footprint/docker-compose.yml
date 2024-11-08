@@ -1,0 +1,17 @@
+services:
+  redis-server:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  rq-worker:
+    build: .
+    depends_on:
+      - redis-server
+    environment:
+      - REDIS_URL=redis://redis-server:6379/0
+    volumes:
+      - "./home/static/AI_Scripts:/AI_Scripts"           # Mount AI_Scripts so video_Enqueue.py is accessible
+      - "./home/static/AI_Scripts/Identified_Person:/Identified_Person"  # Mount Identified_Person for output
+    working_dir: /AI_Scripts
+    command: rq worker --with-scheduler

@@ -1,4 +1,3 @@
-
 import re
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
@@ -302,51 +301,7 @@ def password_reset_view(request):
 # Define the desired time zone (UTC-4)
 desired_timezone = pytz.timezone("America/New_York")  # This is UTC-4 when in daylight saving time
 
-def test_attribute_search(request):
-    # Define the criteria for matching attributes
-    bottom_color = "blue"
-    bottom_type = "pants"
-    middle_color = "red"
-    middle_type = "short shirt"  
-    top_color = "black"
-    top_type = "short"
-    camera = "1"  # Specify the camera as a string to match Firestore storage
 
-    results = []
-
-    # Step 1: Query documents based on the specified attributes and camera
-    query = db.collection('search_test') \
-              .where('bottom_color', '==', bottom_color) \
-              .where('bottom_type', '==', bottom_type) \
-              .where('middle_color', '==', middle_color) \
-              .where('middle_type', '==', middle_type) \
-              .where('top_color', '==', top_color) \
-              .where('top_type', '==', top_type) \
-              .where('camera', '==', camera)
-
-    # Step 2: Retrieve matching documents and append timestamp and photo to results
-    for doc in query.stream():
-        doc_data = doc.to_dict()
-
-        # Retrieve and format the timestamp
-        raw_timestamp = doc_data.get('timestamp')
-
-        # Convert Firestore UTC timestamp to local timezone (UTC-4)
-        if isinstance(raw_timestamp, datetime):
-            # Convert the UTC timestamp to the desired time zone (UTC-4)
-            local_timestamp = raw_timestamp.astimezone(desired_timezone)
-            formatted_timestamp = local_timestamp.strftime("%B %d, %Y at %I:%M:%S %p UTC%z")
-        else:
-            formatted_timestamp = raw_timestamp  # In case it's already a string
-
-        results.append({
-            'timestamp': formatted_timestamp,
-            'photo': doc_data.get('photo'),
-            'camera': camera
-        })
-
-    # Render the results page with the retrieved data
-    return render(request, 'home/results.html', {'results': results})
 
 def results_view(request):
     # Render the results page without any data
@@ -449,58 +404,6 @@ def change_password(request):
     return redirect('profile')
 
 
-
-
-
-
-def generate_persons(request):
-    # Define the possible attribute values
-    top_types = ["short_hair", "medium_hair", "long_hair", "hat", "bald"]
-    top_colors = ["red", "yellow", "green", "orange", "black", "white", "purple", "blue"]
-    middle_types = ["short_shirt", "long_shirt", "no_shirt", "tank top", "no shirt"]
-    middle_colors = ["red", "yellow", "green", "orange", "black", "white", "purple", "blue", "pink"]
-    bottom_types = ["short_pants", "long_pants", "skirt", "dress"]
-    bottom_colors = ["red", "yellow", "green", "orange", "black", "white", "purple", "blue", "pink"]
-    camera_numbers = ["1", "2"]
-
-    # Define the time range for timestamps
-    start_date = datetime(2024, 10, 20, tzinfo=pytz.UTC)
-    end_date = datetime(2024, 10, 23, tzinfo=pytz.UTC)
-
-    # Function to generate a random timestamp between two dates
-    def random_timestamp(start, end):
-        delta = end - start
-        random_seconds = random.randint(0, int(delta.total_seconds()))
-        return start + timedelta(seconds=random_seconds)
-
-    # Function to generate a random document with the specified attribute ranges
-    def generate_random_document():
-        return {
-            'bottom_color': random.choice(bottom_colors),
-            'bottom_type': random.choice(bottom_types),
-            'camera': random.choice(camera_numbers),
-            'middle_color': random.choice(middle_colors),
-            'middle_type': random.choice(middle_types),
-            'photo': "URL",
-            'timestamp': random_timestamp(start_date, end_date),
-            'top_color': random.choice(top_colors),
-            'top_type': random.choice(top_types),
-        }
-
-    # Generate and add 20 documents to the 'search_test' collection
-    for _ in range(10):
-        doc_data = generate_random_document()
-        db.collection('search_test').add(doc_data)  # Automatically generate ID
-        print(f"Added document with data: {doc_data}")
-
-    # Provide feedback to the user
-    messages.success(request, "20 random documents have been successfully added to Firestore.")
-    
-    # Redirect back to the dashboard or any other appropriate page
-    return render(request, 'home/homepage.html')
-
-
-
 def search_person(request, summary):
     # Extract attributes from the summary
     bottom_color = summary.get('bottom_color')
@@ -590,6 +493,81 @@ def demo_input(request):
 
     # Call the search_person function with the summarized input
     return search_person(request, summary)
+
+import os
+import re
+import subprocess
+from django.shortcuts import render, redirect
+from django.views.decorators.http import require_http_methods
+from .models import VideoUpload
+
+# Function to execute Docker commands
+def run_docker_command(command, cwd=None):
+    try:
+        subprocess.run(command, cwd=cwd, check=True, shell=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error running command: {command}")
+        print(e)
+
+# Run these commands on boot if they haven't been run already
+BOOT_COMMANDS_RUN = False  # Global flag to check if boot commands are run
+
+def check_and_run_boot_commands():
+    global BOOT_COMMANDS_RUN
+    if not BOOT_COMMANDS_RUN:
+        boot_directory = "C:\\Users\\17344\\Documents\\Capstone2\\CSC-4996-Footprint\\footprint"
+        run_docker_command("docker-compose build", cwd=boot_directory)
+        run_docker_command("docker-compose up -d", cwd=boot_directory)  # Run in detached mode
+        BOOT_COMMANDS_RUN = True
+
+@require_http_methods(["GET", "POST"])
+def upload_view(request):
+    check_and_run_boot_commands()  # Ensure boot commands run before proceeding
+
+    message = None
+    if request.method == 'POST':
+        youtube_link = request.POST.get('youtube_link')
+        processing_speed = request.POST.get('processing_speed')
+        user_id = request.user.id  # Assume user authentication is enabled
+
+        if youtube_link and processing_speed:
+            # Validate YouTube URL
+            youtube_regex = (
+                r'^(https?://)?(www\.)?'
+                r'(youtube\.com/watch\?v=|youtu\.be/)'
+                r'([^&=%\?]{11})'
+            )
+            match = re.match(youtube_regex, youtube_link)
+            if match:
+                video_id = match.group(4)
+                
+                # Save the upload to the database
+                video_upload = VideoUpload.objects.create(
+                    youtube_link=youtube_link,
+                    processing_speed=processing_speed,
+                    status='Pending'
+                )
+
+                # Prepare parameters for the Docker command
+                script_directory = "C:\\Users\\17344\\Documents\\Capstone2\\CSC-4996-Footprint\\footprint\\home\\static\\AI_Scripts"
+                docker_command = f'docker-compose run --rm rq-worker python video_Enqueue.py "{youtube_link}" {processing_speed} "{user_id}"'
+                
+                # Run the Docker command to process the video
+                run_docker_command(docker_command, cwd=script_directory)
+                
+                message = "Your video has been successfully submitted for processing."
+                return redirect('upload')  # Redirect to prevent form resubmission
+            else:
+                message = "Invalid YouTube link. Please enter a valid YouTube video URL."
+        else:
+            message = "Please fill in all required fields."
+
+    # Retrieve the list of uploads to display in the queue
+    uploads = VideoUpload.objects.all().order_by('-uploaded_at')
+    return render(request, 'home/upload.html', {'message': message, 'uploads': uploads})
+
+
+
 
 def search_attributes(request):
     if request.method == 'POST':
@@ -722,3 +700,12 @@ def search_attributes(request):
         return render(request, 'home/dashboard.html', context)
     else:
         return redirect('dashboard')
+    
+
+from django.conf import settings
+from redis import Redis
+from rq import Queue
+
+# Connect to Redis using settings
+redis_conn = Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
+q = Queue(connection=redis_conn)

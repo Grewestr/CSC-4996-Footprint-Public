@@ -1,0 +1,160 @@
+/* ================================
+   Upload Page Styles
+================================ */
+
+/* General Styles */
+.upload-page {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #d3d3d3;
+    color: #000000;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    width: 90%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding-top: 140px; 
+    padding-bottom: 60px;
+    flex: 1;
+}
+
+/* Heading Styles */
+h2 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #000;
+}
+
+/* Form Styles */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form label {
+    font-size: 1.1em;
+    margin-bottom: 5px;
+    color: #333;
+    font-weight: bold;
+}
+
+form input[type="url"] {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+form input[type="url"]:focus {
+    border-color: #000;
+    outline: none;
+}
+
+form button[type="submit"] {
+    background-color: #3fb2d8;
+    color: #000;
+    padding: 12px;
+    border: 2px solid #000;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: transform 0.3s, background-color 0.3s;
+}
+
+form button[type="submit"]:hover {
+    background-color: #6cc8ec;
+    transform: scale(1.05);
+}
+
+/* Message Styles */
+.message {
+    background-color: #e0ffe0;
+    border: 1px solid #00cc00;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.message p {
+    margin: 0;
+    color: #006600;
+}
+
+/* Footer Styles */
+.footer {
+    border-top: 2px solid #000;
+    padding: 10px 0;
+    text-align: center;
+    background-color: #ffffff;
+    width: 100%;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .container {
+        padding-top: 120px;
+    }
+
+    h2 {
+        font-size: 1.5em;
+    }
+
+    form label {
+        font-size: 1em;
+    }
+
+    form input[type="url"] {
+        padding: 8px;
+        font-size: 0.9em;
+    }
+
+    form button[type="submit"] {
+        padding: 10px;
+        font-size: 1em;
+    }
+}
+
+.queue-section {
+    margin-top: 40px;
+}
+
+.queue-section h3 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    color: #000;
+}
+
+.queue-section table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.queue-section th,
+.queue-section td {
+    border: 1px solid #000;
+    padding: 10px;
+    text-align: left;
+}
+
+.queue-section th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+.queue-section td {
+    background-color: #fff;
+}
+
+.queue-section tr:nth-child(even) td {
+    background-color: #f9f9f9;
+}
