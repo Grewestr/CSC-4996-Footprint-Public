@@ -7,12 +7,10 @@ from inference_sdk import InferenceHTTPClient
 from sklearn.metrics.pairwise import euclidean_distances
 from colormath.color_objects import sRGBColor, LabColor
 from colormath.color_conversions import convert_color
-import time
 
 # Define paths relative to the container’s working directory
 input_folder = "/AI_Scripts/Identified_Person"
 output_file = "/AI_Scripts/clothing_attributes.csv"
-tempdata_file = os.path.join(input_folder, "tempdata.csv")
 
 # Define color labels for hair as top color
 HAIR_COLOR_LABELS = {
@@ -27,40 +25,6 @@ HAIR_COLOR_LABELS = {
 # API key from Roboflow
 api_key = "Pfw3FTgzvlGSZu4M5pPj"
 CLIENT = InferenceHTTPClient(api_url="https://detect.roboflow.com", api_key=api_key)
-
-# Normalize image names to consistently look up in tempdata
-def normalize_name(filename):
-    return os.path.basename(filename).lower().strip()
-
-# Wait until tempdata.csv is stable
-def wait_until_file_stable(file_path, wait_time=2, timeout=10):
-    start_time = time.time()
-    last_mod_time = None
-
-    while time.time() - start_time < timeout:
-        try:
-            current_mod_time = os.path.getmtime(file_path)
-            if last_mod_time is not None and current_mod_time == last_mod_time:
-                return True
-            last_mod_time = current_mod_time
-        except FileNotFoundError:
-            print(f"File {file_path} not found yet. Waiting...")
-        time.sleep(wait_time)
-    print(f"Warning: {file_path} did not become stable within the timeout.")
-    return False
-
-# Load tempdata with normalized keys
-tempdata = {}
-if wait_until_file_stable(tempdata_file):
-    with open(tempdata_file, newline='') as file:
-        reader = csv.reader(file)
-        for row in reader:
-            if len(row) >= 5:
-                image_name, user_id, timestamp, video_url, frame_interval = row
-                normalized_name = normalize_name(image_name)
-                tempdata[normalized_name] = (user_id, timestamp, video_url, frame_interval)
-else:
-    print("Warning: tempdata.csv was not stable in time; proceeding without full data.")
 
 # Detect clothing attributes from Identified_Person
 def detect_clothing_attributes(person_crop):
@@ -137,8 +101,6 @@ def detect_color(rgb_tuple):
 # Process image for clothing attributes
 def process_image_for_attributes(image_path):
     image = cv2.imread(image_path)
-    normalized_name = normalize_name(image_path)
-    user_id, timestamp, video_url, frame_interval = tempdata.get(normalized_name, ("Unknown", "Unknown", "Unknown", "Unknown"))
     
     top_type = "NULL"
     top_color = "Unknown"
@@ -167,27 +129,20 @@ def process_image_for_attributes(image_path):
         top_color_label = top_color_predictions[0].get("class", "unknown_hair")
         top_color = map_top_color(top_color_label)
 
-    video_link = f"{video_url}&t={int(float(timestamp))}s" if timestamp != "Unknown" else "Unknown"
     return {
         "Image Name": os.path.basename(image_path),
-        "Image Hash": os.path.splitext(normalize_name(image_path))[0],
+        "Image Hash": os.path.splitext(os.path.basename(image_path))[0],
         "Top Type": top_type,
         "Top Color": top_color,
         "Middle Type": middle_type,
         "Middle Color": middle_color,
         "Bottom Type": bottom_type,
         "Bottom Color": bottom_color,
-        "Time Detected": timestamp,
-        "TimeStamped Video URL": video_link,
-        "User ID": user_id,
-        "Original Link": video_url,
-        "Frame Interval": frame_interval
     }
 
 def save_to_csv(results):
     fieldnames = ["Image Name", "Image Hash", "Top Type", "Top Color", "Middle Type", "Middle Color",
-                  "Bottom Type", "Bottom Color", "Time Detected", "TimeStamped Video URL", "User ID",
-                  "Original Link", "Frame Interval"]
+                  "Bottom Type", "Bottom Color"]
     with open(output_file, mode='w', newline='') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
