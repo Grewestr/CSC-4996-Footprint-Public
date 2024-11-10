@@ -11,14 +11,12 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    
 }
 
 .container {
     width: 90%;
     margin: 0 auto;
 }
-
 
 /* Dashboard Layout */
 .dashboard-layout {
@@ -51,7 +49,7 @@ body {
 /* Adjusted grid areas for the layout */
 .attributes-section,
 .summary-section,
-.time-frame-section,
+.feed-selection-section, /* Styling for feed selection section */
 .results-section,
 .image-gallery-section {
     background-color: #fff;
@@ -69,10 +67,38 @@ body {
     grid-column: 1 / 2;
 }
 
-.time-frame-section {
+.feed-selection-section { /* Feed selection section styled like attributes section */
     grid-column: 1 / 2;
 }
 
+/* Feed selection dropdown styling */
+.feed-selection-section label {
+    font-weight: bold;
+}
+
+.feed-select {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.feed-select select {
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #000;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+/* Feed selection dropdown hover effect */
+.feed-select select:hover {
+    border-color: #333;
+    background-color: #e0e0e0;
+}
+
+/* Results and Image Gallery Layout */
 .results-section {
     grid-column: 2 / 3;
     grid-row: 1 / 4;
@@ -169,27 +195,6 @@ h3 {
     position: relative;
 }
 
-/* Time Frame Section styling */
-.time-frame-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.datetime-select {
-    display: flex;
-    flex-direction: column;
-}
-
-.datetime-select label {
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.camera-select {
-    margin-top: 10px;
-}
-
 /* Summary content styling */
 .summary-content p {
     margin: 5px 0;
@@ -213,7 +218,7 @@ h3 {
     }
     .attributes-section,
     .summary-section,
-    .time-frame-section,
+    .feed-selection-section, /* Updated for responsive */
     .results-section,
     .image-gallery-section {
         grid-column: 1 / -1;
@@ -242,6 +247,11 @@ h3 {
     .image-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+}
+
+.unmatched {
+    color: red;
+    font-weight: bold;
 }
 
 /* Footer Styles */

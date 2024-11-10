@@ -1,11 +1,11 @@
+
 import re
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from django.contrib import messages
 import firebase_admin
-from firebase_admin import auth, firestore, exceptions
+from firebase_admin import auth, firestore, exceptions, storage
 import requests
-from datetime import datetime, timedelta
 import pytz
 import random
 from django.http import JsonResponse
@@ -13,7 +13,11 @@ import os
 from google.cloud import firestore
 from google.oauth2 import service_account
 from google.cloud.firestore_v1 import FieldFilter
+from collections import defaultdict
+import csv
 
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 key_path = os.path.join(BASE_DIR, 'footprint', 'Firebase', 'serviceAccountKey.json')
@@ -24,33 +28,86 @@ db = firestore.Client(credentials=credentials)
 firebase_api_key = 'AIzaSyBrnuE0rPIse9NIoJiV0kw2FMEGDXShjBQ'
 url = f'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={firebase_api_key}'
 
+# Define the desired time zone (UTC-4)
+desired_timezone = pytz.timezone("America/New_York")  # This is UTC-4 when in daylight saving time
+
 def homepage_view(request):
     return render(request, 'home/homepage.html')
 
-def example_view(request):
-    return render(request, 'home/example.html')
+
+def support(request):
+    # takes input from user 
+    if request.method == 'POST':
+        user_name = request.POST.get('name')
+        user_email = request.POST.get('email')
+        message = request.POST.get('message')
+
+        # Validate form fields
+        if not user_name or not user_email or not message:
+            messages.error(request, "All fields are required.")
+            return render(request, 'home/support.html', {
+                'user_name': user_name,
+                'user_email': user_email,
+                'message': message
+            })
+
+        # Save data to Database
+        try:
+            db.collection('support_messages').add({
+                'user_name': user_name,
+                'user_email': user_email,
+                'message': message,
+                'timestamp': firestore.SERVER_TIMESTAMP
+            })
+            messages.success(request, "Your message has been sent successfully!")
+            return redirect('support')  # Redirect to clear the form after submission
+
+        except Exception as e:
+            messages.error(request, f"An error occurred: {e}")
+
+    return render(request, 'home/support.html')
+
+
 
 def dashboard_view(request):
-    return render(request, 'home/dashboard.html')
+    # Get the user's email from the session
+    user_email = request.session.get('email')
+    live_feed_names = []
+
+    # Retrieve the live feeds if the email is available
+    if user_email:
+        try:
+            # Query the live_feeds collection for documents with matching user_email and finished feed_status
+            feeds_query = db.collection('live_feeds').where('user_email', '==', user_email).where('feed_status', '==', 'finished').stream()
+            
+            # Extract only the feed name for each matching document
+            live_feed_names = [feed.to_dict().get('feed_name') for feed in feeds_query if 'feed_name' in feed.to_dict()]
+
+        except Exception as e:
+            messages.error(request, f"Error retrieving user feed names: {str(e)}")
+
+    # Pass live_feed_names to the template for the dropdown
+    return render(request, 'home/dashboard.html', {'feeds': live_feed_names})
+
 
 def profile_view(request):
     # Retrieve user information from the session
     full_name = request.session.get('full_name', 'Not available')
     email = request.session.get('email', 'Not available')
-    apartment_name = 'Not available'  # Placeholder value for now
+    department_name = request.session.get('department_name', 'Not available')
 
     # Render the profile template with the user's info
     return render(request, 'home/profile.html', {
         'full_name': full_name,
         'email': email,
-        'apartment_name': apartment_name
+        'department_name': department_name,
     })
-
 
 
 def logout_view(request):
     logout(request) 
     return redirect('login')
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -58,15 +115,6 @@ def login_view(request):
         password = request.POST.get('password')
 
         try:
-            # Check if the email exists in the pending_users collection
-            pending_user_ref = db.collection('pending_users').document(email)
-            pending_user = pending_user_ref.get()
-
-            if pending_user.exists and not pending_user.to_dict().get('approved', False):
-                # If the email is in pending_users and not approved
-                messages.error(request, 'Your account is still pending approval. Please wait for admin approval.')
-                return render(request, 'home/login.html', {'email': email})
-
             # Check if the user exists in Firebase Authentication
             user = auth.get_user_by_email(email)
 
@@ -79,26 +127,39 @@ def login_view(request):
             response = requests.post(url, json=payload)
 
             if response.status_code == 200:
-                # Retrieve the role and other user info from Firestore 'users' collection
-                user_ref = db.collection('users').document(email)
+                # Retrieve the user info from Firestore 'accounts' collection
+                user_ref = db.collection('accounts').document(email)
                 user_data = user_ref.get()
 
                 if user_data.exists:
                     user_info = user_data.to_dict()
-                    role = user_info.get('role', 'user')  # Default to 'user' if no role found
-                    full_name = f"{user_info.get('first_name', '')} {user_info.get('last_name', '')}"
-                    
-                    # Store user info in session
-                    request.session['uid'] = user.uid  # Firebase UID
-                    request.session['role'] = role  # User role
-                    request.session['full_name'] = full_name  # Full name
-                    request.session['email'] = email  # User email
+                    account_status = user_info.get('account_status', 'pending')  # Default to 'pending' if not found
+                    department_name = user_info.get('department_name', 'N/A')  # Store department_name
 
-                    # Redirect based on user role
-                    if role == 'admin':
-                        return redirect('admin_dashboard')
-                    else:
-                        return redirect('dashboard')
+                    # Check account status and handle accordingly
+                    if account_status == 'denied':
+                        messages.error(request, 'Your registration was denied. Please contact support.')
+                        return render(request, 'home/login.html', {'email': email})
+                    elif account_status == 'pending':
+                        messages.error(request, 'Your account is pending approval.')
+                        return render(request, 'home/login.html', {'email': email})
+                    elif account_status == 'approved':
+                        # Store user info in session
+                        role = user_info.get('role', 'user')  # Default to 'user' if no role found
+                        full_name = f"{user_info.get('first_name', '')} {user_info.get('last_name', '')}"
+
+                        request.session['uid'] = user.uid  # Firebase UID
+                        request.session['role'] = role  # User role
+                        request.session['full_name'] = full_name  # Full name
+                        request.session['email'] = email  # User email
+                        request.session['department_name'] = department_name  # Store department name
+
+                        # Redirect based on user role
+                        if role == 'admin':
+                            return redirect('admin_dashboard')
+                        else:
+                            return redirect('dashboard')
+
             else:
                 # If authentication fails, check the error response
                 error_message = response.json().get('error', {}).get('message')
@@ -117,21 +178,16 @@ def login_view(request):
             messages.error(request, f'Firebase error occurred: {str(e)}')
 
         return render(request, 'home/login.html', {'email': email})
-    
+
     return render(request, 'home/login.html')
 
 
-
-
-# validating passwords
 def validate_password(password):
      # Password must be at least 8 characters, with one lowercase and one uppercase letter
     if len(password) < 8 or not any(c.islower() for c in password) or not any(c.isupper() for c in password):
         return False
     return True
 
-
-#new fucntion needed for registering
 
 def signup_view(request):
     if request.method == 'POST':
@@ -140,16 +196,39 @@ def signup_view(request):
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
         password = request.POST.get('password')
+        department_name = request.POST.get('department_name')
 
-        # Step 1: Check if the email is already in the Firestore 'pending_users' collection
-        pending_user_ref = db.collection('pending_users').document(email).get()
-        if pending_user_ref.exists:
-            return render(request, 'home/signup.html', {
-                'invalid_password_message': 'This email is already pending approval.',
-                'email': email,
-                'first_name': first_name,
-                'last_name': last_name
-            })
+         # Step 1: Check if the email is already in the Firestore 'accounts' collection
+        account_ref = db.collection('accounts').document(email).get()
+        if account_ref.exists:
+            account_data = account_ref.to_dict()
+            account_status = account_data.get('account_status')
+
+            # Check the account status and show the appropriate message
+            if account_status == 'approved':
+                return render(request, 'home/signup.html', {
+                    'invalid_password_message': 'This account is already registered and approved.',
+                    'email': email,
+                    'first_name': first_name,
+                    'last_name': last_name,
+                    'department_name': department_name
+                })
+            elif account_status == 'pending':
+                return render(request, 'home/signup.html', {
+                    'invalid_password_message': 'Your account is pending approval. Please wait for admin approval.',
+                    'email': email,
+                    'first_name': first_name,
+                    'last_name': last_name,
+                    'department_name': department_name
+                })
+            elif account_status == 'denied':
+                return render(request, 'home/signup.html', {
+                    'invalid_password_message': 'Your registration was denied. Please contact support.',
+                    'email': email,
+                    'first_name': first_name,
+                    'last_name': last_name,
+                    'department_name': department_name
+                })
 
         # Step 2: Check if the user already exists by email in Firebase Authentication
         try:
@@ -159,7 +238,8 @@ def signup_view(request):
                 'invalid_password_message': 'Email is already registered.',
                 'email': email,
                 'first_name': first_name,
-                'last_name': last_name
+                'last_name': last_name,
+                'department_name': department_name
             })
         except firebase_admin.auth.UserNotFoundError:
             # If the user does not exist, proceed to the next step
@@ -171,23 +251,34 @@ def signup_view(request):
                 'invalid_password_message': 'Password must meet the requirements.',
                 'email': email,
                 'first_name': first_name,
-                'last_name': last_name
+                'last_name': last_name,
+                'department_name': department_name
             })
 
-        # Step 4: Store user in 'pending_users' collection for admin approval
+        # Step 4: Store user in 'accounts' collection for admin approval
         try:
-            db.collection('pending_users').document(email).set({
+
+            # Create the user in Firebase Authentication
+            user = auth.create_user(
+                email=email,
+                password=password,
+                display_name=f"{first_name} {last_name}"
+            )
+
+            # Store user data in Firestore accounts collection (without password)
+            db.collection('accounts').document(email).set({
                 'first_name': first_name,
                 'last_name': last_name,
                 'email': email,
-                'password': password,
                 'created_at': firestore.SERVER_TIMESTAMP,
-                'approved': False,  # Set approved to False initially
-                'role':'user'
+                'account_status': 'pending',  # Default to pending
+                'role': 'user',  # Default role is user
+                'department_name': department_name
             })
 
             messages.success(request, 'Registration successful! Your account is awaiting approval.')
             return redirect('login')
+
         except Exception as e:
             messages.error(request, f"Error creating user in Firestore: {str(e)}")
 
@@ -196,116 +287,145 @@ def signup_view(request):
 
 
 def admin_dashboard_view(request):
-    # Fetch all pending users from Firestore where 'approved' is False
-    pending_users_ref = db.collection('pending_users').where('approved', '==', False)
-    pending_users = pending_users_ref.stream()
+    # Get filtering parameters from the GET request
+    status_filter = request.GET.get('status', 'all')
+    search_query = request.GET.get('search', '').strip().lower()
+    department_filter = request.GET.get('department', '')
 
-    # Prepare the context with pending users
+    # Fetch all unique departments from the 'accounts' collection
+    department_names = set()
+    users_ref = db.collection('accounts').where('role', '==', 'user')  # Only get 'user' roles
+    for doc in users_ref.stream():
+        user_data = doc.to_dict()
+        department_name = user_data.get('department_name')
+        if department_name:
+            department_names.add(department_name)  # Add department to the set
+
+    # Convert the set to a sorted list
+    department_names = sorted(department_names)
+
+    # Apply account status filter if needed
+    if status_filter != 'all':
+        users_ref = users_ref.where('account_status', '==', status_filter)
+
+    # Stream the users with the applied filters
+    users = users_ref.stream()
+    
+    # Prepare filtered list
     users_list = []
-    for user in pending_users:
-        user_data = user.to_dict()  # Convert Firestore document to dictionary
-        users_list.append({
-            'email': user_data.get('email', 'N/A'),
-            'first_name': user_data.get('first_name', 'N/A'),
-            'last_name': user_data.get('last_name', 'N/A'),
-            'password': user_data.get('password', 'N/A'),  # Password will be hashed and not displayed
-            'doc_id': user.id  # Document ID needed for approving the user
-        })
+    for user in users:
+        user_data = user.to_dict()
 
-    context = {'pending_users': users_list}
+        # Filter by department if specified
+        if department_filter == '' or user_data.get('department_name') == department_filter:
+            # Apply search filter on first name, last name, or email
+            if (
+                search_query == '' or 
+                search_query in user_data.get('first_name', '').lower() or 
+                search_query in user_data.get('last_name', '').lower() or 
+                search_query in user_data.get('email', '').lower()
+            ):
+                users_list.append({
+                    'email': user_data.get('email', 'N/A'),
+                    'first_name': user_data.get('first_name', 'N/A'),
+                    'last_name': user_data.get('last_name', 'N/A'),
+                    'department_name': user_data.get('department_name', 'N/A'),
+                    'account_status': user_data.get('account_status', 'N/A'),
+                    'doc_id': user.id
+                })
 
-    # Render the admin dashboard template with the context
+    context = {
+        'users_list': users_list,
+        'status_filter': status_filter,
+        'search_query': search_query,
+        'department_filter': department_filter,
+        'department_names': department_names  
+    }
     return render(request, 'home/admin_dashboard.html', context)
 
 
-def approve_user_view(request, email):
-    # Get the user document from 'pending_users' collection
-    pending_user_ref = db.collection('pending_users').where('email', '==', email).stream()
-    user_doc = next(pending_user_ref, None)  # Get the first matching document
+def update_account_status(request, email):
+    new_status = request.POST.get('new_status')  # Get the status from the form
+    try:
+        # Reference to the user's document in Firestore
+        user_ref = db.collection('accounts').document(email)
 
-    if user_doc:
-        user_data = user_doc.to_dict()  # Convert Firestore document to dictionary
-        user_email = user_data['email']
-        user_password = user_data['password']  # The hashed password should be securely handled
-        
-        try:
-            # Create a new user in Firebase Authentication
-            auth.create_user(
-                email=user_email,
-                password=user_password,
-                display_name=f"{user_data['first_name']} {user_data['last_name']}"
-            )
+        # Update the account status to the new status (approved, pending, or denied)
+        user_ref.update({'account_status': new_status})
 
-            user_role = user_data.get('role', 'user')
-            
-            # Move the user data to the 'users' collection in Firestore
-            db.collection('users').document(user_doc.id).set({
-                'first_name': user_data['first_name'],
-                'last_name': user_data['last_name'],
-                'email': user_data['email'],
-                'role': user_role,
-                'created_at': firestore.SERVER_TIMESTAMP,
-                'approved': True  # Mark the user as approved
-            })
+        # Display a success message with a custom tag
+        messages.success(request, f'Account status for {email} updated to {new_status}.', extra_tags='status_update')
+        return redirect('admin_dashboard')
 
-            # Delete the user document from 'pending_users' collection
-            db.collection('pending_users').document(user_doc.id).delete()
-
-            messages.success(request, f"User {user_email} approved successfully!")
-
-        except Exception as e:
-            messages.error(request, f"Error approving user: {str(e)}")
-
-    else:
-        messages.error(request, f"User with email {email} not found in pending users.")
-
-    # Redirect back to the admin dashboard
-    return redirect('admin_dashboard')
+    except Exception as e:
+        # If there was an error, display an error message with a custom tag
+        messages.error(request, f'Error updating account status: {str(e)}', extra_tags='status_update')
+        return redirect('admin_dashboard')
 
 
 def password_reset_view(request):
-    
+
     # The URL for sending the password reset request to Firebase API
     reset_password_url = f'https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key={firebase_api_key}'
 
-    # Check if the request method is POST (i.e., the form was submitted)
     if request.method == 'POST':
         # Retrieve the email address from the submitted form
         email = request.POST.get('email')
 
-        # Prepare the payload that will be sent to Firebase for the password reset request
-        payload = {
-            'requestType': 'PASSWORD_RESET',  # Specify the type of request as a password reset
-            'email': email  # Include the user's email address in the payload
-        }
+        # Step 1: Check if the email exists in Firebase Authentication
+        try:
+            # Try to retrieve the user from Firebase Authentication
+            firebase_user = auth.get_user_by_email(email)
+        except firebase_admin.auth.UserNotFoundError:
+            # If the email is not found in Firebase Authentication, show a message
+            messages.error(request, 'Email not found. Please register first.')
+            return render(request, 'home/password_reset.html', {'email': email})
 
-        # Send the password reset request to Firebase API
-        response = requests.post(reset_password_url, json=payload)
+        # Step 2: Check the account status in Firestore
+        account_ref = db.collection('accounts').document(email).get()
+        if account_ref.exists:
+            account_data = account_ref.to_dict()
+            account_status = account_data.get('account_status', 'pending')  # Default to 'pending' if not found
 
-        # Check if the request was successful (HTTP status 200)
-        if response.status_code == 200:
-            # If successful, show a success message to the user
-            messages.success(request, 'A password reset email has been sent to your email address.')
-            # Redirect the user back to the login page
-            return redirect('login')
+            # Check the account status and show the appropriate message
+            if account_status == 'denied':
+                messages.error(request, 'Your registration was denied. Please contact support.')
+                return render(request, 'home/password_reset.html', {'email': email})
+            elif account_status == 'pending':
+                messages.error(request, 'Your account is pending approval. Please wait for admin approval.')
+                return render(request, 'home/password_reset.html', {'email': email})
+            elif account_status == 'approved':
+                # If account is approved, proceed with sending the password reset email
+
+                # Prepare the payload that will be sent to Firebase for the password reset request
+                payload = {
+                    'requestType': 'PASSWORD_RESET',  # Specify the type of request as a password reset
+                    'email': email  # Include the user's email address in the payload
+                }
+
+                # Send the password reset request to Firebase API
+                response = requests.post(reset_password_url, json=payload)
+
+                # Check if the request was successful (HTTP status 200)
+                if response.status_code == 200:
+                    # If successful, show a success message to the user
+                    messages.success(request, 'A password reset email has been sent to your email address.')
+                    # Redirect the user back to the login page
+                    return redirect('login')
+                else:
+                    # If there was an error, extract the error message from Firebase's response
+                    error_message = response.json().get('error', {}).get('message', 'Error sending reset email')
+                    # Display the error message to the user
+                    messages.error(request, f'Error: {error_message}')
+
         else:
-            # If there was an error, extract the error message from Firebase's response
-            error_message = response.json().get('error', {}).get('message', 'Error sending reset email')
-            # Display the error message to the user
-            messages.error(request, f'Error: {error_message}')
-    
+            # If the email is not found in Firestore, display an error message
+            messages.error(request, 'Email not found in our system. Please make sure you entered the correct email address.')
+
     # If the request method is not POST, render the password reset form
     return render(request, 'home/password_reset.html')
 
 
-# Define the desired time zone (UTC-4)
-desired_timezone = pytz.timezone("America/New_York")  # This is UTC-4 when in daylight saving time
-
-
-
-def results_view(request):
-    # Render the results page without any data
-    return render(request, 'home/results.html')
 
 def delete_email_view(request):
     if request.method == 'POST':
@@ -337,7 +457,7 @@ def delete_email_view(request):
                 auth.delete_user(user.uid)
                 
                 # Delete user document from Firestore
-                db.collection('users').document(user_email).delete()
+                db.collection('accounts').document(user_email).delete()
 
                 messages.success(request, "Your account has been successfully deleted.")
                 return logout_view(request)  # Log out the user and clear session
@@ -352,7 +472,6 @@ def delete_email_view(request):
             messages.error(request, f"Error deleting account: {str(e)}")
 
     return redirect('/profile/')
-
 
 
 def change_password(request):
@@ -385,119 +504,25 @@ def change_password(request):
                 # If current password is correct, update to new password
                 user = auth.get_user_by_email(user_email)
                 auth.update_user(user.uid, password=new_password)
-                messages.success(request, 'Password changed successfully.')
+                messages.success(request, 'Password changed successfully.', {'keep_modal_open': True})
             else:
                 # Handle incorrect current password case
                 messages.error(request, 'Current password is incorrect.')
-                return render(request, 'home/profile.html', {'keep_modal_open': True})  # Keep modal open on error
+                return render(request, 'home/profile.html', {'keep_modal_open': True})  
 
         except firebase_admin.auth.UserNotFoundError:
             messages.error(request, 'User not found.')
-            return render(request, 'home/profile.html', {'keep_modal_open': True})  # Keep modal open on error
+            return render(request, 'home/profile.html', {'keep_modal_open': True}) 
 
         except Exception as e:
             messages.error(request, f'Error occurred: {str(e)}')
-            return render(request, 'home/profile.html', {'keep_modal_open': True})  # Keep modal open on error
+            return render(request, 'home/profile.html', {'keep_modal_open': True})  
 
         return redirect('profile')  # Redirect on success
 
-    return redirect('profile')
+    return redirect('profile') 
 
-
-def search_person(request, summary):
-    # Extract attributes from the summary
-    bottom_color = summary.get('bottom_color')
-    bottom_type = summary.get('bottom_type')
-    middle_color = summary.get('middle_color')
-    middle_type = summary.get('middle_type')
-    top_color = summary.get('top_color')
-    top_type = summary.get('top_type')
-    camera = summary.get('camera')  # Camera number
-    start_time = summary.get('start_time')  # Start of the time frame (string in ISO format)
-    end_time = summary.get('end_time')  # End of the time frame (string in ISO format)
-
-    # Convert the start and end time to Firestore-friendly UTC timestamps
-    start_timestamp = datetime.strptime(start_time, "%Y-%m-%dT%H:%M").replace(tzinfo=pytz.UTC)
-    end_timestamp = datetime.strptime(end_time, "%Y-%m-%dT%H:%M").replace(tzinfo=pytz.UTC)
-
-    # Convert start and end timestamps to the desired display format
-    formatted_start_time = start_timestamp.strftime("%B %d, %Y at %I:%M:%S %p")
-    formatted_end_time = end_timestamp.strftime("%B %d, %Y at %I:%M:%S %p")
-
-    results2 = []
-
-    # Step 1: Query Firestore based on attributes (without timestamp filtering)
-    query = db.collection('search_test') \
-              .where('bottom_color', '==', bottom_color) \
-              .where('bottom_type', '==', bottom_type) \
-              .where('middle_color', '==', middle_color) \
-              .where('middle_type', '==', middle_type) \
-              .where('top_color', '==', top_color) \
-              .where('top_type', '==', top_type) \
-              .where('camera', '==', camera)
-
-    # Step 2: Manually filter by the timestamp
-    for doc in query.stream():
-        doc_data = doc.to_dict()
-
-        # Retrieve the document's timestamp and convert it to UTC if needed
-        raw_timestamp = doc_data.get('timestamp')
-
-        if isinstance(raw_timestamp, str):
-            # Convert string timestamp to datetime (assuming the format is consistent)
-            detection_time = datetime.strptime(raw_timestamp, "%B %d, %Y at %I:%M:%S %p UTC%z")
-        else:
-            detection_time = raw_timestamp  # If it's already a Firestore timestamp object
-
-        # Check if the timestamp falls within the desired timeframe
-        if start_timestamp <= detection_time <= end_timestamp:
-            # Convert the UTC timestamp to the desired timezone (UTC-4)
-            local_timestamp = detection_time.astimezone(desired_timezone)
-            formatted_timestamp = local_timestamp.strftime("%B %d, %Y at %I:%M:%S %p")
-
-            # Append the result with the formatted timestamp and other details
-            results2.append({
-                'timestamp': formatted_timestamp,
-                'photo': doc_data.get('photo'),
-                'camera': camera,
-                'bottom_color': bottom_color,
-                'bottom_type': bottom_type,
-                'middle_color': middle_color,
-                'middle_type': middle_type,
-                'top_color': top_color,
-                'top_type': top_type,
-            })
-
-    # Step 3: Return results to the frontend
-    return render(request, 'home/results.html', {
-        'results2': results2,
-        'summary': summary,
-        'formatted_start_time': formatted_start_time,
-        'formatted_end_time': formatted_end_time
-    })
-
-
-def demo_input(request):
-    # Simulated summary input (attributes to match and timeframe)
-    summary = {
-    'bottom_color': "black",
-    'bottom_type': "long_pants",
-    'middle_color': "black",
-    'middle_type': "long_shirt",
-    'top_color': "black",
-    'top_type': "medium_hair",
-    'camera': "1",  # Only search for camera 1
-    'start_time': '2024-10-14T00:01',  # Start of the day for October 14, 2024
-    'end_time': '2024-10-14T23:59'  # End of the day for October 14, 2024
-}
-
-    # Call the search_person function with the summarized input
-    return search_person(request, summary)
-
-import os
-import re
 import subprocess
-from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 from .models import VideoUpload
 
@@ -567,9 +592,8 @@ def upload_view(request):
     return render(request, 'home/upload.html', {'message': message, 'uploads': uploads})
 
 
+def search_attributes1(request):
 
-
-def search_attributes(request):
     if request.method == 'POST':
         # Retrieve all selections from the form data
         top_attribute = request.POST.get('top_attribute')
@@ -578,129 +602,127 @@ def search_attributes(request):
         middle_color = request.POST.get('middle_color')
         bottom_attribute = request.POST.get('bottom_attribute')
         bottom_color = request.POST.get('bottom_color')
-        from_date = request.POST.get('from_date')
-        from_time = request.POST.get('from_time')
-        to_date = request.POST.get('to_date')
-        to_time = request.POST.get('to_time')
-        camera = request.POST.get('camera')
+        feed_name = request.POST.get('feed_name')
 
-        # Combine date and time into datetime objects
+        # Get user_email from session
+        user_email = request.session.get('email')
+
+        # Fetch feed link and scanning speed from live_feeds collection based on user_email and feed_name to retrive matching persons with same identifiers 
+        video_link = None
+        speed = None
         try:
-            from_datetime_str = f"{from_date} {from_time}"
-            to_datetime_str = f"{to_date} {to_time}"
-            from_datetime = datetime.strptime(from_datetime_str, '%Y-%m-%d %H:%M')
-            to_datetime = datetime.strptime(to_datetime_str, '%Y-%m-%d %H:%M')
+            feeds_query = db.collection('live_feeds').where('user_email', '==', user_email).where('feed_name', '==', feed_name).stream()
+            for feed_doc in feeds_query:
+                feed_data = feed_doc.to_dict()
+                video_link = feed_data.get('video_link')
+                speed = feed_data.get('speed')
+                break 
 
-            # Convert to UTC timezone
-            from_datetime = pytz.utc.localize(from_datetime)
-            to_datetime = pytz.utc.localize(to_datetime)
+            if not video_link or not speed:
+                messages.error(request, "No matching feed found for the given name.")
+                return render(request, 'home/dashboard.html')
+
         except Exception as e:
-            messages.error(request, f"Error parsing dates: {str(e)}")
+            messages.error(request, f"Error retrieving feed data: {str(e)}")
             return render(request, 'home/dashboard.html')
 
-        # Build the query based on provided attributes and timestamp range
-        query = db.collection('search_test')
+        # Define weights for each attribute
+        weights = {
+            'top_type': 20,
+            'top_color': 10,
+            'middle_type': 25,
+            'middle_color': 15,
+            'bottom_type': 20,
+            'bottom_color': 10
+        }
 
-        # query parameters for printing
-        query_params = []
+        # Build the query based on user_email, feed_link, and speed
+        query = db.collection('IdentifiedPersons').where('user_email', '==', user_email).where('video_link', '==', video_link).where('speed', '==', speed)
 
-        # Include top attribute and color in the query
-        if top_attribute:
-            query = query.where(filter=FieldFilter('top_type', '==', top_attribute.lower()))
-            query_params.append(f"top_type == {top_attribute.lower()}")
-        if top_color:
-            query = query.where(filter=FieldFilter('top_color', '==', top_color.lower()))
-            query_params.append(f"top_color == {top_color.lower()}")
-
-        # Include middle attribute and color
-        if middle_attribute:
-            query = query.where(filter=FieldFilter('middle_type', '==', middle_attribute.lower()))
-            query_params.append(f"middle_type == {middle_attribute.lower()}")
-        if middle_color:
-            query = query.where(filter=FieldFilter('middle_color', '==', middle_color.lower()))
-            query_params.append(f"middle_color == {middle_color.lower()}")
-
-        # Include bottom attribute and color
-        if bottom_attribute:
-            query = query.where(filter=FieldFilter('bottom_type', '==', bottom_attribute.lower()))
-            query_params.append(f"bottom_type == {bottom_attribute.lower()}")
-        if bottom_color:
-            query = query.where(filter=FieldFilter('bottom_color', '==', bottom_color.lower()))
-            query_params.append(f"bottom_color == {bottom_color.lower()}")
-
-        # Include camera
-        if camera:
-            query = query.where(filter=FieldFilter('camera', '==', camera))
-            query_params.append(f"camera == {camera}")
-
-        # Add timestamp filtering
-        query = query.where(filter=FieldFilter('timestamp', '>=', from_datetime))
-        query = query.where(filter=FieldFilter('timestamp', '<=', to_datetime))
-        query_params.append(f"timestamp >= {from_datetime}")
-        query_params.append(f"timestamp <= {to_datetime}")
-
-        # Printing the search parameters to the terminal
-        print("Search Parameters:")
-        print(f"From datetime: {from_datetime}")
-        print(f"To datetime: {to_datetime}")
-        print(f"Camera: {camera}")
-        print("Query Parameters:")
-        for param in query_params:
-            print(f"- {param}")
-
-        # Execute the query
-        results = []
+        # Execute the query with results in categories 
+        exact_matches = []
+        high_matches = []
+        medium_matches = []
         try:
-            print("Entered the try block.")
             docs = query.stream()
-            print("Query executed successfully.")
             for doc in docs:
                 doc_data = doc.to_dict()
-                print(f"Retrieved Document ID: {doc.id}, Data: {doc_data}")
-                timestamp = doc_data.get('timestamp')
-                if timestamp:
-                    # Ensure timestamp is timezone-aware
-                    if not timestamp.tzinfo:
-                        timestamp = timestamp.replace(tzinfo=pytz.utc)
-                    timestamp_dt = timestamp
+                score = 0
+                unmatched_attributes = []
 
-                    results.append({
-                        'timestamp': timestamp_dt,
-                        'photo': doc_data.get('photo'),
-                        'camera': doc_data.get('camera'),
-                        'top_type': doc_data.get('top_type'),
-                        'top_color': doc_data.get('top_color'),
-                        'middle_type': doc_data.get('middle_type'),
-                        'middle_color': doc_data.get('middle_color'),
-                        'bottom_type': doc_data.get('bottom_type'),
-                        'bottom_color': doc_data.get('bottom_color')
-                    })
-            print(f"Number of results found: {len(results)}")
+                # Check each attribute for a match, update score, and record unmatched attributes
+                if top_attribute:
+                    if doc_data.get('top_type') == top_attribute.lower():
+                        score += weights['top_type']
+                    else:
+                        unmatched_attributes.append('top_type')
+                if top_color:
+                    if doc_data.get('top_color') == top_color.lower():
+                        score += weights['top_color']
+                    else:
+                        unmatched_attributes.append('top_color')
+                if middle_attribute:
+                    if doc_data.get('middle_type') == middle_attribute.lower():
+                        score += weights['middle_type']
+                    else:
+                        unmatched_attributes.append('middle_type')
+                if middle_color:
+                    if doc_data.get('middle_color') == middle_color.lower():
+                        score += weights['middle_color']
+                    else:
+                        unmatched_attributes.append('middle_color')
+                if bottom_attribute:
+                    if doc_data.get('bottom_type') == bottom_attribute.lower():
+                        score += weights['bottom_type']
+                    else:
+                        unmatched_attributes.append('bottom_type')
+                if bottom_color:
+                    if doc_data.get('bottom_color') == bottom_color.lower():
+                        score += weights['bottom_color']
+                    else:
+                        unmatched_attributes.append('bottom_color')
+
+                # Classify based on matching score and mark unmatched attributes
+                result_data = {
+                    'detection_time': doc_data.get('detection_time'),
+                    'detection_time_link': doc_data.get('detection_time_link'),
+                    'photo': doc_data.get('photo'),
+                    'feed_name': doc_data.get('feed_name'),
+                    'top_type': f"{doc_data.get('top_type')} (unmatched)" if 'top_type' in unmatched_attributes else doc_data.get('top_type'),
+                    'top_color': f"{doc_data.get('top_color')} (unmatched)" if 'top_color' in unmatched_attributes else doc_data.get('top_color'),
+                    'middle_type': f"{doc_data.get('middle_type')} (unmatched)" if 'middle_type' in unmatched_attributes else doc_data.get('middle_type'),
+                    'middle_color': f"{doc_data.get('middle_color')} (unmatched)" if 'middle_color' in unmatched_attributes else doc_data.get('middle_color'),
+                    'bottom_type': f"{doc_data.get('bottom_type')} (unmatched)" if 'bottom_type' in unmatched_attributes else doc_data.get('bottom_type'),
+                    'bottom_color': f"{doc_data.get('bottom_color')} (unmatched)" if 'bottom_color' in unmatched_attributes else doc_data.get('bottom_color')
+                }
+
+                if score == 100:
+                    exact_matches.append(result_data)
+                elif 80 <= score < 100:
+                    high_matches.append(result_data)
+                elif 60 <= score < 80:
+                    medium_matches.append(result_data)
+
         except Exception as e:
-            print(f"Exception occurred: {e}")
             messages.error(request, f"Error querying database: {str(e)}")
             return render(request, 'home/dashboard.html')
 
-        # Pass the results to the template
+        # Pass the categorized results to the template
         context = {
-            'results': results,
+            'exact_matches': exact_matches,
+            'high_matches': high_matches,
+            'medium_matches': medium_matches,
             'selections': {
                 'top': {'attribute': top_attribute, 'color': top_color},
                 'middle': {'attribute': middle_attribute, 'color': middle_color},
                 'bottom': {'attribute': bottom_attribute, 'color': bottom_color},
-                'timeframe': f"From {from_date} {from_time} to {to_date} {to_time}",
-                'camera': camera
-            },
-            'from_date': from_date,
-            'from_time': from_time,
-            'to_date': to_date,
-            'to_time': to_time
+                'feed_name': feed_name
+            }
         }
 
         return render(request, 'home/dashboard.html', context)
     else:
         return redirect('dashboard')
-    
 
 from django.conf import settings
 from redis import Redis

@@ -24,6 +24,8 @@
             <nav class="nav">
                 <a href="{% url 'homepage' %}" class="nav-link">Homepage</a>
                 <a href="{% url 'login' %}" class="nav-link">Login</a>
+                <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
+                <a href="{% url 'support' %}" class="nav-link">Support</a>
             </nav>
         </div>
     </header>
@@ -44,6 +46,10 @@
                 <label for="signup-lastname">Last Name:</label>
                 <input type="text" id="signup-lastname" name="last_name"  required value="{{ last_name }}" />
                 <p class="error-message" id="last-name-error">Name should only contain letters.</p>
+
+                <!-- Department Name Input -->
+                <label for="signup-department">Department Name:</label>
+                <input type="text" id="signup-department" name="department_name" required value="{{ department_name }}" />
 
                 <!-- Email Input -->
                 <label for="signup-email">Email:</label>

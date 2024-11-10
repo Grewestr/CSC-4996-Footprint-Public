@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from .views import login_view, homepage_view, signup_view, dashboard_view, logout_view, admin_dashboard_view, upload_view, approve_user_view, example_view, password_reset_view, results_view, profile_view, change_password, delete_email_view,  search_person, demo_input, search_attributes
+from .views import login_view, homepage_view, signup_view, dashboard_view, logout_view, admin_dashboard_view, upload_view,  password_reset_view, profile_view, change_password, delete_email_view ,search_attributes1,update_account_status,support
 
 urlpatterns = [
     path('login/', login_view, name='login'),
@@ -24,17 +24,17 @@ urlpatterns = [
     path('', homepage_view, name='homepage'),  
     path('logout/', logout_view, name='logout'),
     path('admin_dashboard/', admin_dashboard_view, name='admin_dashboard'),
-    path('approve_user/<str:email>/', approve_user_view, name='approve_user'),
-    path('example/', example_view, name='example'),
+    path('update_account_status/<str:email>/', update_account_status, name='update_account_status'),
     path('password_reset/', password_reset_view, name='password_reset'),
-    path('results/', results_view, name='results'),
     path('profile/', profile_view, name='profile'),
     path('change_password/', change_password, name='change_password'),
     path('delete_email/', delete_email_view, name='delete_email'),
-    path('search_person/', search_person, name='search_person'),
-    path('demo_input/', demo_input, name='demo_input'),
-    path('search_attributes/', search_attributes, name='search_attributes'),
+    path('search_attributes1/', search_attributes1, name='search_attributes1'),
+    path('support/', support, name='support'),
     path('upload/', upload_view, name='upload'),
+    
+
+
 
      
      

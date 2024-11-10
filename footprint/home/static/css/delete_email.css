@@ -64,6 +64,6 @@ button#submitDeleteEmail:disabled {
 
 .button-container button {
   margin-bottom: 10px; /* Add space between the buttons */
-  padding: 10px 20px; /* Optional: Add some padding for better button appearance */
-  font-size: 16px; /* Optional: Increase button font size */
+  padding: 10px 20px; /*Add some padding for better button appearance */
+  font-size: 16px; /*Increase button font size */
 }
