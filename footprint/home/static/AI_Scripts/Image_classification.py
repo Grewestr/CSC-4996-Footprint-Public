@@ -7,6 +7,7 @@ from inference_sdk import InferenceHTTPClient
 from sklearn.metrics.pairwise import euclidean_distances
 from colormath.color_objects import sRGBColor, LabColor
 from colormath.color_conversions import convert_color
+from colormath.color_diff import delta_e_cie2000
 
 # Define paths relative to the container’s working directory
 input_folder = "/AI_Scripts/Identified_Person"
@@ -88,15 +89,35 @@ def rgb_to_lab(rgb):
 def detect_color(rgb_tuple):
     l, a, b = rgb_to_lab(rgb_tuple)
     color_ranges = [
-        ("black", 0, 0, 0), ("white", 100, 0, 0), ("gray", 50, 0, 0),
-        ("brown", 30, 19, 25), ("beige", 80, 5, 20), ("red", 53, 80, 67),
-        ("orange", 62, 34, 62), ("yellow", 97, -21, 94), ("green", 46, -51, 50),
-        ("blue", 32, 79, -108), ("purple", 29, 58, -36), ("pink", 75, 31, -6)
+        ("black", 0, 0, 0),
+        ("white", 100, 0, 0),
+        ("gray", 50, 0, 0),
+        ("brown", 30, 19, 25),
+        ("beige", 80, 5, 20),
+        ("red", 53, 80, 67),
+        ("orange", 62, 34, 62),
+        ("yellow", 97, -21, 94),
+        ("green", 46, -51, 50),
+        ("green", 75, -30, 30), # light green
+        ("blue", 32, 79, -108),
+        ("purple", 29, 58, -36),
+        ("pink", 75, 31, -6)
     ]
-    color_array = np.array([lab for _, *lab in color_ranges])
-    distances = euclidean_distances(np.array([[l, a, b]]), color_array)
-    min_index = np.argmin(distances)
-    return color_ranges[min_index][0]
+    
+    # Create a LabColor object for the input color
+    color_to_detect = LabColor(lab_l=l, lab_a=a, lab_b=b)
+    
+    # Calculate Delta-E for each predefined color
+    min_distance = float('inf')
+    closest_color = None
+    for color_name, l2, a2, b2 in color_ranges:
+        reference_color = LabColor(lab_l=l2, lab_a=a2, lab_b=b2)
+        delta_e = delta_e_cie2000(color_to_detect, reference_color)
+        if delta_e < min_distance:
+            min_distance = delta_e
+            closest_color = color_name
+
+    return closest_color
 
 # Process image for clothing attributes
 def process_image_for_attributes(image_path):
