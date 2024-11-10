@@ -7,7 +7,7 @@ from inference_sdk import InferenceHTTPClient
 from sklearn.metrics.pairwise import euclidean_distances
 from colormath.color_objects import sRGBColor, LabColor
 from colormath.color_conversions import convert_color
-from colormath.color_diff import delta_e_cie2000
+from color_diff import delta_e_cie2000
 
 # Define paths relative to the container’s working directory
 input_folder = "/AI_Scripts/Identified_Person"
