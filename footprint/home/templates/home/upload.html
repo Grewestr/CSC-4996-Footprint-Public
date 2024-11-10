@@ -21,12 +21,11 @@
                 <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
                 <a href="{% url 'profile' %}" class="nav-link">Profile</a>
                 <a href="{% url 'logout' %}" class="nav-link">Logout</a>
-                
             </nav>
         </div>
     </header>
 
-    <main class="main-content">
+    <main class="container main-content">
         <!-- Left Section (Upload Section) -->
         <div class="left-section">
             <h2>Upload YouTube Video</h2>
@@ -40,6 +39,10 @@
             {% endif %}
             <form action="{% url 'upload' %}" method="post" class="upload-form">
                 {% csrf_token %}
+                
+                <label for="feed_name">Feed Name:</label>
+                <input type="text" id="feed_name" name="feed_name" placeholder="Enter a feed name" required>
+
                 <label for="youtube_link">YouTube Video Link:</label>
                 <input type="url" id="youtube_link" name="youtube_link" placeholder="Enter YouTube video link" required>
 
@@ -90,7 +93,6 @@
                 <p id="no-uploads-message">No videos in the queue.</p>
             {% endif %}
         </div>
-
     </main>
 
     <footer>

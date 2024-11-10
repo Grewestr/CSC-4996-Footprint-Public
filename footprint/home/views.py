@@ -158,7 +158,7 @@ def login_view(request):
                         if role == 'admin':
                             return redirect('admin_dashboard')
                         else:
-                            return redirect('dashboard')
+                            return redirect('upload')
 
             else:
                 # If authentication fails, check the error response
@@ -545,17 +545,26 @@ def check_and_run_boot_commands():
         run_docker_command("docker-compose up -d", cwd=boot_directory)  # Run in detached mode
         BOOT_COMMANDS_RUN = True
 
+        
 @require_http_methods(["GET", "POST"])
 def upload_view(request):
     check_and_run_boot_commands()  # Ensure boot commands run before proceeding
 
     message = None
     if request.method == 'POST':
+        feed_name = request.POST.get('feed_name')
         youtube_link = request.POST.get('youtube_link')
         processing_speed = request.POST.get('processing_speed')
-        user_id = request.user.id  # Assume user authentication is enabled
+        
+        # Retrieve the user's email from the session
+        user_email = request.session.get('email')  # Firebase email stored in the session
+        
+        if not user_email:
+            # Redirect to login if the email is not found in the session
+            messages.error(request, 'User email not found in session. Please log in again.')
+            return redirect('login')
 
-        if youtube_link and processing_speed:
+        if feed_name and youtube_link and processing_speed:
             # Validate YouTube URL
             youtube_regex = (
                 r'^(https?://)?(www\.)?'
@@ -564,18 +573,34 @@ def upload_view(request):
             )
             match = re.match(youtube_regex, youtube_link)
             if match:
-                video_id = match.group(4)
+                # Prepare data for Firestore
+                feed_data = {
+                    'feed_name': feed_name,
+                    'speed': processing_speed,
+                    'video_link': youtube_link,
+                    'user_email': user_email,
+                    'feed_status': 'uncomplete'
+                }
+                
+                # Save to Firestore
+                try:
+                    db.collection('live_feeds').add(feed_data)
+                    messages.success(request, "Feed added successfully to Firestore.")
+                except Exception as e:
+                    messages.error(request, f"Error adding feed to Firestore: {str(e)}")
+                    return redirect('dashboard')
                 
                 # Save the upload to the database
                 video_upload = VideoUpload.objects.create(
                     youtube_link=youtube_link,
                     processing_speed=processing_speed,
-                    status='Pending'
+                    status='Pending',
+                    user_email=user_email  # Store the user’s email with the upload
                 )
 
                 # Prepare parameters for the Docker command
                 script_directory = "C:\\Users\\17344\\Documents\\Capstone2\\CSC-4996-Footprint\\footprint\\home\\static\\AI_Scripts"
-                docker_command = f'docker-compose run --rm rq-worker python video_Enqueue.py "{youtube_link}" {processing_speed} "{user_id}"'
+                docker_command = f'docker-compose run --rm rq-worker python video_Enqueue.py "{youtube_link}" {processing_speed} "{user_email}"'
                 
                 # Run the Docker command to process the video
                 run_docker_command(docker_command, cwd=script_directory)
