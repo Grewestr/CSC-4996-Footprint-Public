@@ -1,0 +1,73 @@
+
+Docker Setup and Managing Containers
+___________________________________________________
+
+Step 1: Download and Install Docker
+If you haven’t already, download Docker Desktop from the Docker website: 
+https://www.docker.com/products/docker-desktop/
+
+Follow the installation instructions specific to your operating system 
+(Windows, macOS, or Linux).
+
+After installation, open Docker Desktop and sign in with your Docker 
+account or create a new one if needed.
+___________________________________________________
+
+Step 2: Build the Docker Containers
+Once Docker is installed and you are signed in, change to the 
+directory containing your Dockerfile:
+
+cd "...\CSC-4996-Footprint\footprint"
+
+Now, build the Docker containers:
+
+TERMINAL COMMAND:
+"
+
+docker-compose build
+
+"
+
+This will build the images as defined in the docker-compose.yml file based on the Dockerfile 
+located in the current directory. This will take some time to Build, You'll know if you did it 
+right if you can see the status in the terminal. 
+
+NOTE: You don't always need to re-build docker, but if you do change the core docker files you'll
+ need to rebuild docker. If dependencies are changed, the rebuild time will take longer. 
+___________________________________________________
+
+Step 3: Start the Containers
+After building, start the containers:
+
+TERMINAL COMMAND:
+"
+
+docker-compose up
+
+"
+
+This command will start up all services as specified in the docker-compose.yml file. 
+This is where you can start using the video_Enqueue.py. You can also verify that Docker
+ is up if you physically go into the docker application and see a footprint container running. 
+
+NOTE: You will always need docker up if you want to use the AI model. 
+___________________________________________________
+
+Step 4: Stop the Containers
+When you're ready to stop the running containers, use the following command:
+
+TERMINAL COMMAND:
+"
+
+docker-compose down
+
+"
+
+This will gracefully stop and remove the containers defined in the docker-compose.yml 
+file. This is done when you are done using the AI model. Its good practice to turn off 
+docker before turning off your PC. you can also stop the container on the Docker 
+application itself. Either works. 
+___________________________________________________
+
+If you make changes to the Dockerfile or any dependencies, repeat Step 2 to rebuild,
+ then proceed with Step 3 to start up the updated containers.
