@@ -78,7 +78,7 @@ def dashboard_view(request):
     if user_email:
         try:
             # Query the live_feeds collection for documents with matching user_email and finished feed_status
-            feeds_query = db.collection('live_feeds').where('user_email', '==', user_email).where('feed_status', '==', 'finished').stream()
+            feeds_query = db.collection('live_feeds').where('user_email', '==', user_email).where('feed_status', '==', 'uncomplete').stream()
             
             # Extract only the feed name for each matching document
             live_feed_names = [feed.to_dict().get('feed_name') for feed in feeds_query if 'feed_name' in feed.to_dict()]
@@ -545,7 +545,7 @@ def check_and_run_boot_commands():
         run_docker_command("docker-compose up -d", cwd=boot_directory)  # Run in detached mode
         BOOT_COMMANDS_RUN = True
 
-        
+
 @require_http_methods(["GET", "POST"])
 def upload_view(request):
     check_and_run_boot_commands()  # Ensure boot commands run before proceeding
