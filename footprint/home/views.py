@@ -617,6 +617,8 @@ def upload_view(request):
     return render(request, 'home/upload.html', {'message': message, 'uploads': uploads})
 
 
+
+
 def search_attributes1(request):
 
     if request.method == 'POST':
