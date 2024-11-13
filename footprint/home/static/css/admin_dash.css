@@ -2,39 +2,135 @@
    Admin Dashboard Styles
 ================================ */
 
-/* General Styles */
+:root {
+  --color-approved: #52e4298e; /* Light Green - Figma Color Code */
+  --color-pending: #f0f02882;  /* Yellow - Figma Color Code*/
+  --color-denied: #ff313187;   /* Red - Figma Color Code */
+  --color-default: #d3d3d3;  /* Default gray  - Need to change in later*/
+}
+
+/* General reset for consistent styling */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body Styles */
 body {
   font-family: 'Courier New', Courier, monospace;
-  background-color: #d3d3d3; /* Updated to match other pages */
-  color: #000000;
-  margin: 0;
+  background-color: #d3d3d3; /* Gray background for the whole page */
+  color: #000;
   display: flex;
   flex-direction: column;
+  align-items: center; /* Center main content horizontally */
   min-height: 100vh;
+  margin: 0;
 }
 
-.container {
-  width: 90%;
-  max-width: 800px;
+.scaled-wrapper {
+  width: 100%;
+  max-width: 1200px; /* Maximum width for the centered layout */
   margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
 }
 
+/* Content Box - Centered White background box */
+.content-box {
+  background-color: #ffffff;
+  padding: 40px 30px 5px 30px; /* Padding to add space */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slight shadow */
+  margin: 20px auto;
+  max-width: 1100px; 
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+}
 
 /* Main Content Styles */
 main {
-  padding: 40px 0;
-  flex: 1;
+  padding: 20px 0;
 }
 
 section {
   margin-bottom: 40px;
 }
 
+h2 {
+  font-weight: bold;
+  font-size: 1.5em;
+  margin-bottom: 20px; /* Space between title and top */
+}
+
+/* Filter and Search Styles */
+form {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+label {
+  font-weight: bold;
+}
+
+input[type="text"],
+select {
+  padding: 8px;
+  border: 2px solid #000;
+  border-radius: 4px;
+  font-weight: bold;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.button {
+  padding: 10px 20px;
+  border: 2px solid #000;
+  cursor: pointer;
+  font-size: 1em;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  border-radius: 5px;
+  transition: background-color 0.3s, transform 0.3s;
+  text-decoration: none;
+}
+
+button:hover {
+  background-color: #3fb2d8;
+  
+}
+
+.search-button {
+  background-color: #3fb2d8;
+}
+
+.search-button:hover {
+  background-color: #6cc8ec;
+}
+
+.clear-filters-button:hover {
+  background-color: #fd5c5c6e; 
+}
+
+.clear-filters-button {
+  background-color: #f05858;
+  font-weight: bold;
+  color:#000;
+}
+
+
+
+
 /* Table Styles */
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  background-color: #fff;
 }
 
 thead th {
@@ -51,46 +147,166 @@ tbody td {
   text-align: center;
 }
 
-/* Button Styles */
-button {
-  background-color: #3fb2d8;
-  color: #000;
-  padding: 10px 20px;
-  border: 2px solid #000;
-  cursor: pointer;
-  font-size: 1em;
-  font-family: 'Courier New', Courier, monospace;
-  font-weight: bold;
-  transition: transform 0.3s, background-color 0.3s;
+tbody td.account-created {
+  white-space: pre-line; /*date and time to appear on seprate lines */
+  text-align: center;
 }
 
-button:hover {
-  background-color: #6cc8ec;
-  transform: scale(1.1);
-}
-/* account status column style*/
-
+/* Account Status Column Style */
 .status-box {
   display: inline-block;
   padding: 5px 10px;
-  color: #fff;
+  color: #000;
   border-radius: 5px;
   font-weight: bold;
+  width: 100px; /* Set a fixed width */
+  text-align: center;
 }
 
 .status-approved {
-  background-color: #4CAF50; /* Green */
-  color: #000000; 
+  background-color: #51E429; /* Green */
 }
 
 .status-denied {
-  background-color: #f44336; /* Red */
-  color: #000000; 
+  background-color: #FF3131; /* Red */
 }
 
 .status-pending {
-  background-color: #ffeb3b; /* Yellow */
-  color: #000000; 
+  background-color: #F0F028; /* Yellow */
+}
+
+
+
+select.open {
+  background-image: url("{% static 'images/up_arrow.png' %}"); /* Still Needs work */
+}
+
+/* Pagination Box Styles */
+.pagination-box {
+  background-color: #ffffff;
+  border: 2px solid #4CAF50; /* Green border */
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.pagination-box table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+}
+
+.pagination-box th, .pagination-box td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.pagination-controls {
+  display: inline-flex;
+  gap: 10px; /* Space between Next and Previous */
+  margin-left: 5px; 
+  font-weight: bold;
+}
+
+.pagination-controls button {
+  padding: 5px 10px;
+  border: none;
+  background-color: #51E429; /* Green button color */
+  color: #000000;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  
+}
+
+.pagination-controls a {
+  padding: 5px 10px; /* Padding for the buttons */
+  text-decoration: none;
+  color: #000;
+  background-color: #3fb2d8; 
+  border: 2px solid #000; 
+  border-radius: 5px; 
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.pagination-container {
+  margin-top: 10px; 
+}
+
+.pagination-controls a:hover {
+  background-color: #6cc8ec;
+}
+
+.pagination-controls button:hover {
+  background-color: #45a049; 
+}
+
+/* Left-aligned pagination info under the table */
+.pagination-info-left {
+  display: inline-block;
+  font-weight: bold;
+}
+
+/* Filter Form and Search Styles */
+form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+input[type="text"], select, button {
+  background-image: url("{% static 'images/down_arrow.png' %}"); /* Still Needs work */
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding: 8px;
+  border: 2px solid #000;
+  border-radius: 10px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  
+}
+
+
+
+/* Apply colors based on status */
+select[data-status="approved"] {
+  background-color: var(--color-approved);
+  color: #000000;
+  font-weight: bold;
+}
+
+select[data-status="pending"] {
+  background-color: var(--color-pending);
+  color: #000;
+  font-weight: bold;
+}
+
+select[data-status="denied"] {
+  background-color: var(--color-denied);
+  color: #000000;
+  font-weight: bold;
+}
+
+/* Menu styling for open dropdown */
+select option {
+  background-color: #fff; 
+  color: #000; 
+}
+
+/* Change background color*/
+select option:checked {
+  background-color: var(--color-default); 
+  color: #000;
+}
+
+select:hover, select:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
 /* Footer Styles */
@@ -98,8 +314,31 @@ footer {
   border-top: 2px solid #000;
   padding: 20px 0;
   text-align: center;
-  margin-top: auto;
   font-weight: 500;
-  background-color: #fff; 
+  background-color: #ffffff;
   width: 100%;
+  margin-top: auto; /* Pushes footer to the bottom */
 }
+
+/* Container for title and message display */
+.title-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Success Message */
+.success-message-box {
+  display: none; 
+  background-color: #d4edda; 
+  color: #000000; 
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid #c3e6cb;
+  font-weight: bold;
+  font-size: 0.9em;
+  margin-left: 15px; 
+  white-space: nowrap; 
+}
+
+

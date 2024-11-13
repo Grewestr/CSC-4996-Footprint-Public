@@ -1,5 +1,6 @@
 
 import re
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from django.contrib import messages
@@ -14,7 +15,10 @@ from google.cloud import firestore
 from google.oauth2 import service_account
 from google.cloud.firestore_v1 import FieldFilter
 from collections import defaultdict
+from django.urls import reverse
+from datetime import timedelta
 import csv
+
 
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
@@ -78,7 +82,7 @@ def dashboard_view(request):
     if user_email:
         try:
             # Query the live_feeds collection for documents with matching user_email and finished feed_status
-            feeds_query = db.collection('live_feeds').where('user_email', '==', user_email).where('feed_status', '==', 'finished').stream()
+            feeds_query = db.collection('live_feeds').where('user_email', '==', user_email).where('feed_status', '==', 'uncomplete').stream()
             
             # Extract only the feed name for each matching document
             live_feed_names = [feed.to_dict().get('feed_name') for feed in feeds_query if 'feed_name' in feed.to_dict()]
@@ -291,6 +295,8 @@ def admin_dashboard_view(request):
     status_filter = request.GET.get('status', 'all')
     search_query = request.GET.get('search', '').strip().lower()
     department_filter = request.GET.get('department', '')
+    page_number = int(request.GET.get('page',1))
+    items_per_page = 10 # users shown per page
 
     # Fetch all unique departments from the 'accounts' collection
     department_names = set()
@@ -315,6 +321,11 @@ def admin_dashboard_view(request):
     users_list = []
     for user in users:
         user_data = user.to_dict()
+        created_at = user_data.get("created_at")
+
+        if created_at:
+            created_at = created_at - timedelta(hours=4)
+
 
         # Filter by department if specified
         if department_filter == '' or user_data.get('department_name') == department_filter:
@@ -331,21 +342,37 @@ def admin_dashboard_view(request):
                     'last_name': user_data.get('last_name', 'N/A'),
                     'department_name': user_data.get('department_name', 'N/A'),
                     'account_status': user_data.get('account_status', 'N/A'),
+                    'account_created': created_at,
                     'doc_id': user.id
                 })
+    
+    users_list.sort(key=lambda x: x['account_created'], reverse=True)
+
+    paginator = Paginator(users_list, items_per_page)
+    page_obj = paginator.get_page(page_number)
 
     context = {
-        'users_list': users_list,
+        'page_obj': page_obj,
+        'users_list': page_obj.object_list,
+        'total_count': paginator.count,
         'status_filter': status_filter,
         'search_query': search_query,
         'department_filter': department_filter,
-        'department_names': department_names  
+        'department_names': department_names,
+        'page_number': page_number,
+        'num_pages': paginator.num_pages,  
     }
     return render(request, 'home/admin_dashboard.html', context)
 
 
 def update_account_status(request, email):
     new_status = request.POST.get('new_status')  # Get the status from the form
+
+    # Get the current filters from POST
+    status_filter = request.POST.get('status', 'all')
+    department_filter = request.POST.get('department', '')
+    search_query = request.POST.get('search', '')
+
     try:
         # Reference to the user's document in Firestore
         user_ref = db.collection('accounts').document(email)
@@ -355,12 +382,14 @@ def update_account_status(request, email):
 
         # Display a success message with a custom tag
         messages.success(request, f'Account status for {email} updated to {new_status}.', extra_tags='status_update')
-        return redirect('admin_dashboard')
+        
 
     except Exception as e:
         # If there was an error, display an error message with a custom tag
         messages.error(request, f'Error updating account status: {str(e)}', extra_tags='status_update')
-        return redirect('admin_dashboard')
+       
+    url = f"{reverse('admin_dashboard')}?status={status_filter}&department={department_filter}&search={search_query}"
+    return redirect(url)
 
 
 def password_reset_view(request):
@@ -540,12 +569,14 @@ BOOT_COMMANDS_RUN = False  # Global flag to check if boot commands are run
 def check_and_run_boot_commands():
     global BOOT_COMMANDS_RUN
     if not BOOT_COMMANDS_RUN:
-        boot_directory = "C:\\Users\\17344\\Documents\\Capstone2\\CSC-4996-Footprint\\footprint"
+
+        boot_directory = r"C:\Fall2024\Capstone\Footprint Website\CSC-4996-Footprint\footprint" 
+       
         run_docker_command("docker-compose build", cwd=boot_directory)
         run_docker_command("docker-compose up -d", cwd=boot_directory)  # Run in detached mode
         BOOT_COMMANDS_RUN = True
 
-        
+
 @require_http_methods(["GET", "POST"])
 def upload_view(request):
     check_and_run_boot_commands()  # Ensure boot commands run before proceeding

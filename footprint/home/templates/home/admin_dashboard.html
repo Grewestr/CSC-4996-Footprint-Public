@@ -6,125 +6,175 @@
     <title>Admin Dashboard</title>
     {% load static %}
     <!-- External Stylesheet -->
+   
     <link rel="stylesheet" href="{% static 'css/admin_dash.css' %}">
     <link rel="stylesheet" href="{% static 'css/header.css' %}">
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="logo-and-title">
-                <a href="{% url 'homepage' %}" class="logo-link">
-                    <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-image">
-                </a>
-                <h1 class="site-title">Footprint</h1>
+    <div class="scaled-wrapper">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="logo-and-title">
+                    <a href="{% url 'homepage' %}" class="logo-link">
+                        <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo-image">
+                    </a>
+                    <h1 class="site-title">Footprint</h1>
+                </div>
+                <nav class="nav">
+                    <a href="{% url 'profile' %}" class="nav-link {% if request.path == '/profile/' %}active{% endif %}">Profile</a>
+                    <a href="{% url 'logout' %}" class="nav-link {% if request.path == '/logout/' %}active{% endif %}">Logout</a>
+                    
+                </nav>
             </div>
-            <nav class="nav">
-                <a href="{% url 'profile' %}" class="nav-link">Profile</a>
-                <a href="{% url 'logout' %}" class="nav-link">Logout</a>
-            </nav>
-        </div>
-    </header>
+        </header>
 
-    <!-- Main Content -->
-    <main class="container">
-        <section>
-            <h2>User Registrations</h2>
-            <form method="get" action="{% url 'admin_dashboard' %}">
-                <!-- Status Filter -->
-                <label for="status-filter">Filter by Status:</label>
-                <select name="status" id="status-filter" onchange="this.form.submit()">
-                    <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All</option>
-                    <option value="approved" {% if status_filter == 'approved' %}selected{% endif %}>Approved</option>
-                    <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
-                    <option value="denied" {% if status_filter == 'denied' %}selected{% endif %}>Denied</option>
-                </select>
-            
-                <!-- Department Filter -->
-                <label for="department-filter">Filter by Department:</label>
-                <select name="department" id="department-filter" onchange="this.form.submit()">
-                    <option value="">All Departments</option>
-                    {% for department in department_names %}
-                        <option value="{{ department }}" {% if department_filter == department %}selected{% endif %}>{{ department }}</option>
-                    {% endfor %}
-                </select>
-            
-                <!-- Search Bar -->
-                <label for="search-query">Search:</label>
-                <input type="text" name="search" id="search-query" placeholder="Search by name or email" value="{{ search_query }}">
-                <button type="submit">Search</button>
-            
-                <!-- Clear Filters Button -->
-                <a href="{% url 'admin_dashboard' %}" class="clear-filters-button">Clear Filters</a>
-            </form>
-            
-            
-            
-            <!-- table displaying users accounts-->
-            <table>
-                <thead>
-                    <tr>
-                        <th>Email</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Department</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in users_list %}
-                        <tr>
-                            <td>{{ user.email }}</td>
-                            <td>{{ user.first_name }}</td>
-                            <td>{{ user.last_name }}</td>
-                            <td>{{ user.department_name }}</td>
-                            <td>
-                                <!-- displays and colors each account status -->
-                                <span class="status-box status-{{ user.account_status|lower }}">
-                                    {{ user.account_status }}
-                                </span>
-                            </td>
-                            <td>
-                                <!-- action dropdown where admin can change account status -->
-                                <form method="POST" action="{% url 'update_account_status' user.email %}" onchange="if(this.new_status.value) this.submit();">
-                                    {% csrf_token %}
-                                    <select name="new_status">
-                                        <option value="" selected disabled>Change Status</option>
-                                        <option value="approved" {% if user.account_status == 'Approved' %}disabled{% endif %}>Approve</option>
-                                        <option value="pending" {% if user.account_status == 'Pending' %}disabled{% endif %}>Set to Pending</option>
-                                        <option value="denied" {% if user.account_status == 'Denied' %}disabled{% endif %}>Deny</option>
-                                    </select>
-                                </form>
-                            </td>
-                        </tr>
-                    {% endfor %}
+        <!-- Main Content -->
+        <div class="content-box">
 
-
+            <main class="admin-container">
+                <section>
+                    <div class="title-container">
+                        <h2>User Registrations</h2>
+                        <div id="success-message" class="success-message-box">
+                            {% if messages %}
+                                {% for message in messages %}
+                                    {% if 'status_update' in message.tags %}
+                                        {{ message }}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <form method="get" action="{% url 'admin_dashboard' %}">
+                        <!-- Status Filter -->
+                        <label for="status-filter">Filter by Status:</label>
+                        <select name="status" id="status-filter" onchange="this.form.submit()">
+                            <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All</option>
+                            <option value="approved" {% if status_filter == 'approved' %}selected{% endif %}>Approved</option>
+                            <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+                            <option value="denied" {% if status_filter == 'denied' %}selected{% endif %}>Denied</option>
+                        </select>
                     
-
+                        <!-- Department Filter -->
+                        <label for="department-filter">Filter by Department:</label>
+                        <select name="department" id="department-filter" onchange="this.form.submit()">
+                            <option value="">All Departments</option>
+                            {% for department in department_names %}
+                                <option value="{{ department }}" {% if department_filter == department %}selected{% endif %}>{{ department }}</option>
+                            {% endfor %}
+                        </select>
                     
-                </tbody>
-            </table>
+                        <!-- Search Bar -->
+                        <label for="search-query">Search:</label>
+                        <input type="text" name="search" id="search-query" placeholder="name or email" value="{{ search_query }}">
+                        <button type="submit" class="button search-button">Search</button>
+                    
+                        <!-- Clear Filters Button -->
+                        <a href="{% url 'admin_dashboard' %}" class="button clear-filters-button">Reset</a>
+                    </form>
+                    
+                        <!-- Pagination Box with Table -->
+                        <div class="pagination-info">
+                            <p>Showing {{ page_obj.start_index }} - {{ page_obj.end_index }} of {{ total_count }} accounts</p>
+                        </div>    
+                        <!-- table displaying users accounts-->
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Account Created</th>
+                                    <th>Email</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Department</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users_list %}
+                                    <tr>
+                                        <td>{{ user.account_created|date:"M d, Y" }}<br>{{ user.account_created|date:"h:i a" }}</td>
+                                        <td>{{ user.email }}</td>
+                                        <td>{{ user.first_name }}</td>
+                                        <td>{{ user.last_name }}</td>
+                                        <td>{{ user.department_name }}</td>
+                                        <td>
+                                            <!-- displays and colors each account status -->
+                                            <span class="status-box status-{{ user.account_status|lower }}">
+                                                {{ user.account_status }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <!-- action dropdown where admin can change account status -->
+                                            <form method="POST" action="{% url 'update_account_status' user.email %}" onchange="if(this.new_status.value) this.submit();">
+                                                {% csrf_token %}
+                                                
+                                                <!-- Hidden fields to help with current status -->
+                                                <input type="hidden" name="status" value="{{ status_filter }}">
+                                                <input type="hidden" name="department" value="{{ department_filter }}">
+                                                <input type="hidden" name="search" value="{{ search_query }}">
+                                                
+                                                <select name="new_status" data-status="{{ user.account_status|lower }}">
+                                                    <option value="" selected disabled>Change Status</option>
+                                                    {% if user.account_status|lower != 'approved' %}
+                                                        <option value="approved">Approve</option>
+                                                    {% endif %}
+                                                    {% if user.account_status|lower != 'pending' %}
+                                                        <option value="pending">Pending</option>
+                                                    {% endif %}
+                                                    {% if user.account_status|lower != 'denied' %}
+                                                        <option value="denied">Deny</option>
+                                                    {% endif %}
+                                                </select>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
 
-            <!-- Display success/error messages for status updates -->
-            {% if messages %}
-                <ul class="messages">
-                    {% for message in messages %}
-                        {% if 'status_update' in message.tags %}
-                            <li class="{{ message.tags }}" style="color: darkblue;">{{ message }}</li>
-                        {% endif %}
-                    {% endfor %}
-                </ul>
-            {% endif %}
+                        <div class="pagination-container">
+                            <span class="pagination-info-left">
+                              Page {{ page_number }} of {{ num_pages }}
+                            </span>
+                            <div class="pagination-controls">
+                              {% if page_obj.has_previous %}
+                                <a href="?page={{ page_obj.previous_page_number }}&status={{ status_filter }}&department={{ department_filter }}&search={{ search_query }}">Previous</a>
+                              {% endif %}
+                              {% if page_obj.has_next %}
+                                <a href="?page={{ page_obj.next_page_number }}&status={{ status_filter }}&department={{ department_filter }}&search={{ search_query }}">Next</a>
+                              {% endif %}
+                            </div>
+                          </div>
+                  
 
 
-        </section>
-    </main>
+                </section>
+            </main>
+        </div>        
+    </div>
 
     <!-- Footer -->
     <footer>
         <p>2024 FOOTPRINT</p>
     </footer>
+
+    <!-- Link to JavaScript -->
+    <script src="{% static 'js/admin_dashboard.js' %}"></script>
 </body>
 </html>
+
+<script>
+    // Display the success message 
+    window.addEventListener('DOMContentLoaded', function() {
+        const messageBox = document.getElementById('success-message');
+        
+        if (messageBox && messageBox.innerText.trim() !== '') {
+            messageBox.style.display = 'block'; 
+            setTimeout(function() {
+                messageBox.style.display = 'none'; // Hide after time elapsed
+            }, 10000); // total 10 seconds
+        }
+    });
+</script>

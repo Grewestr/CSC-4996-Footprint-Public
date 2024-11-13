@@ -7,6 +7,11 @@
     box-sizing: border-box;
 }
 
+.nav-link.active {
+    text-decoration: underline;
+    color: var(--secondary-color); /* Optional: Change color for active page */
+}
+
 /* Root Variables for Consistency */
 :root {
     --primary-color: #000000;
@@ -23,6 +28,45 @@
     --nav-link-font-size: 1.52em;
     --nav-link-font-size-mobile: 1em;
 }
+.header {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    border-bottom: 2px solid #000;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .logo-and-title {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo-link {
+    display: inline-block;
+    margin-right: 20px;
+  }
+  
+  .logo-image {
+    max-width: 100px;
+    height: auto;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: opacity 0.3s;
+  }
+  
+  .logo-image:hover {
+    opacity: 0.8;
+  }
+  
+  .site-title {
+    font-size: 2em;
+    font-weight: 700;
+    color: #000;
+    margin: 0;
+  }
 
 /* Header Container */
 .header {
@@ -35,17 +79,18 @@
     width: 100%;
     z-index: 1000;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 0; /* Removed padding here; applied to .container instead */
+    
 }
 
 /* Flex Container for Header Content */
 .header .container {
     display: flex; /* Flex container for alignment */
     align-items: center; /* Vertically centers flex items */
-    justify-content: center; /* Centers items horizontally */
+    justify-content: space-between; 
     gap: var(--nav-gap); /* Uses the updated CSS variable for spacing */
     padding: var(--header-padding-vertical) var(--header-padding-horizontal); /* Adjusted padding */
-    min-height: var(--header-height); /* Maintained to accommodate larger logo */
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 /* Logo and Title Section */
@@ -86,9 +131,7 @@
 /* Navigation Bar */
 .nav {
     display: flex;
-    align-items: center; /* Vertically centers nav links */
-    gap: var(--nav-link-gap); /* Adds space between nav links */
-    /* Removed justify-content: flex-end; */
+    gap: var(--nav-link-gap); /* Space between nav links */
 }
 
 /* Navigation Links */
