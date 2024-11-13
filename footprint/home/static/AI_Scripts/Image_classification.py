@@ -92,15 +92,24 @@ def detect_color(rgb_tuple):
         ("black", 0, 0, 0),
         ("white", 100, 0, 0),
         ("gray", 50, 0, 0),
+        ("gray", 25, 0, 0), # Dark gray
         ("brown", 30, 19, 25),
-        ("beige", 80, 5, 20),
+        ("brown", 45, 5, 14), # Light brown but not beige
+        ("beige", 70, 10, 20),
         ("red", 53, 80, 67),
+        ("red", 25, 50, 40), # Dark red
         ("orange", 62, 34, 62),
+        ("orange", 64, 56, 50), # Peachy orange 
+        ("orange", 58, 65, 75), # Dark orange
         ("yellow", 97, -21, 94),
+        ("yellow", 85, 0, 60), # Light yellow
         ("green", 46, -51, 50),
-        ("green", 75, -30, 30), # light green
+        ("green", 75, -30, 30), # Light green
         ("blue", 32, 79, -108),
+        ("blue", 65, -10, -30), # Light blue
         ("purple", 29, 58, -36),
+        ("purple", 50, 60, -68), # Light purple
+        ("purple", 40, 83, -93), # Purple with blue tint
         ("pink", 75, 31, -6)
     ]
     
