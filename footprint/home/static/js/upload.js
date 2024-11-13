@@ -51,19 +51,83 @@ document.addEventListener('DOMContentLoaded', function() {
         return match ? match[1] : null;
     }
 
-    // Clear Queue functionality
-    clearQueueButton.addEventListener('click', function() {
-        if (queueTable) {
-            queueTable.style.display = 'none'; // Hide the queue table
-        }
-        noUploadsMessage.style.display = 'block'; // Show the "No videos in the queue" message
+    // AJAX form submission to update queue without page reload
+    uploadForm.addEventListener('submit', function(event) {
+        event.preventDefault();  // Prevent the default form submission
+
+        // Gather form data
+        const formData = {
+            feed_name: document.getElementById('feed_name').value,
+            youtube_link: youtubeLinkInput.value,
+            processing_speed: processingSpeedInput.value,
+            csrfmiddlewaretoken: document.querySelector('input[name="csrfmiddlewaretoken"]').value
+        };
+
+        // Send AJAX POST request to the server
+        fetch(uploadForm.action, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams(formData).toString()
+        })
+        .then(response => {
+            if (!response.ok) {
+                // If the response is not OK (e.g., a 404 or 500), log an error but don’t show an alert
+                console.error("Error: Response not OK", response.status, response.statusText);
+                return Promise.reject(new Error("Server error"));
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Add the new upload to the queue table dynamically
+                const newRow = document.createElement('tr');
+                newRow.setAttribute('data-job-id', data.upload.job_id);  // Set job ID for easy reference
+                newRow.innerHTML = `
+                    <td>${data.upload.feed_name}</td>
+                    <td>${data.upload.processing_speed}</td>
+                    <td class="status-cell">${data.upload.status}</td>
+                    <td>${data.upload.uploaded_at}</td>
+                `;
+                queueTable.querySelector('tbody').prepend(newRow);
+
+                // Show the queue table if it was hidden
+                queueTable.style.display = 'table';
+                noUploadsMessage.style.display = 'none';
+            } else {
+                // If data.success is false, just log the error and don’t show an alert
+                console.error("Server responded with an error message:", data.message);
+            }
+        })
+        .catch(error => {
+            // Only log the error, don’t show an alert
+            console.error("Fetch error:", error);
+        });
     });
 
-    // Reset Queue visibility on new upload
-    uploadForm.addEventListener('submit', function() {
-        if (queueTable) {
-            queueTable.style.display = 'table'; // Show the queue table
-        }
-        noUploadsMessage.style.display = 'none'; // Hide the "No videos in the queue" message
-    });
+    function updateQueueStatus() {
+        fetch("{% url 'check_job_status' %}")
+            .then(response => {
+                if (!response.ok) {
+                    console.error("Status check error:", response.status, response.statusText);
+                    return Promise.reject(new Error("Server error"));
+                }
+                return response.json();
+            })
+            .then(data => {
+                data.uploads.forEach(upload => {
+                    const row = document.querySelector(`#queue-table tr[data-job-id="${upload.job_id}"]`);
+                    if (row) {
+                        row.querySelector(".status-cell").innerText = upload.status;
+                        console.log(`Updated status for job ${upload.job_id} to ${upload.status}`);
+                    }
+                });
+            })
+            .catch(error => console.error("Error fetching job statuses:", error));
+    }
+    
+    // Poll every 5 seconds to check for updated job statuses
+    setInterval(updateQueueStatus, 5000);
 });

@@ -20,6 +20,7 @@
             <nav class="nav">
                 <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
                 <a href="{% url 'profile' %}" class="nav-link">Profile</a>
+                <a href="{% url 'support' %}" class="nav-link">Support</a>
                 <a href="{% url 'logout' %}" class="nav-link">Logout</a>
             </nav>
         </div>
@@ -64,15 +65,15 @@
             </form>
         </div>
 
-        <!-- Right Section (Queue Section) -->
+        <!-- Queue Section Table -->
         <div class="right-section queue-section">
             <h2>Upload Queue</h2>
-            <button id="clear-queue-button" class="clear-queue-button">Clear Queue</button>
+            <!--button id="clear-queue-button" class="clear-queue-button">Clear Queue</button-->
             {% if uploads %}
                 <table id="queue-table">
                     <thead>
                         <tr>
-                            <th>Video Link</th>
+                            <th>Feed Name</th>
                             <th>Processing Speed</th>
                             <th>Status</th>
                             <th>Uploaded At</th>
@@ -80,11 +81,11 @@
                     </thead>
                     <tbody>
                         {% for upload in uploads %}
-                            <tr>
-                                <td><a href="{{ upload.youtube_link }}" target="_blank">{{ upload.youtube_link }}</a></td>
+                            <tr data-job-id="{{ upload.job_id }}">
+                                <td>{{ upload.feed_name }}</td>
                                 <td>{{ upload.processing_speed }}</td>
-                                <td>{{ upload.status }}</td>
-                                <td>{{ upload.uploaded_at|date:"Y-m-d H:i" }}</td>
+                                <td class="status-cell">{{ upload.status }}</td>
+                                <td>{{ upload.uploaded_at }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -93,11 +94,13 @@
                 <p id="no-uploads-message">No videos in the queue.</p>
             {% endif %}
         </div>
+
     </main>
 
     <footer>
         <p>2024 FOOTPRINT</p>
     </footer>
+
     <script src="{% static 'js/upload.js' %}"></script>
 </body>
 </html>

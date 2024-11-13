@@ -1,44 +1,55 @@
-import sys 
+import sys
 import os
 import time
 from Video_processing import q, process_video_url
 from rq.job import Job
 import Image_classification
-import CSV_To_Firestore  # Import CSV_To_Firestore for final processing
+import CSV_To_Firestore
+from google.cloud import firestore
+from google.oauth2 import service_account
 
-# Path to tempdata.csv
+# Paths for tempdata.csv and serviceAccountKey.json
 tempdata_file = "/AI_Scripts/Identified_Person/tempdata.csv"
+key_path = "/footprint/Firebase/serviceAccountKey.json"
 
-def enqueue_video(video_url, frame_interval, user_id):
+# Set up Firestore client
+credentials = service_account.Credentials.from_service_account_file(key_path)
+db = firestore.Client(credentials=credentials)
+
+def enqueue_video(video_url, frame_interval, user_id, document_id):
     print(f"Attempting to add {video_url} to the queue with interval of {frame_interval} for user {user_id}.")
     
-    # Check for existing active jobs for this user and video
-    existing_jobs = q.jobs
-    for job in existing_jobs:
-        if (job.kwargs.get('video_url') == video_url and 
-            job.kwargs.get('user_id') == user_id and 
-            job.get_status() not in ('finished', 'failed')):
-            print(f"An active job for this video and user already exists: {job.id}")
-            return job  # Return the existing job if found
-
     # Enqueue the video processing job
     job = q.enqueue(
         process_video_url, 
         video_url, 
         frame_interval, 
         user_id, 
-        job_timeout=3600,        # Timeout execution 1 hour
-        ttl=86400                # TTL 1 day - used for debugging for processing job status
+        job_timeout=3600,  # Timeout execution 1 hour
+        ttl=86400  # TTL 1 day
     )
     
-    print(f"Enqueued Job ID: {job.id}")
+    print(f"Enqueued Job ID: {job.id} and Firestore Document ID: {document_id}")
     return job
 
-def wait_for_job_completion(job, timeout=600):
+def update_status_in_firestore(document_id, status):
+    """Update job status in Firestore using the document ID."""
+    job_ref = db.collection('live_feeds').document(document_id)
+    job_ref.update({
+        'feed_status': status,
+        'updated_at': firestore.SERVER_TIMESTAMP
+    })
+
+def wait_for_job_completion(job, document_id, timeout=600):
     start_time = time.time()
+    
     while time.time() - start_time < timeout:
         job_status = job.get_status()
         print(f"Current Job Status: {job_status}")
+        
+        # Update Firestore with the job status
+        update_status_in_firestore(document_id, job_status)
+
         if job_status == 'finished':
             print("Job completed successfully.")
             return True
@@ -46,11 +57,12 @@ def wait_for_job_completion(job, timeout=600):
             print("Job failed or was stopped.")
             return False
         time.sleep(5)  # Wait 5 seconds before checking again
+    
     print("Timeout waiting for job to complete.")
     return False
 
 def wait_for_tempdata(max_retries=20, delay=5):
-    # Repeatedly check if tempdata.csv exists and is populated
+    """Wait until tempdata.csv is populated or timeout occurs."""
     print(f"Waiting for tempdata.csv to populate...")
     for attempt in range(max_retries):
         if os.path.exists(tempdata_file):
@@ -65,7 +77,7 @@ def wait_for_tempdata(max_retries=20, delay=5):
     return False
 
 def debug_tempdata_file():
-    # Check if tempdata.csv exists and output its contents for debugging
+    """Output contents of tempdata.csv for debugging."""
     if os.path.exists(tempdata_file):
         print("tempdata.csv exists. Contents:")
         with open(tempdata_file, 'r') as file:
@@ -74,19 +86,20 @@ def debug_tempdata_file():
         print("tempdata.csv does not exist at the time of reading.")
 
 if __name__ == "__main__":
-    if len(sys.argv) < 4:
-        print("Usage: python video_Enqueue.py <video_url> <interval> <user_id>")
+    if len(sys.argv) < 5:
+        print("Usage: python video_Enqueue.py <video_url> <interval> <user_id> <document_id>")
         sys.exit(1)
 
     video_url = sys.argv[1]
     interval = int(sys.argv[2])
     user_id = sys.argv[3]
+    document_id = sys.argv[4]  # Receive document ID
 
     # Step 1: Enqueue the video processing job
-    job = enqueue_video(video_url, interval, user_id)
+    job = enqueue_video(video_url, interval, user_id, document_id)
     
     # Step 2: Wait for video processing job to complete
-    if wait_for_job_completion(job):
+    if wait_for_job_completion(job, document_id):
         # Step 3: Wait for tempdata.csv to be populated, only after job completion
         if wait_for_tempdata():
             # Debugging output for tempdata.csv contents

@@ -81,17 +81,18 @@ def dashboard_view(request):
     # Retrieve the live feeds if the email is available
     if user_email:
         try:
-            # Query the live_feeds collection for documents with matching user_email and finished feed_status
-            feeds_query = db.collection('live_feeds').where('user_email', '==', user_email).where('feed_status', '==', 'uncomplete').stream()
-            
+            # Query the live_feeds collection for documents with matching user_email and finished feed status
+            feeds_query = db.collection('live_feeds').where('user_email', '==', user_email).where('feed_status', '==', 'finished').stream()
+
             # Extract only the feed name for each matching document
             live_feed_names = [feed.to_dict().get('feed_name') for feed in feeds_query if 'feed_name' in feed.to_dict()]
 
         except Exception as e:
             messages.error(request, f"Error retrieving user feed names: {str(e)}")
 
-    # Pass live_feed_names to the template for the dropdown
+    # Pass live feed names to the template for the dropdown
     return render(request, 'home/dashboard.html', {'feeds': live_feed_names})
+
 
 
 def profile_view(request):
@@ -547,17 +548,30 @@ def change_password(request):
 
     return redirect('profile')
 
+import threading
+import re
 import subprocess
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
+from django.contrib import messages
+from django.utils.timezone import localtime
+from google.cloud import firestore
 from .models import VideoUpload
 
 # Function to execute Docker commands
 def run_docker_command(command, cwd=None):
     try:
+        print(f"Running Docker command: {command}")
         subprocess.run(command, cwd=cwd, check=True, shell=True)
     except subprocess.CalledProcessError as e:
         print(f"Error running command: {command}")
         print(e)
+
+def run_docker_command_async(command, cwd=None):
+    """Run Docker command asynchronously in a new thread."""
+    thread = threading.Thread(target=run_docker_command, args=(command, cwd))
+    thread.start()
 
 # Run these commands on boot if they haven't been run already
 BOOT_COMMANDS_RUN = False  # Global flag to check if boot commands are run
@@ -565,31 +579,46 @@ BOOT_COMMANDS_RUN = False  # Global flag to check if boot commands are run
 def check_and_run_boot_commands():
     global BOOT_COMMANDS_RUN
     if not BOOT_COMMANDS_RUN:
-
-        boot_directory = r"C:\Wayne State\Senior Capstone\Footprint Github clone\CSC-4996-Footprint\footprint" 
-       
+        boot_directory = "C:\\Users\\17344\\Documents\\Capstone2\\CSC-4996-Footprint\\footprint"
         run_docker_command("docker-compose build", cwd=boot_directory)
         run_docker_command("docker-compose up -d", cwd=boot_directory)  # Run in detached mode
         BOOT_COMMANDS_RUN = True
 
+from django.http import JsonResponse
+def clear_live_feeds_collection():
+    # Reference the 'live_feeds' collection
+    live_feeds_ref = db.collection('live_feeds')
+
+    # Stream all documents in the collection
+    docs = live_feeds_ref.stream()
+
+    # Loop through each document and delete it
+    for doc in docs:
+        print(f"Deleting document {doc.id}")
+        doc.reference.delete()
+
+    print("All documents in 'live_feeds' collection have been deleted.")
+
 
 @require_http_methods(["GET", "POST"])
 def upload_view(request):
+    #clear_live_feeds_collection()
     check_and_run_boot_commands()  # Ensure boot commands run before proceeding
 
-    message = None
     if request.method == 'POST':
         feed_name = request.POST.get('feed_name')
         youtube_link = request.POST.get('youtube_link')
         processing_speed = request.POST.get('processing_speed')
         
         # Retrieve the user's email from the session
-        user_email = request.session.get('email')  # Firebase email stored in the session
+        user_email = request.session.get('email')
         
         if not user_email:
-            # Redirect to login if the email is not found in the session
-            messages.error(request, 'User email not found in session. Please log in again.')
-            return redirect('login')
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({"success": False, "message": "User email not found in session. Please log in again."})
+            else:
+                messages.error(request, 'User email not found in session. Please log in again.')
+                return redirect('login')
 
         if feed_name and youtube_link and processing_speed:
             # Validate YouTube URL
@@ -606,42 +635,111 @@ def upload_view(request):
                     'speed': processing_speed,
                     'video_link': youtube_link,
                     'user_email': user_email,
-                    'feed_status': 'uncomplete'
+                    'feed_status': 'uncomplete',
+                    'uploaded_at': firestore.SERVER_TIMESTAMP
                 }
                 
-                # Save to Firestore
+                # Save to Firestore and get the document reference and ID
                 try:
-                    db.collection('live_feeds').add(feed_data)
+                    doc_ref = db.collection('live_feeds').add(feed_data)
+                    document_id = doc_ref[1].id
+                    print(f"Feed added to Firestore successfully with ID: {document_id}")
+                    
+                    # Save the upload to the database
+                    video_upload = VideoUpload.objects.create(
+                        youtube_link=youtube_link,
+                        processing_speed=processing_speed,
+                        status='Pending',
+                        user_email=user_email
+                    )
+
+                    # Prepare parameters for the Docker command and pass the document ID
+                    script_directory = "C:\\Users\\17344\\Documents\\Capstone2\\CSC-4996-Footprint\\footprint\\home\\static\\AI_Scripts"
+                    docker_command = f'docker-compose run --rm rq-worker python video_Enqueue.py "{youtube_link}" {processing_speed} "{user_email}" "{document_id}"'
+                    
+                    # Run the Docker command asynchronously
+                    run_docker_command_async(docker_command, cwd=script_directory)
+
+                    # For AJAX request, return a JSON response
+                    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                        uploaded_at = localtime().strftime("%Y-%m-%d %H:%M")
+                        return JsonResponse({
+                            "success": True,
+                            "message": "Feed added successfully to Firestore.",
+                            "upload": {
+                                "feed_name": feed_name,
+                                "processing_speed": processing_speed,
+                                "status": "Pending",
+                                "uploaded_at": uploaded_at
+                            }
+                        })
+
+                    # For regular form submission, redirect
                     messages.success(request, "Feed added successfully to Firestore.")
+                    return redirect('upload')
+
                 except Exception as e:
-                    messages.error(request, f"Error adding feed to Firestore: {str(e)}")
-                    return redirect('dashboard')
-                
-                # Save the upload to the database
-                video_upload = VideoUpload.objects.create(
-                    youtube_link=youtube_link,
-                    processing_speed=processing_speed,
-                    status='Pending',
-                    user_email=user_email  # Store the user’s email with the upload
-                )
-
-                # Prepare parameters for the Docker command
-                script_directory = "C:\\Wayne State\\Senior Capstone\\Footprint Github clone\\CSC-4996-Footprint\\footprint"
-                docker_command = f'docker-compose run --rm rq-worker python video_Enqueue.py "{youtube_link}" {processing_speed} "{user_email}"'
-                
-                # Run the Docker command to process the video
-                run_docker_command(docker_command, cwd=script_directory)
-                
-                message = "Your video has been successfully submitted for processing."
-                return redirect('upload')  # Redirect to prevent form resubmission
+                    error_message = f"Error adding feed to Firestore: {str(e)}"
+                    print(error_message)
+                    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                        return JsonResponse({"success": False, "message": error_message})
+                    else:
+                        messages.error(request, error_message)
+                        return redirect('dashboard')
             else:
-                message = "Invalid YouTube link. Please enter a valid YouTube video URL."
+                error_message = "Invalid YouTube link. Please enter a valid YouTube video URL."
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({"success": False, "message": error_message})
+                else:
+                    messages.error(request, error_message)
+                    return redirect('upload')
         else:
-            message = "Please fill in all required fields."
+            error_message = "Please fill in all required fields."
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({"success": False, "message": error_message})
+            else:
+                messages.error(request, error_message)
+                return redirect('upload')
 
-    # Retrieve the list of uploads to display in the queue
-    uploads = VideoUpload.objects.all().order_by('-uploaded_at')
-    return render(request, 'home/upload.html', {'message': message, 'uploads': uploads})
+    live_feeds = db.collection("live_feeds").order_by("uploaded_at", direction=firestore.Query.DESCENDING).stream()
+    uploads = [
+        {
+            "feed_name": feed.get("feed_name"),
+            "processing_speed": feed.get("speed"),
+            "status": feed.get("feed_status"),
+            "uploaded_at": feed.get("uploaded_at").strftime("%Y-%m-%d %H:%M") if feed.get("uploaded_at") else ""
+        }
+        for feed in live_feeds
+    ]
+    return render(request, 'home/upload.html', {'uploads': uploads})
+
+
+from django.http import JsonResponse
+
+def check_job_status(request):
+    try:
+        # Fetch live_feeds collection and order by updated_at in descending order
+        live_feeds = db.collection("live_feeds").order_by("updated_at", direction=firestore.Query.DESCENDING).stream()
+        
+        # Prepare the uploads data to return as JSON
+        uploads = [
+            {
+                "job_id": feed.id,
+                "feed_name": feed.get("feed_name"),
+                "processing_speed": feed.get("speed"),
+                "status": feed.get("job_status"),
+                "uploaded_at": feed.get("uploaded_at").strftime("%Y-%m-%d %H:%M") if feed.get("uploaded_at") else ""
+            }
+            for feed in live_feeds
+        ]
+        
+        # Return the uploads data as a JSON response
+        return JsonResponse({"uploads": uploads}, status=200)
+    
+    except Exception as e:
+        # Log the error and return an error message
+        print(f"Error fetching job statuses: {e}")
+        return JsonResponse({"error": "Could not fetch job statuses. Please try again later."}, status=500)
 
 
 
@@ -654,7 +752,7 @@ def search_attributes1(request):
     # Retrieve available live feeds for the dropdown
     if user_email:
         try:
-            feeds_query = db.collection('live_feeds').where('user_email', '==', user_email).where('feed_status', '==', 'uncomplete').stream()
+            feeds_query = db.collection('live_feeds').where('user_email', '==', user_email).where('feed_status', '==', 'finished').stream()
             live_feed_names = [feed.to_dict().get('feed_name') for feed in feeds_query if 'feed_name' in feed.to_dict()]
         except Exception as e:
             messages.error(request, f"Error retrieving user feed names: {str(e)}")
