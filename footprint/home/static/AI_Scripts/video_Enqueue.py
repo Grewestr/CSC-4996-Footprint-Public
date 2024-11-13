@@ -1,4 +1,4 @@
-import sys
+import sys 
 import os
 import time
 from Video_processing import q, process_video_url
@@ -10,8 +10,17 @@ import CSV_To_Firestore  # Import CSV_To_Firestore for final processing
 tempdata_file = "/AI_Scripts/Identified_Person/tempdata.csv"
 
 def enqueue_video(video_url, frame_interval, user_id):
-    print(f"Adding {video_url} to the queue with interval of {frame_interval} for user {user_id}.")
+    print(f"Attempting to add {video_url} to the queue with interval of {frame_interval} for user {user_id}.")
     
+    # Check for existing active jobs for this user and video
+    existing_jobs = q.jobs
+    for job in existing_jobs:
+        if (job.kwargs.get('video_url') == video_url and 
+            job.kwargs.get('user_id') == user_id and 
+            job.get_status() not in ('finished', 'failed')):
+            print(f"An active job for this video and user already exists: {job.id}")
+            return job  # Return the existing job if found
+
     # Enqueue the video processing job
     job = q.enqueue(
         process_video_url, 
@@ -32,7 +41,6 @@ def wait_for_job_completion(job, timeout=600):
         print(f"Current Job Status: {job_status}")
         if job_status == 'finished':
             print("Job completed successfully.")
-            time.sleep(5)
             return True
         elif job_status in ('failed', 'stopped'):
             print("Job failed or was stopped.")
@@ -41,7 +49,9 @@ def wait_for_job_completion(job, timeout=600):
     print("Timeout waiting for job to complete.")
     return False
 
-def wait_for_tempdata(max_retries=10, delay=3):
+def wait_for_tempdata(max_retries=20, delay=5):
+    # Repeatedly check if tempdata.csv exists and is populated
+    print(f"Waiting for tempdata.csv to populate...")
     for attempt in range(max_retries):
         if os.path.exists(tempdata_file):
             with open(tempdata_file, 'r') as file:
@@ -77,7 +87,7 @@ if __name__ == "__main__":
     
     # Step 2: Wait for video processing job to complete
     if wait_for_job_completion(job):
-        # Step 3: Wait for tempdata.csv to be populated
+        # Step 3: Wait for tempdata.csv to be populated, only after job completion
         if wait_for_tempdata():
             # Debugging output for tempdata.csv contents
             debug_tempdata_file()

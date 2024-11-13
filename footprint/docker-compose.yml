@@ -11,7 +11,12 @@ services:
     environment:
       - REDIS_URL=redis://redis-server:6379/0
     volumes:
-      - "./home/static/AI_Scripts:/AI_Scripts"           # Mount AI_Scripts so video_Enqueue.py is accessible
-      - "./home/static/AI_Scripts/Identified_Person:/Identified_Person"  # Mount Identified_Person for output
+      - "./home/static/AI_Scripts:/AI_Scripts"
+      - "./home/static/AI_Scripts/Identified_Person:/Identified_Person"
     working_dir: /AI_Scripts
     command: rq worker --with-scheduler
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"  # Limit CPU usage if needed
+          memory: "512M"  # Limit memory usage if needed
