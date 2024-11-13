@@ -4,46 +4,51 @@ document.addEventListener("DOMContentLoaded", function() {
     const closeModal = document.getElementById("closeDeleteModal");
     const cancelButton = document.getElementById("cancelDeleteButton");
     const submitButton = document.getElementById("submitDeleteEmail");
-  
     const emailInput = document.getElementById("delete-email");
     const currentPasswordInput = document.getElementById("delete-current-password");
     const passwordError = document.getElementById("delete-password-error");
   
-    // Open modal
-    deleteEmailButton.onclick = function() {
-        modal.style.display = "block";
-    };
-  
-    // Close modal on 'X' click or cancel button click
-    closeModal.onclick = function() {
-        modal.style.display = "none";
-    };
-  
-    cancelButton.onclick = function() {
-        modal.style.display = "none";
-    };
-  
-    // Enable the submit button only if both fields are filled
     function validateInputs() {
-        const email = emailInput.value;
-        const currentPassword = currentPasswordInput.value;
-  
-        if (email && currentPassword) {
-            submitButton.disabled = false;
-        } else {
-            submitButton.disabled = true;
-        }
+        submitButton.disabled = !(emailInput.value && currentPasswordInput.value);
     }
   
     emailInput.addEventListener("input", validateInputs);
     currentPasswordInput.addEventListener("input", validateInputs);
   
-    // Check for query parameter to reopen modal and show error if needed
-    const urlParams = new URLSearchParams(window.location.search);
-    const deleteError = urlParams.get('delete_error');
+    deleteEmailButton.onclick = function() {
+        modal.style.display = "block";
+    };
   
-    if (deleteError) {
-        modal.style.display = "block";  // Only open the modal if there's an error
-        passwordError.style.display = "block";  // Show the error message in the modal
+    closeModal.onclick = function() {
+        modal.style.display = "none";
+        passwordError.style.display = "none";
+    };
+  
+    cancelButton.onclick = function() {
+        modal.style.display = "none";
+        passwordError.style.display = "none";
+    };
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const modalState = urlParams.get('modal');
+    const errorType = urlParams.get('error');
+    const inputtedEmail = urlParams.get('email'); // Get the email parameter from the URL
+
+    if (modalState === 'open') {
+        modal.style.display = "block";
+        if (errorType) {
+            const errorMessages = {
+                email_or_password_missing: "Please provide both email and password.",
+                email_mismatch: "The email you entered does not match your account.",
+                password_or_email_incorrect: "Incorrect password.",
+                user_not_found: "No user found with that email.",
+                general_error: "An error occurred. Please try again."
+            };
+            passwordError.textContent = errorMessages[errorType] || "An unknown error occurred.";
+            passwordError.style.display = "block";
+        }
+        if (inputtedEmail) {
+            emailInput.value = inputtedEmail; // Set the email input to the passed email value
+        }
     }
-  });
+});

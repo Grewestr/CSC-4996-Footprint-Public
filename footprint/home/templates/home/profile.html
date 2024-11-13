@@ -1,3 +1,5 @@
+profile.html 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,18 +41,6 @@
             <p><strong>Department:</strong> {{ department_name }}</p>
         </div>
 
-        <!-- Display Messages for Password Change -->
-        {% if messages %}
-            <div class="message-container">
-                {% for message in messages %}
-                    {% if 'password_change' in message.tags %}
-                        <p class="message {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}error-message{% else %}success-message{% endif %}">
-                            {{ message }}
-                        </p>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        {% endif %}
 
         <!-- Button Container -->
         <div class="button-container">
@@ -67,17 +57,8 @@
         <div class="modal-content">
             <span id="closeModal" class="close">&times;</span>
             <h2>Change Password</h2>
-    
-            <!-- Message container within modal -->
-            <div id="passwordChangeMessage" class="message-container">
-                {% for message in messages %}
-                    {% if 'password_change' in message.tags %}
-                        <p class="message {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}error-message{% else %}success-message{% endif %}">
-                            {{ message }}
-                        </p>
-                    {% endif %}
-                {% endfor %}
-            </div>
+            <!-- Display Backend Messages -->
+            
     
             <form method="post" action="{% url 'change_password' %}">
                 {% csrf_token %}
@@ -104,29 +85,39 @@
                 <input type="password" id="retype_password" name="retype_password" required><br>
     
                 <p class="error-message" id="password-match-error" style="color: red; display: none;">Passwords do not match.</p>
-    
+                {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                            <p class="message {% if message.tags %}{{ message.tags }}{% endif %}" style="color: red;">
+                                {{ message }}
+                            </p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
                 <!-- Submit and Cancel Buttons -->
                 <button type="submit" id="submitPasswordChange" class="button" disabled>Submit</button>
                 <button type="button" id="cancelButton" class="button">Cancel</button>
             </form>
         </div>
     </div>
-
-    <!-- Floating Window for Email Deletion -->
+    
+    <!-- Delete Account Modal -->
     <div id="deleteEmailModal" class="modal">
         <div class="modal-content">
             <span id="closeDeleteModal" class="close">&times;</span>
             <h2>Delete Account</h2>
+            
+            <!-- Ensure the form action points to 'delete_email' URL -->
             <form method="post" action="{% url 'delete_email' %}">
                 {% csrf_token %}
                 <label for="delete-email">Email:</label>
                 <input type="email" id="delete-email" name="email" required><br>
-
+    
                 <label for="delete-current-password">Current Password:</label>
                 <input type="password" id="delete-current-password" name="current_password" required><br>
-
+    
                 <p class="error-message" id="delete-password-error" style="color: red; display: none;">Incorrect email or password.</p>
-
+                
                 <button type="submit" id="submitDeleteEmail" class="button" disabled>Delete Account</button>
                 <button type="button" id="cancelDeleteButton" class="button">Cancel</button>
             </form>

@@ -463,16 +463,14 @@ def delete_email_view(request):
         current_password = request.POST.get('current_password')
 
         if not user_email or not current_password:
-            messages.error(request, "Email or password missing.")
-            return redirect('/profile/?delete_error=email_missing')  # Full URL with query string
+            messages.error(request, "Email or password missing.", extra_tags='delete_email')
+            return redirect(f'/profile/?modal=open&error=email_or_password_missing&email={user_email}')
 
-        # Check if the entered email matches the email in the session
         if user_email != session_email:
-            messages.error(request, "The email you entered does not match the one associated with your account.")
-            return redirect('/profile/?delete_error=email_mismatch')  # Full URL with query string
+            messages.error(request, "The email you entered does not match your account.", extra_tags='delete_email')
+            return redirect(f'/profile/?modal=open&error=email_mismatch&email={user_email}')
 
         try:
-            # Re-authenticate the user by checking the current password
             payload = {
                 'email': user_email,
                 'password': current_password,
@@ -481,24 +479,21 @@ def delete_email_view(request):
             response = requests.post(url, json=payload)
 
             if response.status_code == 200:
-                # If the password is correct, delete the user from Firebase
                 user = auth.get_user_by_email(user_email)
                 auth.delete_user(user.uid)
-                
-                # Delete user document from Firestore
                 db.collection('accounts').document(user_email).delete()
-
-                messages.success(request, "Your account has been successfully deleted.")
-                return logout_view(request)  # Log out the user and clear session
+                messages.success(request, "Your account has been successfully deleted.", extra_tags='delete_email')
+                return logout_view(request)
             else:
-                # If password is incorrect or email not found
-                messages.error(request, "Incorrect password or email.")
-                return redirect('/profile/?delete_error=password_mismatch')  # Full URL with query string
+                messages.error(request, "Incorrect password", extra_tags='delete_email')
+                return redirect(f'/profile/?modal=open&error=password_or_email_incorrect&email={user_email}')
 
         except firebase_admin.auth.UserNotFoundError:
-            messages.error(request, "User not found.")
+            messages.error(request, "User not found.", extra_tags='delete_email')
+            return redirect('/profile/?modal=open&error=user_not_found')
         except Exception as e:
-            messages.error(request, f"Error deleting account: {str(e)}")
+            messages.error(request, f"Error deleting account: {str(e)}", extra_tags='delete_email')
+            return redirect('/profile/?modal=open&error=general_error')
 
     return redirect('/profile/')
 
@@ -509,19 +504,23 @@ def change_password(request):
         new_password = request.POST.get('new_password')
         retype_password = request.POST.get('retype_password')
 
-        # Validate that new passwords match
-        if new_password != retype_password:
-            messages.error(request, 'New password and retyped password do not match.')
-            return render(request, 'profile.html', {'keep_modal_open': True})  # Keep modal open on error
+        user_info = {
+            'full_name': request.session.get('full_name', 'Not available'),
+            'email': request.session.get('email', 'Not available'),
+            'department_name': request.session.get('department_name', 'Not available'),
+            'keep_modal_open': True  # Keep modal open on error or after change
+        }
 
-        # Validate new password format
+        if new_password != retype_password:
+            messages.error(request, 'New password and retyped password do not match.', extra_tags='change_password_match_error')
+            return render(request, 'home/profile.html', user_info)
+
         if not re.search(r'^(?=.*[a-z])(?=.*[A-Z]).{8,}$', new_password):
-            messages.error(request, 'Password must be at least 8 characters with one lowercase and one uppercase letter.')
-            return render(request, 'home/profile.html', {'keep_modal_open': True})  # Keep modal open on error
+            messages.error(request, 'Password must be at least 8 characters with one lowercase and one uppercase letter.', extra_tags='change_password_format_error')
+            return render(request, 'home/profile.html', user_info)
 
         try:
-            # Re-authenticate the user with the current password using Firebase
-            user_email = request.session.get('email')
+            user_email = user_info['email']
             payload = {
                 'email': user_email,
                 'password': current_password,
@@ -530,26 +529,23 @@ def change_password(request):
             response = requests.post(url, json=payload)
 
             if response.status_code == 200:
-                # If current password is correct, update to new password
                 user = auth.get_user_by_email(user_email)
                 auth.update_user(user.uid, password=new_password)
-                messages.success(request, 'Password changed successfully.', {'keep_modal_open': True})
+                messages.success(request, 'Password changed successfully.', extra_tags='change_password_success')
+                return render(request, 'home/profile.html', user_info)
             else:
-                # Handle incorrect current password case
-                messages.error(request, 'Current password is incorrect.')
-                return render(request, 'home/profile.html', {'keep_modal_open': True})  
+                messages.error(request, 'Current password is incorrect.', extra_tags='change_password_current_error')
+                return render(request, 'home/profile.html', user_info)
 
         except firebase_admin.auth.UserNotFoundError:
-            messages.error(request, 'User not found.')
-            return render(request, 'home/profile.html', {'keep_modal_open': True}) 
+            messages.error(request, 'User not found.', extra_tags='change_password_user_not_found_error')
+            return render(request, 'home/profile.html', user_info)
 
         except Exception as e:
-            messages.error(request, f'Error occurred: {str(e)}')
-            return render(request, 'home/profile.html', {'keep_modal_open': True})  
+            messages.error(request, f'Error occurred: {str(e)}', extra_tags='change_password_general_error')
+            return render(request, 'home/profile.html', user_info)
 
-        return redirect('profile')  # Redirect on success
-
-    return redirect('profile') 
+    return redirect('profile')
 
 import subprocess
 from django.views.decorators.http import require_http_methods
@@ -570,7 +566,7 @@ def check_and_run_boot_commands():
     global BOOT_COMMANDS_RUN
     if not BOOT_COMMANDS_RUN:
 
-        boot_directory = r"C:\Fall2024\Capstone\Footprint Website\CSC-4996-Footprint\footprint" 
+        boot_directory = r"C:\Wayne State\Senior Capstone\Footprint Github clone\CSC-4996-Footprint\footprint" 
        
         run_docker_command("docker-compose build", cwd=boot_directory)
         run_docker_command("docker-compose up -d", cwd=boot_directory)  # Run in detached mode
@@ -630,7 +626,7 @@ def upload_view(request):
                 )
 
                 # Prepare parameters for the Docker command
-                script_directory = "C:\\Users\\17344\\Documents\\Capstone2\\CSC-4996-Footprint\\footprint\\home\\static\\AI_Scripts"
+                script_directory = "C:\\Wayne State\\Senior Capstone\\Footprint Github clone\\CSC-4996-Footprint\\footprint"
                 docker_command = f'docker-compose run --rm rq-worker python video_Enqueue.py "{youtube_link}" {processing_speed} "{user_email}"'
                 
                 # Run the Docker command to process the video
@@ -651,6 +647,17 @@ def upload_view(request):
 
 
 def search_attributes1(request):
+    # Get the user's email from the session
+    user_email = request.session.get('email')
+    live_feed_names = []
+
+    # Retrieve available live feeds for the dropdown
+    if user_email:
+        try:
+            feeds_query = db.collection('live_feeds').where('user_email', '==', user_email).where('feed_status', '==', 'uncomplete').stream()
+            live_feed_names = [feed.to_dict().get('feed_name') for feed in feeds_query if 'feed_name' in feed.to_dict()]
+        except Exception as e:
+            messages.error(request, f"Error retrieving user feed names: {str(e)}")
 
     if request.method == 'POST':
         # Retrieve all selections from the form data
@@ -662,10 +669,7 @@ def search_attributes1(request):
         bottom_color = request.POST.get('bottom_color')
         feed_name = request.POST.get('feed_name')
 
-        # Get user_email from session
-        user_email = request.session.get('email')
-
-        # Fetch feed link and scanning speed from live_feeds collection based on user_email and feed_name to retrive matching persons with same identifiers 
+        # Fetch feed link and scanning speed from live_feeds collection based on user_email and feed_name
         video_link = None
         speed = None
         try:
@@ -674,15 +678,15 @@ def search_attributes1(request):
                 feed_data = feed_doc.to_dict()
                 video_link = feed_data.get('video_link')
                 speed = feed_data.get('speed')
-                break 
+                break
 
             if not video_link or not speed:
                 messages.error(request, "No matching feed found for the given name.")
-                return render(request, 'home/dashboard.html')
+                return render(request, 'home/dashboard.html', {'feeds': live_feed_names})
 
         except Exception as e:
             messages.error(request, f"Error retrieving feed data: {str(e)}")
-            return render(request, 'home/dashboard.html')
+            return render(request, 'home/dashboard.html', {'feeds': live_feed_names})
 
         # Define weights for each attribute
         weights = {
@@ -694,10 +698,10 @@ def search_attributes1(request):
             'bottom_color': 10
         }
 
-        # Build the query based on user_email, feed_link, and speed
+        # Build the query based on user_email, video_link, and speed
         query = db.collection('IdentifiedPersons').where('user_email', '==', user_email).where('video_link', '==', video_link).where('speed', '==', speed)
 
-        # Execute the query with results in categories 
+        # Execute the query with results in categories
         exact_matches = []
         high_matches = []
         medium_matches = []
@@ -763,13 +767,14 @@ def search_attributes1(request):
 
         except Exception as e:
             messages.error(request, f"Error querying database: {str(e)}")
-            return render(request, 'home/dashboard.html')
+            return render(request, 'home/dashboard.html', {'feeds': live_feed_names})
 
         # Pass the categorized results to the template
         context = {
             'exact_matches': exact_matches,
             'high_matches': high_matches,
             'medium_matches': medium_matches,
+            'feeds': live_feed_names, 
             'selections': {
                 'top': {'attribute': top_attribute, 'color': top_color},
                 'middle': {'attribute': middle_attribute, 'color': middle_color},
@@ -780,7 +785,8 @@ def search_attributes1(request):
 
         return render(request, 'home/dashboard.html', context)
     else:
-        return redirect('dashboard')
+        # On GET request, load the dashboard with available feeds but no results
+        return render(request, 'home/dashboard.html', {'feeds': live_feed_names})
 
 from django.conf import settings
 from redis import Redis

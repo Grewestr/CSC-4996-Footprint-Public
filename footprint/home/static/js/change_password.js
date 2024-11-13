@@ -4,106 +4,63 @@ document.addEventListener("DOMContentLoaded", function() {
     const closeModal = document.getElementById("closeModal");
     const cancelButton = document.getElementById("cancelButton");
     const submitButton = document.getElementById("submitPasswordChange");
-  
-    const currentPasswordInput = document.getElementById("current_password");
+
     const newPasswordInput = document.getElementById("new_password");
     const retypePasswordInput = document.getElementById("retype_password");
-  
+    const passwordMatchError = document.getElementById('password-match-error');
+
     const requirementsBox = document.querySelector('.password-requirements');
     const lengthRequirement = document.getElementById('length');
     const uppercaseRequirement = document.getElementById('uppercase');
     const lowercaseRequirement = document.getElementById('lowercase');
-    const passwordMatchError = document.getElementById('password-match-error');
-  
-    // Automatically open the modal if the server says so (based on the 'open' class)
-    if (modal.classList.contains('open')) {
-        modal.style.display = "block";
+
+    // Function to show or hide modal
+    function toggleModal(show) {
+        modal.style.display = show ? "block" : "none";
+        if (!show) {
+            // Reset UI states when modal is closed
+            passwordMatchError.style.display = "none";
+            requirementsBox.style.display = "none";
+        }
     }
-  
-    // Open modal
-    changePasswordButton.onclick = function() {
-        modal.style.display = "block";
-    };
-  
-    // Close modal on 'X' click or cancel button click
-    closeModal.onclick = function() {
-        modal.style.display = "none";
-    };
-  
-    cancelButton.onclick = function() {
-        modal.style.display = "none";
-    };
-  
-    // Show password requirements when the new password field is focused
-    newPasswordInput.addEventListener('focus', function() {
-        requirementsBox.style.display = 'block';
-    });
-  
-    // Hide password requirements when clicking outside the new password field
-    newPasswordInput.addEventListener('blur', function() {
-        setTimeout(() => {
-            requirementsBox.style.display = 'none';
-        }, 200);
-    });
-  
-    // Validate password in real-time as the user types
-    newPasswordInput.addEventListener('input', function() {
+
+    // Event handlers for button clicks
+    changePasswordButton.onclick = () => toggleModal(true);
+    closeModal.onclick = () => toggleModal(false);
+    cancelButton.onclick = () => toggleModal(false);
+
+    // Display password requirements when focused
+    newPasswordInput.addEventListener('focus', () => requirementsBox.style.display = 'block');
+    // Hide requirements with a slight delay for better user experience
+    newPasswordInput.addEventListener('blur', () => setTimeout(() => requirementsBox.style.display = 'none', 200));
+
+    // Real-time validation of password criteria
+    newPasswordInput.addEventListener('input', updateRequirements);
+    retypePasswordInput.addEventListener('input', validatePasswords);
+
+    function updateRequirements() {
         const password = newPasswordInput.value;
-  
-        // Validate length
-        if (password.length >= 8) {
-            lengthRequirement.classList.add('met');
-            lengthRequirement.querySelector('i').className = 'check-mark';
-        } else {
-            lengthRequirement.classList.remove('met');
-            lengthRequirement.querySelector('i').className = 'x-mark';
-        }
-  
-        // Validate uppercase letter
-        if (/[A-Z]/.test(password)) {
-            uppercaseRequirement.classList.add('met');
-            uppercaseRequirement.querySelector('i').className = 'check-mark';
-        } else {
-            uppercaseRequirement.classList.remove('met');
-            uppercaseRequirement.querySelector('i').className = 'x-mark';
-        }
-  
-        // Validate lowercase letter
-        if (/[a-z]/.test(password)) {
-            lowercaseRequirement.classList.add('met');
-            lowercaseRequirement.querySelector('i').className = 'check-mark';
-        } else {
-            lowercaseRequirement.classList.remove('met');
-            lowercaseRequirement.querySelector('i').className = 'x-mark';
-        }
-  
-        // Enable or disable the submit button based on password validity and matching
+        lengthRequirement.classList.toggle('met', password.length >= 8);
+        lengthRequirement.querySelector('i').className = password.length >= 8 ? 'check-mark' : 'x-mark';
+
+        uppercaseRequirement.classList.toggle('met', /[A-Z]/.test(password));
+        uppercaseRequirement.querySelector('i').className = /[A-Z]/.test(password) ? 'check-mark' : 'x-mark';
+
+        lowercaseRequirement.classList.toggle('met', /[a-z]/.test(password));
+        lowercaseRequirement.querySelector('i').className = /[a-z]/.test(password) ? 'check-mark' : 'x-mark';
+
         validatePasswords();
-    });
-  
-    // Validate if the new password and retype password match
-    retypePasswordInput.addEventListener('input', function() {
-        validatePasswords();
-    });
-  
-    // Validate the matching passwords
+    }
+
     function validatePasswords() {
         const newPassword = newPasswordInput.value;
         const retypePassword = retypePasswordInput.value;
-  
         const isPasswordMatching = newPassword === retypePassword;
-  
-        if (isPasswordMatching) {
-            passwordMatchError.style.display = 'none';
-        } else {
-            passwordMatchError.style.display = 'block';
-        }
-  
-        // Enable the submit button only if all criteria are met and passwords match
-        if (newPassword.length >= 8 && /[A-Z]/.test(newPassword) && /[a-z]/.test(newPassword) && isPasswordMatching) {
-            submitButton.disabled = false;
-        } else {
-            submitButton.disabled = true;
-        }
+        passwordMatchError.style.display = isPasswordMatching ? 'none' : 'block';
+
+        submitButton.disabled = !isPasswordMatching ||
+                                newPassword.length < 8 ||
+                                !/[A-Z]/.test(newPassword) ||
+                                !/[a-z]/.test(newPassword);
     }
-  });
+});
