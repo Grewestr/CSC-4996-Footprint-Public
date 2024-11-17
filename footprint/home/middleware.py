@@ -8,13 +8,13 @@ class AuthenticationMiddleware:
 
     def __call__(self, request):
         # List of public URLs that don't require authentication
-        public_urls = ['/', '/login/', '/signup/','/password_reset/','/support/'] 
+        public_urls = ['/', '/login/', '/signup/','/password_reset/'] 
 
         # URLs accessible by regular users
-        user_allowed_urls = ['/dashboard/','/logout/','/profile/','/change_password/','/delete_email/', '/upload/','/search_attributes1/','/support/']
+        user_allowed_urls = ['/','/dashboard/','/logout/','/profile/','/change_password/','/delete_email/', '/upload/','/search_attributes1/']
 
         # URLs accessible by admins
-        admin_allowed_urls = ['/admin_dashboard/','/logout/','/profile/','/update_account_status/']
+        admin_allowed_urls = ['/','/admin_dashboard/','/logout/','/profile/','/update_account_status/','/change_password/','/delete_email/', '/upload/','/dashboard/']
 
         # Get the role and uid from the session
         uid = request.session.get('uid')

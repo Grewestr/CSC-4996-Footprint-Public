@@ -22,10 +22,31 @@
                 <h1 class="site-title">Footprint</h1>
             </div>
             <nav class="nav">
-                <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
-                <a href="{% url 'upload' %}" class="nav-link">Upload</a>
-                <a href="{% url 'support' %}" class="nav-link">Support</a>
-                <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+                {% if request.session.uid %}
+                    {% if request.session.role == 'user' %}
+                        <!-- Navigation links for regular users -->
+                        <a href="{% url 'homepage' %}" class="nav-link">Home</a>
+                        <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
+                        <a href="{% url 'upload' %}" class="nav-link">Upload</a>
+                        <a href="{% url 'profile' %}" class="nav-link">Profile</a>
+                        <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+                    
+                    {% elif request.session.role == 'admin' %}
+                        <!-- Navigation links for admins -->
+                        <a href="{% url 'homepage' %}" class="nav-link">Home</a>
+                        <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
+                        <a href="{% url 'upload' %}" class="nav-link">Upload</a>
+                        <a href="{% url 'admin_dashboard' %}" class="nav-link">Admin</a>
+                        <a href="{% url 'profile' %}" class="nav-link">Profile</a>
+                        <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+                    {% endif %}
+                {% else %}
+                    <!-- Navigation links for non-logged-in users -->
+                    <a href="{% url 'homepage' %}" class="nav-link">Home</a>
+                    <a href="{% url 'login' %}" class="nav-link">Login</a>
+                    <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
+                {% endif %}
+                
             </nav>
         </div>
     </header>
@@ -104,17 +125,15 @@
         <div class="modal-content">
             <span id="closeDeleteModal" class="close">&times;</span>
             <h2>Delete Account</h2>
-            
+
             <!-- Ensure the form action points to 'delete_email' URL -->
             <form method="post" action="{% url 'delete_email' %}">
                 {% csrf_token %}
-                <label for="delete-email">Email:</label>
-                <input type="email" id="delete-email" name="email" required><br>
-    
+                
                 <label for="delete-current-password">Current Password:</label>
                 <input type="password" id="delete-current-password" name="current_password" required><br>
-    
-                <p class="error-message" id="delete-password-error" style="color: red; display: none;">Incorrect email or password.</p>
+
+                <p class="error-message" id="delete-password-error" style="color: red; display: none;">Incorrect password.</p>
                 
                 <button type="submit" id="submitDeleteEmail" class="button" disabled>Delete Account</button>
                 <button type="button" id="cancelDeleteButton" class="button">Cancel</button>

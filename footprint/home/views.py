@@ -39,38 +39,6 @@ def homepage_view(request):
     return render(request, 'home/homepage.html')
 
 
-def support(request):
-    # takes input from user 
-    if request.method == 'POST':
-        user_name = request.POST.get('name')
-        user_email = request.POST.get('email')
-        message = request.POST.get('message')
-
-        # Validate form fields
-        if not user_name or not user_email or not message:
-            messages.error(request, "All fields are required.")
-            return render(request, 'home/support.html', {
-                'user_name': user_name,
-                'user_email': user_email,
-                'message': message
-            })
-
-        # Save data to Database
-        try:
-            db.collection('support_messages').add({
-                'user_name': user_name,
-                'user_email': user_email,
-                'message': message,
-                'timestamp': firestore.SERVER_TIMESTAMP
-            })
-            messages.success(request, "Your message has been sent successfully!")
-            return redirect('support')  # Redirect to clear the form after submission
-
-        except Exception as e:
-            messages.error(request, f"An error occurred: {e}")
-
-    return render(request, 'home/support.html')
-
 
 
 def dashboard_view(request):
@@ -173,7 +141,7 @@ def login_view(request):
                 elif error_message == 'INVALID_PASSWORD':
                     messages.error(request, 'Incorrect password. Please try again.')
                 else:
-                    messages.error(request, 'Invalid login credentials.')
+                    messages.error(request, 'Incorrect password. Please try again.')
 
         except firebase_admin.auth.UserNotFoundError:
             # This will be caught if the email is not registered in Firebase Authentication
@@ -456,97 +424,114 @@ def password_reset_view(request):
     return render(request, 'home/password_reset.html')
 
 
-
 def delete_email_view(request):
-    if request.method == 'POST':
-        session_email = request.session.get('email')
-        user_email = request.POST.get('email')
-        current_password = request.POST.get('current_password')
+    # Handle requests to delete a user's email account.
+    if request.method == 'POST':  # Check if the request is a POST request
+        session_email = request.session.get('email')  # Retrieve the logged-in user's email from the session
+        current_password = request.POST.get('current_password')  # Get the current password from the POST data
 
-        if not user_email or not current_password:
-            messages.error(request, "Email or password missing.", extra_tags='delete_email')
-            return redirect(f'/profile/?modal=open&error=email_or_password_missing&email={user_email}')
-
-        if user_email != session_email:
-            messages.error(request, "The email you entered does not match your account.", extra_tags='delete_email')
-            return redirect(f'/profile/?modal=open&error=email_mismatch&email={user_email}')
+        # Check if the password is missing in the request
+        if not current_password:
+            messages.error(request, "Password missing.", extra_tags='delete_email')  # Display an error message
+            # Redirect back to the profile page with an error
+            return redirect('/profile/?modal=open&error=email_or_password_missing')
 
         try:
+            # Prepare the payload for authentication
             payload = {
-                'email': user_email,
-                'password': current_password,
-                'returnSecureToken': True
+                'email': session_email,  # User's email from session
+                'password': current_password,  # Password provided by the user
+                'returnSecureToken': True  # Firebase flag for secure token handling
             }
+            # Send a POST request to authenticate the user's credentials
             response = requests.post(url, json=payload)
 
-            if response.status_code == 200:
-                user = auth.get_user_by_email(user_email)
-                auth.delete_user(user.uid)
-                db.collection('accounts').document(user_email).delete()
+            if response.status_code == 200:  # Authentication was successful
+                user = auth.get_user_by_email(session_email)  # Retrieve the Firebase user object
+                auth.delete_user(user.uid)  # Delete the user's Firebase account
+                db.collection('accounts').document(session_email).delete()  # Remove user data from Firestore
                 messages.success(request, "Your account has been successfully deleted.", extra_tags='delete_email')
-                return logout_view(request)
+                return logout_view(request)  # Log out the user after deletion
             else:
+                # Authentication failed due to incorrect password
                 messages.error(request, "Incorrect password", extra_tags='delete_email')
-                return redirect(f'/profile/?modal=open&error=password_or_email_incorrect&email={user_email}')
+                # Redirect back to the profile page with an error
+                return redirect('/profile/?modal=open&error=password_or_email_incorrect')
 
-        except firebase_admin.auth.UserNotFoundError:
-            messages.error(request, "User not found.", extra_tags='delete_email')
-            return redirect('/profile/?modal=open&error=user_not_found')
-        except Exception as e:
+        except firebase_admin.auth.UserNotFoundError:  # Handle cases where the user does not exist
+            messages.error(request, "User not found.", extra_tags='delete_email')  # Display an error message
+            return redirect('/profile/?modal=open&error=user_not_found')  # Redirect back to the profile page
+
+        except Exception as e:  # Catch any other unexpected errors
             messages.error(request, f"Error deleting account: {str(e)}", extra_tags='delete_email')
-            return redirect('/profile/?modal=open&error=general_error')
+            return redirect('/profile/?modal=open&error=general_error')  # Redirect with a general error
 
+    # Redirect to the profile page if the request is not a POST
     return redirect('/profile/')
 
 
-def change_password(request):
-    if request.method == 'POST':
-        current_password = request.POST.get('current_password')
-        new_password = request.POST.get('new_password')
-        retype_password = request.POST.get('retype_password')
 
+
+def change_password(request):
+    # Handle requests to change a user's password.
+    if request.method == 'POST':  # Check if the request is a POST request
+        # Retrieve form data from the POST request
+        current_password = request.POST.get('current_password')  # Current password entered by the user
+        new_password = request.POST.get('new_password')  # New password entered by the user
+        retype_password = request.POST.get('retype_password')  # Retyped new password for confirmation
+
+        # Gather user information from the session for rendering back to the profile page
         user_info = {
             'full_name': request.session.get('full_name', 'Not available'),
             'email': request.session.get('email', 'Not available'),
             'department_name': request.session.get('department_name', 'Not available'),
-            'keep_modal_open': True  # Keep modal open on error or after change
+            'keep_modal_open': True  # Flag to keep the modal open in the frontend
         }
 
+        # Check if the new password and retyped password match
         if new_password != retype_password:
             messages.error(request, 'New password and retyped password do not match.', extra_tags='change_password_match_error')
-            return render(request, 'home/profile.html', user_info)
+            return render(request, 'home/profile.html', user_info)  # Return to profile page with an error
 
+        # Validate the new password format (at least 8 characters, one lowercase, one uppercase)
         if not re.search(r'^(?=.*[a-z])(?=.*[A-Z]).{8,}$', new_password):
             messages.error(request, 'Password must be at least 8 characters with one lowercase and one uppercase letter.', extra_tags='change_password_format_error')
-            return render(request, 'home/profile.html', user_info)
+            return render(request, 'home/profile.html', user_info)  # Return to profile page with an error
 
         try:
+            # Retrieve the user's email from the session
             user_email = user_info['email']
+
+            # Prepare the payload to authenticate the current password
             payload = {
-                'email': user_email,
-                'password': current_password,
-                'returnSecureToken': True
+                'email': user_email,  # User's email
+                'password': current_password,  # Current password for validation
+                'returnSecureToken': True  # Firebase flag for secure token handling
             }
+            # Send a POST request to authenticate the current password
             response = requests.post(url, json=payload)
 
-            if response.status_code == 200:
-                user = auth.get_user_by_email(user_email)
-                auth.update_user(user.uid, password=new_password)
+            if response.status_code == 200:  # Authentication successful
+                user = auth.get_user_by_email(user_email)  # Get the user's Firebase record
+                auth.update_user(user.uid, password=new_password)  # Update the password in Firebase
                 messages.success(request, 'Password changed successfully.', extra_tags='change_password_success')
-                return render(request, 'home/profile.html', user_info)
+                return render(request, 'home/profile.html', user_info)  # Return to profile page with a success message
             else:
+                # Current password is incorrect
                 messages.error(request, 'Current password is incorrect.', extra_tags='change_password_current_error')
-                return render(request, 'home/profile.html', user_info)
+                return render(request, 'home/profile.html', user_info)  # Return to profile page with an error
 
-        except firebase_admin.auth.UserNotFoundError:
+        except firebase_admin.auth.UserNotFoundError:  # Handle cases where the user is not found in Firebase
             messages.error(request, 'User not found.', extra_tags='change_password_user_not_found_error')
-            return render(request, 'home/profile.html', user_info)
+            return render(request, 'home/profile.html', user_info)  # Return to profile page with an error
 
-        except Exception as e:
+        except Exception as e:  # Catch any other unexpected errors
             messages.error(request, f'Error occurred: {str(e)}', extra_tags='change_password_general_error')
-            return render(request, 'home/profile.html', user_info)
+            return render(request, 'home/profile.html', user_info)  # Return to profile page with a general error
 
+    # Redirect to the profile page if the request is not a POST
     return redirect('profile')
+
 
 import threading
 import re
