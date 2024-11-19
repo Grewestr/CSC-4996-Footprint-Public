@@ -47,16 +47,23 @@
                         </div>
                     </div>
                     <form method="get" action="{% url 'admin_dashboard' %}">
-                        <!-- Status Filter -->
+                        <!-- Status Filter Section -->
                         <label for="status-filter">Filter by Status:</label>
                         <select name="status" id="status-filter" onchange="this.form.submit()">
                             <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All</option>
-                            <option value="approved" {% if status_filter == 'approved' %}selected{% endif %}>Approved</option>
-                            <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
-                            <option value="denied" {% if status_filter == 'denied' %}selected{% endif %}>Denied</option>
+                            <option value="approved" {% if status_filter == 'Approved' %}selected{% endif %}>Approved</option>
+                            <option value="pending" {% if status_filter == 'Pending' %}selected{% endif %}>Pending</option>
+                            <option value="denied" {% if status_filter == 'Denied' %}selected{% endif %}>Denied</option>
                         </select>
-                    
-                        <!-- Department Filter -->
+
+                        <!-- Date Sort Filter Section -->
+                        <label for="date-sort">Sort by:</label>
+                        <select name="date_sort" id="date-sort" onchange="this.form.submit()">
+                            <option value="newest" {% if date_sort == 'newest' %}selected{% endif %}>Newest</option>
+                            <option value="oldest" {% if date_sort == 'oldest' %}selected{% endif %}>Oldest</option>
+                        </select>
+
+                        <!-- Department Filter Section -->
                         <label for="department-filter">Filter by Department:</label>
                         <select name="department" id="department-filter" onchange="this.form.submit()">
                             <option value="">All Departments</option>
@@ -64,13 +71,14 @@
                                 <option value="{{ department }}" {% if department_filter == department %}selected{% endif %}>{{ department }}</option>
                             {% endfor %}
                         </select>
+
                     
                         <!-- Search Bar -->
                         <label for="search-query">Search:</label>
                         <input type="text" name="search" id="search-query" placeholder="name or email" value="{{ search_query }}">
                         <button type="submit" class="button search-button">Search</button>
                     
-                        <!-- Clear Filters Button -->
+                        <!-- Clear Filters Button Section -->
                         <a href="{% url 'admin_dashboard' %}" class="button clear-filters-button">Reset</a>
                     </form>
                     
@@ -109,21 +117,22 @@
                                             <form method="POST" action="{% url 'update_account_status' user.email %}" onchange="if(this.new_status.value) this.submit();">
                                                 {% csrf_token %}
                                                 
-                                                <!-- Hidden fields to help with current status -->
+                                                <!-- Hidden fields to retain the current status, department, search query, and page number -->
                                                 <input type="hidden" name="status" value="{{ status_filter }}">
                                                 <input type="hidden" name="department" value="{{ department_filter }}">
                                                 <input type="hidden" name="search" value="{{ search_query }}">
-                                                
+                                                <input type="hidden" name="page" value="{{ page_obj.number }}">
+                                            
                                                 <select name="new_status" data-status="{{ user.account_status|lower }}">
                                                     <option value="" selected disabled>Change Status</option>
                                                     {% if user.account_status|lower != 'approved' %}
-                                                        <option value="approved">Approve</option>
+                                                        <option value="Approved">Approve</option>
                                                     {% endif %}
                                                     {% if user.account_status|lower != 'pending' %}
-                                                        <option value="pending">Pending</option>
+                                                        <option value="Pending">Pending</option>
                                                     {% endif %}
                                                     {% if user.account_status|lower != 'denied' %}
-                                                        <option value="denied">Deny</option>
+                                                        <option value="Denied">Deny</option>
                                                     {% endif %}
                                                 </select>
                                             </form>
