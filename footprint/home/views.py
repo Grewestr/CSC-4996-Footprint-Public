@@ -16,7 +16,7 @@ from google.oauth2 import service_account
 from google.cloud.firestore_v1 import FieldFilter
 from collections import defaultdict
 from django.urls import reverse
-from datetime import timedelta
+from datetime import timedelta, datetime
 import csv
 
 
@@ -289,14 +289,14 @@ def signup_view(request):
     # Render the signup page if the request method is GET
     return render(request, 'home/signup.html')
 
-
 def admin_dashboard_view(request):
     # Get filtering parameters from the GET request
     status_filter = request.GET.get('status', 'all')
     search_query = request.GET.get('search', '').strip().lower()
     department_filter = request.GET.get('department', '')
-    page_number = int(request.GET.get('page',1))
-    items_per_page = 10 # users shown per page
+    date_sort = request.GET.get('date_sort', 'newest')  # Default to 'newest'
+    page_number = int(request.GET.get('page', 1))
+    items_per_page = 10  # users shown per page
 
     # Fetch all unique departments from the 'accounts' collection
     department_names = set()
@@ -323,9 +323,9 @@ def admin_dashboard_view(request):
         user_data = user.to_dict()
         created_at = user_data.get("created_at")
 
+        # Adjust the timezone if needed
         if created_at:
             created_at = created_at - timedelta(hours=4)
-
 
         # Filter by department if specified
         if department_filter == '' or user_data.get('department_name') == department_filter:
@@ -345,9 +345,14 @@ def admin_dashboard_view(request):
                     'account_created': created_at,
                     'doc_id': user.id
                 })
-    
-    users_list.sort(key=lambda x: x['account_created'], reverse=True)
 
+    # Sort users by account creation date based on the date_sort filter
+    if date_sort == 'newest':
+        users_list.sort(key=lambda x: x['account_created'], reverse=True)
+    else:  # Sort by oldest
+        users_list.sort(key=lambda x: x['account_created'])
+
+    # Paginate the users list
     paginator = Paginator(users_list, items_per_page)
     page_obj = paginator.get_page(page_number)
 
@@ -359,19 +364,20 @@ def admin_dashboard_view(request):
         'search_query': search_query,
         'department_filter': department_filter,
         'department_names': department_names,
+        'date_sort': date_sort,  
         'page_number': page_number,
         'num_pages': paginator.num_pages,  
     }
     return render(request, 'home/admin_dashboard.html', context)
 
-
 def update_account_status(request, email):
     new_status = request.POST.get('new_status')  # Get the status from the form
 
-    # Get the current filters from POST
+    # Get the current filters and page from POST
     status_filter = request.POST.get('status', 'all')
     department_filter = request.POST.get('department', '')
     search_query = request.POST.get('search', '')
+    page = request.POST.get('page', '1')  
 
     try:
         # Reference to the user's document in Firestore
@@ -383,14 +389,13 @@ def update_account_status(request, email):
         # Display a success message with a custom tag
         messages.success(request, f'Account status for {email} updated to {new_status}.', extra_tags='status_update')
         
-
     except Exception as e:
         # If there was an error, display an error message with a custom tag
         messages.error(request, f'Error updating account status: {str(e)}', extra_tags='status_update')
        
-    url = f"{reverse('admin_dashboard')}?status={status_filter}&department={department_filter}&search={search_query}"
-    return redirect(url)
 
+    url = f"{reverse('admin_dashboard')}?page={page}&status={status_filter}&department={department_filter}&search={search_query}"
+    return redirect(url)
 
 def password_reset_view(request):
 
