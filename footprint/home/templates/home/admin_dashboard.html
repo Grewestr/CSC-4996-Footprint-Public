@@ -99,14 +99,13 @@
                                         <td>{{ user.first_name }}</td>
                                         <td>{{ user.last_name }}</td>
                                         <td>{{ user.department_name }}</td>
-                                        <td>
+                                        <td class="status-cell">
                                             <!-- displays and colors each account status -->
                                             <span class="status-box status-{{ user.account_status|lower }}">
                                                 {{ user.account_status }}
                                             </span>
                                         </td>
-                                        <td>
-                                            <!-- action dropdown where admin can change account status -->
+                                        <td class="action-cell">
                                             <form method="POST" action="{% url 'update_account_status' user.email %}" onchange="if(this.new_status.value) this.submit();">
                                                 {% csrf_token %}
                                                 
@@ -147,8 +146,6 @@
                               {% endif %}
                             </div>
                           </div>
-                  
-
 
                 </section>
             </main>

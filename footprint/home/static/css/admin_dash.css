@@ -145,22 +145,41 @@ tbody td {
   padding: 10px;
   border: 2px solid #000;
   text-align: center;
+  vertical-align: middle;
 }
 
 tbody td.account-created {
-  white-space: pre-line; /*date and time to appear on seprate lines */
+  white-space: pre-line; 
   text-align: center;
 }
 
+
 /* Account Status Column Style */
 .status-box {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 5px 10px;
   color: #000;
   border-radius: 5px;
   font-weight: bold;
   width: 100px; /* Set a fixed width */
   text-align: center;
+}
+
+/* Action Button Alignment */
+.action-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button.change-status {
+  padding: 5px 5px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .status-approved {
@@ -175,7 +194,28 @@ tbody td.account-created {
   background-color: #F0F028; /* Yellow */
 }
 
+.action-cell {
 
+  align-items: center;
+  justify-content: center;
+
+}
+
+select[name="new_status"] {
+  padding: 5px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  font-family: 'Courier New', Courier, monospace;
+  background-color: #f0f02882; /* Adjust based on status */
+  transition: background-color 0.3s;
+  width: 120px; /* Set a consistent width */
+  text-align: center;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 select.open {
   background-image: url("{% static 'images/up_arrow.png' %}"); /* Still Needs work */
