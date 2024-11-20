@@ -50,14 +50,14 @@
                         <!-- Status Filter Section -->
                         <label for="status-filter">Filter by Status:</label>
                         <select name="status" id="status-filter" onchange="this.form.submit()">
-                            <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All</option>
-                            <option value="approved" {% if status_filter == 'Approved' %}selected{% endif %}>Approved</option>
-                            <option value="pending" {% if status_filter == 'Pending' %}selected{% endif %}>Pending</option>
-                            <option value="denied" {% if status_filter == 'Denied' %}selected{% endif %}>Denied</option>
+                            <option value="all" {% if status_filter|lower == 'all' %}selected{% endif %}>All</option>
+                            <option value="approved" {% if status_filter|lower == 'approved' %}selected{% endif %}>Approved</option>
+                            <option value="pending" {% if status_filter|lower == 'pending' %}selected{% endif %}>Pending</option>
+                            <option value="denied" {% if status_filter|lower == 'denied' %}selected{% endif %}>Denied</option>
                         </select>
 
                         <!-- Date Sort Filter Section -->
-                        <label for="date-sort">Sort by:</label>
+                        <label for="date-sort">Sort by Date:</label>
                         <select name="date_sort" id="date-sort" onchange="this.form.submit()">
                             <option value="newest" {% if date_sort == 'newest' %}selected{% endif %}>Newest</option>
                             <option value="oldest" {% if date_sort == 'oldest' %}selected{% endif %}>Oldest</option>
@@ -126,13 +126,13 @@
                                                 <select name="new_status" data-status="{{ user.account_status|lower }}">
                                                     <option value="" selected disabled>Change Status</option>
                                                     {% if user.account_status|lower != 'approved' %}
-                                                        <option value="Approved">Approve</option>
+                                                        <option value="approved">Approve</option>
                                                     {% endif %}
                                                     {% if user.account_status|lower != 'pending' %}
-                                                        <option value="Pending">Pending</option>
+                                                        <option value="pending">Pending</option>
                                                     {% endif %}
                                                     {% if user.account_status|lower != 'denied' %}
-                                                        <option value="Denied">Deny</option>
+                                                        <option value="denied">Deny</option>
                                                     {% endif %}
                                                 </select>
                                             </form>
