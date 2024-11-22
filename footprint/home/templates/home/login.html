@@ -20,10 +20,31 @@
                 <h1 class="site-title">Footprint</h1>
             </div>
             <nav class="nav">
-                <a href="{% url 'homepage' %}" class="nav-link">Homepage</a>
-                <a href="{% url 'login' %}" class="nav-link">Login</a>
-                <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
-                <a href="{% url 'support' %}" class="nav-link">Support</a>
+                {% if request.session.uid %}
+                    {% if request.session.role == 'user' %}
+                        <!-- Navigation links for regular users -->
+                        <a href="{% url 'homepage' %}" class="nav-link">Home</a>
+                        <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
+                        <a href="{% url 'upload' %}" class="nav-link">Upload</a>
+                        <a href="{% url 'profile' %}" class="nav-link">Profile</a>
+                        <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+                    
+                    {% elif request.session.role == 'admin' %}
+                        <!-- Navigation links for admins -->
+                        <a href="{% url 'homepage' %}" class="nav-link">Home</a>
+                        <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
+                        <a href="{% url 'upload' %}" class="nav-link">Upload</a>
+                        <a href="{% url 'admin_dashboard' %}" class="nav-link">Admin</a>
+                        <a href="{% url 'profile' %}" class="nav-link">Profile</a>
+                        <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+                    {% endif %}
+                {% else %}
+                    <!-- Navigation links for non-logged-in users -->
+                    <a href="{% url 'homepage' %}" class="nav-link">Home</a>
+                    <a href="{% url 'login' %}" class="nav-link">Login</a>
+                    <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
+                {% endif %}
+                
             </nav>
         </div>
     </header>
@@ -65,7 +86,7 @@
 
     <!-- Footer -->
     <footer class="login-footer">
-        <p>&copy; 2024 FOOTPRINT</p>
+        <p>2024 FOOTPRINT</p>
     </footer>
 </body>
 </html>

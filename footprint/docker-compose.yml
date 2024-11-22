@@ -11,12 +11,16 @@ services:
     environment:
       - REDIS_URL=redis://redis-server:6379/0
     volumes:
+      # Map AI Scripts directory
       - "./home/static/AI_Scripts:/AI_Scripts"
-      - "./home/static/AI_Scripts/Identified_Person:/Identified_Person"
+      # Map Identified_Person directory within AI_Scripts
+      - "./home/static/AI_Scripts/Identified_Person:/AI_Scripts/Identified_Person"
+      # Map the serviceAccountKey.json file
+      - "./Firebase/serviceAccountKey.json:/footprint/Firebase/serviceAccountKey.json"
     working_dir: /AI_Scripts
     command: rq worker --with-scheduler
     deploy:
       resources:
         limits:
-          cpus: "0.5"  # Limit CPU usage if needed
-          memory: "512M"  # Limit memory usage if needed
+          cpus: "0.5"
+          memory: "512M"
