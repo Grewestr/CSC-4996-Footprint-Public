@@ -1,4 +1,3 @@
-
 import re
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
@@ -18,7 +17,8 @@ from collections import defaultdict
 from django.urls import reverse
 from datetime import timedelta, datetime
 import csv
-
+from django.core.paginator import Paginator
+from urllib.parse import urlencode
 
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
@@ -84,7 +84,7 @@ def logout_view(request):
 
 def login_view(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
+        email = request.POST.get('email').lower()
         password = request.POST.get('password')
 
         try:
@@ -167,7 +167,7 @@ def signup_view(request):
         # Capture first name, last name, email, and password from the form
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
-        email = request.POST.get('email')
+        email = request.POST.get('email').lower()
         password = request.POST.get('password')
         department_name = request.POST.get('department_name')
 
@@ -455,6 +455,24 @@ def delete_email_view(request):
                 user = auth.get_user_by_email(session_email)  # Retrieve the Firebase user object
                 auth.delete_user(user.uid)  # Delete the user's Firebase account
                 db.collection('accounts').document(session_email).delete()  # Remove user data from Firestore
+
+               # Query and delete documents from the live_feeds collection where user_email matches session_email and feed_status is "finished"
+                live_feeds_query = db.collection('live_feeds')\
+                                      .where('user_email', '==', session_email)\
+                                      .where('feed_status', '==', 'finished')\
+                                      .stream()
+
+                for doc in live_feeds_query:
+                    db.collection('live_feeds').document(doc.id).delete()  # Delete each matching document
+
+                # Query and delete documents from the IdentifiedPersons collection where user_email matches session_email
+                identified_persons_query = db.collection('IdentifiedPersons')\
+                                              .where('user_email', '==', session_email)\
+                                              .stream()
+
+                for doc in identified_persons_query:
+                    db.collection('IdentifiedPersons').document(doc.id).delete()  # Delete each matching document
+         
                 messages.success(request, "Your account has been successfully deleted.", extra_tags='delete_email')
                 return logout_view(request)  # Log out the user after deletion
             else:
@@ -473,7 +491,6 @@ def delete_email_view(request):
 
     # Redirect to the profile page if the request is not a POST
     return redirect('/profile/')
-
 
 
 
@@ -569,7 +586,7 @@ BOOT_COMMANDS_RUN = False  # Global flag to check if boot commands are run
 def check_and_run_boot_commands():
     global BOOT_COMMANDS_RUN
     if not BOOT_COMMANDS_RUN:
-        boot_directory = "C:\\Users\\17344\\Documents\\Capstone2\\CSC-4996-Footprint\\footprint"
+        boot_directory = R"C:\Wayne State\Senior Capstone\Footprint Github clone\CSC-4996-Footprint\footprint"
         run_docker_command("docker-compose build", cwd=boot_directory)
         run_docker_command("docker-compose up -d", cwd=boot_directory)  # Run in detached mode
         BOOT_COMMANDS_RUN = True
@@ -644,7 +661,7 @@ def upload_view(request):
                     )
 
                     # Prepare parameters for the Docker command and pass the document ID
-                    script_directory = "C:\\Users\\17344\\Documents\\Capstone2\\CSC-4996-Footprint\\footprint\\home\\static\\AI_Scripts"
+                    script_directory = "C:\\Wayne State\\Senior Capstone\\Footprint Github clone\\CSC-4996-Footprint\\footprint\\home\\\static\\AI_Scripts"
                     docker_command = f'docker-compose run --rm rq-worker python video_Enqueue.py "{youtube_link}" {processing_speed} "{user_email}" "{document_id}"'
                     
                     # Run the Docker command asynchronously
@@ -735,11 +752,47 @@ def check_job_status(request):
 
 
 def search_attributes1(request):
-    # Get the user's email from the session
+    # Mapping for human-readable names
+    attribute_names = {
+        "short_hair": "Short Hair",
+        "medium_hair": "Medium Hair",
+        "long_hair": "Long Hair",
+        "no_hair": "No Hair",
+        "short_shirt": "Short Sleeved",
+        "long_shirt": "Long Sleeved",
+        "sleeveless_shirt": "Sleeveless Shirt",
+        "no_shirt": "No Shirt",
+        "short_pants": "Shorts",
+        "long_pants": "Pants",
+        "skirt": "Skirt",
+        "black": "Black",
+        "brown": "Brown",
+        "red": "Red",
+        "gray": "Gray",
+        "blonde": "Blonde",
+        "unnatural": "Unnatural",
+        "green": "Green",
+        "blue": "Blue",
+        "white": "White",
+        "orange": "Orange",
+        "yellow": "Yellow",
+        "purple": "Purple",
+        "pink": "Pink",
+        "beige": "Beige",
+        "NULL": "Undetected",
+        "unknown": "Undetected"
+    }
+
+    # Helper function to format attributes
+    def format_attribute(value):
+        return attribute_names.get(value, value)  # Default to raw value if no mapping exists
+
+    # Existing code
     user_email = request.session.get('email')
     live_feed_names = []
+    items_per_page = 5
+    page_number = int(request.GET.get('page', 1))
 
-    # Retrieve available live feeds for the dropdown
     if user_email:
         try:
             feeds_query = db.collection('live_feeds').where('user_email', '==', user_email).where('feed_status', '==', 'finished').stream()
@@ -748,133 +801,146 @@ def search_attributes1(request):
             messages.error(request, f"Error retrieving user feed names: {str(e)}")
 
     if request.method == 'POST':
-        # Retrieve all selections from the form data
-        top_attribute = request.POST.get('top_attribute')
-        top_color = request.POST.get('top_color')
-        middle_attribute = request.POST.get('middle_attribute')
-        middle_color = request.POST.get('middle_color')
-        bottom_attribute = request.POST.get('bottom_attribute')
-        bottom_color = request.POST.get('bottom_color')
-        feed_name = request.POST.get('feed_name')
-
-        # Fetch feed link and scanning speed from live_feeds collection based on user_email and feed_name
-        video_link = None
-        speed = None
-        try:
-            feeds_query = db.collection('live_feeds').where('user_email', '==', user_email).where('feed_name', '==', feed_name).stream()
-            for feed_doc in feeds_query:
-                feed_data = feed_doc.to_dict()
-                video_link = feed_data.get('video_link')
-                speed = feed_data.get('speed')
-                break
-
-            if not video_link or not speed:
-                messages.error(request, "No matching feed found for the given name.")
-                return render(request, 'home/dashboard.html', {'feeds': live_feed_names})
-
-        except Exception as e:
-            messages.error(request, f"Error retrieving feed data: {str(e)}")
-            return render(request, 'home/dashboard.html', {'feeds': live_feed_names})
-
-        # Define weights for each attribute
-        weights = {
-            'top_type': 20,
-            'top_color': 10,
-            'middle_type': 25,
-            'middle_color': 15,
-            'bottom_type': 20,
-            'bottom_color': 10
+        form_data = {
+            'top_attribute': request.POST.get('top_attribute'),
+            'top_color': request.POST.get('top_color'),
+            'middle_attribute': request.POST.get('middle_attribute'),
+            'middle_color': request.POST.get('middle_color'),
+            'bottom_attribute': request.POST.get('bottom_attribute'),
+            'bottom_color': request.POST.get('bottom_color'),
+            'feed_name': request.POST.get('feed_name'),
         }
+        query_string = urlencode(form_data)
+        return redirect(f"{request.path}?{query_string}")
 
-        # Build the query based on user_email, video_link, and speed
-        query = db.collection('IdentifiedPersons').where('user_email', '==', user_email).where('video_link', '==', video_link).where('speed', '==', speed)
+    top_attribute = request.GET.get('top_attribute')
+    top_color = request.GET.get('top_color')
+    middle_attribute = request.GET.get('middle_attribute')
+    middle_color = request.GET.get('middle_color')
+    bottom_attribute = request.GET.get('bottom_attribute')
+    bottom_color = request.GET.get('bottom_color')
+    feed_name = request.GET.get('feed_name')
 
-        # Execute the query with results in categories
-        exact_matches = []
-        high_matches = []
-        medium_matches = []
-        try:
-            docs = query.stream()
-            for doc in docs:
-                doc_data = doc.to_dict()
-                score = 0
-                unmatched_attributes = []
-
-                # Check each attribute for a match, update score, and record unmatched attributes
-                if top_attribute:
-                    if doc_data.get('top_type') == top_attribute.lower():
-                        score += weights['top_type']
-                    else:
-                        unmatched_attributes.append('top_type')
-                if top_color:
-                    if doc_data.get('top_color') == top_color.lower():
-                        score += weights['top_color']
-                    else:
-                        unmatched_attributes.append('top_color')
-                if middle_attribute:
-                    if doc_data.get('middle_type') == middle_attribute.lower():
-                        score += weights['middle_type']
-                    else:
-                        unmatched_attributes.append('middle_type')
-                if middle_color:
-                    if doc_data.get('middle_color') == middle_color.lower():
-                        score += weights['middle_color']
-                    else:
-                        unmatched_attributes.append('middle_color')
-                if bottom_attribute:
-                    if doc_data.get('bottom_type') == bottom_attribute.lower():
-                        score += weights['bottom_type']
-                    else:
-                        unmatched_attributes.append('bottom_type')
-                if bottom_color:
-                    if doc_data.get('bottom_color') == bottom_color.lower():
-                        score += weights['bottom_color']
-                    else:
-                        unmatched_attributes.append('bottom_color')
-
-                # Classify based on matching score and mark unmatched attributes
-                result_data = {
-                    'detection_time': doc_data.get('detection_time'),
-                    'detection_time_link': doc_data.get('detection_time_link'),
-                    'photo': doc_data.get('photo'),
-                    'feed_name': doc_data.get('feed_name'),
-                    'top_type': f"{doc_data.get('top_type')} (unmatched)" if 'top_type' in unmatched_attributes else doc_data.get('top_type'),
-                    'top_color': f"{doc_data.get('top_color')} (unmatched)" if 'top_color' in unmatched_attributes else doc_data.get('top_color'),
-                    'middle_type': f"{doc_data.get('middle_type')} (unmatched)" if 'middle_type' in unmatched_attributes else doc_data.get('middle_type'),
-                    'middle_color': f"{doc_data.get('middle_color')} (unmatched)" if 'middle_color' in unmatched_attributes else doc_data.get('middle_color'),
-                    'bottom_type': f"{doc_data.get('bottom_type')} (unmatched)" if 'bottom_type' in unmatched_attributes else doc_data.get('bottom_type'),
-                    'bottom_color': f"{doc_data.get('bottom_color')} (unmatched)" if 'bottom_color' in unmatched_attributes else doc_data.get('bottom_color')
-                }
-
-                if score == 100:
-                    exact_matches.append(result_data)
-                elif 80 <= score < 100:
-                    high_matches.append(result_data)
-                elif 60 <= score < 80:
-                    medium_matches.append(result_data)
-
-        except Exception as e:
-            messages.error(request, f"Error querying database: {str(e)}")
-            return render(request, 'home/dashboard.html', {'feeds': live_feed_names})
-
-        # Pass the categorized results to the template
-        context = {
-            'exact_matches': exact_matches,
-            'high_matches': high_matches,
-            'medium_matches': medium_matches,
-            'feeds': live_feed_names, 
-            'selections': {
-                'top': {'attribute': top_attribute, 'color': top_color},
-                'middle': {'attribute': middle_attribute, 'color': middle_color},
-                'bottom': {'attribute': bottom_attribute, 'color': bottom_color},
-                'feed_name': feed_name
-            }
-        }
-
-        return render(request, 'home/dashboard.html', context)
-    else:
-        # On GET request, load the dashboard with available feeds but no results
+    if not feed_name:
         return render(request, 'home/dashboard.html', {'feeds': live_feed_names})
+
+    video_link = None
+    speed = None
+    try:
+        feeds_query = db.collection('live_feeds').where('user_email', '==', user_email).where('feed_name', '==', feed_name).stream()
+        for feed_doc in feeds_query:
+            feed_data = feed_doc.to_dict()
+            video_link = feed_data.get('video_link')
+            speed = feed_data.get('speed')
+            break
+
+        if not video_link or not speed:
+            messages.error(request, "No matching feed found for the given name.")
+            return render(request, 'home/dashboard.html', {'feeds': live_feed_names})
+
+    except Exception as e:
+        messages.error(request, f"Error retrieving feed data: {str(e)}")
+        return render(request, 'home/dashboard.html', {'feeds': live_feed_names})
+
+    weights = {
+        'top_type': 20,
+        'top_color': 10,
+        'middle_type': 25,
+        'middle_color': 15,
+        'bottom_type': 20,
+        'bottom_color': 10
+    }
+
+    query = db.collection('IdentifiedPersons').where('user_email', '==', user_email).where('video_link', '==', video_link).where('speed', '==', speed)
+
+    results = []
+    try:
+        docs = query.stream()
+        for doc in docs:
+            doc_data = doc.to_dict()
+            score = 0
+            unmatched_attributes = []
+
+            if top_attribute:
+                if doc_data.get('top_type') == top_attribute.lower():
+                    score += weights['top_type']
+                else:
+                    unmatched_attributes.append('top_type')
+            if top_color:
+                if doc_data.get('top_color') == top_color.lower():
+                    score += weights['top_color']
+                else:
+                    unmatched_attributes.append('top_color')
+            if middle_attribute:
+                if doc_data.get('middle_type') == middle_attribute.lower():
+                    score += weights['middle_type']
+                else:
+                    unmatched_attributes.append('middle_type')
+            if middle_color:
+                if doc_data.get('middle_color') == middle_color.lower():
+                    score += weights['middle_color']
+                else:
+                    unmatched_attributes.append('middle_color')
+            if bottom_attribute:
+                if doc_data.get('bottom_type') == bottom_attribute.lower():
+                    score += weights['bottom_type']
+                else:
+                    unmatched_attributes.append('bottom_type')
+            if bottom_color:
+                if doc_data.get('bottom_color') == bottom_color.lower():
+                    score += weights['bottom_color']
+                else:
+                    unmatched_attributes.append('bottom_color')
+
+            if score == 100:
+                match_percentage = "100%"
+                priority = 0
+            elif 80 <= score < 100:
+                match_percentage = "80-90%"
+                priority = 1
+            elif 60 <= score < 80:
+                match_percentage = "60-80%"
+                priority = 2
+            else:
+                continue
+
+            results.append({
+                'detection_time': doc_data.get('detection_time'),
+                'detection_time_link': doc_data.get('detection_time_link'),
+                'photo': doc_data.get('photo'),
+                'feed_name': format_attribute(doc_data.get('feed_name')),
+                'top_type': f"{format_attribute(doc_data.get('top_type'))} (unmatched)" if 'top_type' in unmatched_attributes else format_attribute(doc_data.get('top_type')),
+                'top_color': f"{format_attribute(doc_data.get('top_color'))} (unmatched)" if 'top_color' in unmatched_attributes else format_attribute(doc_data.get('top_color')),
+                'middle_type': f"{format_attribute(doc_data.get('middle_type'))} (unmatched)" if 'middle_type' in unmatched_attributes else format_attribute(doc_data.get('middle_type')),
+                'middle_color': f"{format_attribute(doc_data.get('middle_color'))} (unmatched)" if 'middle_color' in unmatched_attributes else format_attribute(doc_data.get('middle_color')),
+                'bottom_type': f"{format_attribute(doc_data.get('bottom_type'))} (unmatched)" if 'bottom_type' in unmatched_attributes else format_attribute(doc_data.get('bottom_type')),
+                'bottom_color': f"{format_attribute(doc_data.get('bottom_color'))} (unmatched)" if 'bottom_color' in unmatched_attributes else format_attribute(doc_data.get('bottom_color')),
+                'match_percentage': match_percentage,
+                'priority': priority
+            })
+
+    except Exception as e:
+        messages.error(request, f"Error querying database: {str(e)}")
+        return render(request, 'home/dashboard.html', {'feeds': live_feed_names})
+
+    results.sort(key=lambda x: x['priority'])
+    paginator = Paginator(results, items_per_page)
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+        'results': page_obj.object_list,
+        'feeds': live_feed_names,
+        'selections': {
+            'top': {'attribute': top_attribute, 'color': top_color},
+            'middle': {'attribute': middle_attribute, 'color': middle_color},
+            'bottom': {'attribute': bottom_attribute, 'color': bottom_color},
+            'feed_name': feed_name
+        },
+        'num_pages': paginator.num_pages,
+        'page_number': page_number,
+    }
+    return render(request, 'home/dashboard.html', context)
 
 from django.conf import settings
 from redis import Redis

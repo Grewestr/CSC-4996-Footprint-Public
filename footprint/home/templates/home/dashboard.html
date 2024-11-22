@@ -66,22 +66,22 @@
                 <div class="attribute-group">
                     <h3>TOP</h3>
                     <div class="top-attributes">
-                        <button type="button" class="attribute-btn" data-attribute="short_hair" data-category="top">Short Hair</button>
-                        <button type="button" class="attribute-btn" data-attribute="medium_hair" data-category="top">Medium Hair</button>
-                        <button type="button" class="attribute-btn" data-attribute="long_hair" data-category="top">Long Hair</button>
-                        <button type="button" class="attribute-btn" data-attribute="no_hair" data-category="top">No Hair</button>
+                        <button type="button" class="attribute-btn {% if selections.top.attribute == 'short_hair' %}selected{% endif %}" data-attribute="short_hair" data-category="top">Short Hair</button>
+                        <button type="button" class="attribute-btn {% if selections.top.attribute == 'medium_hair' %}selected{% endif %}" data-attribute="medium_hair" data-category="top">Medium Hair</button>
+                        <button type="button" class="attribute-btn {% if selections.top.attribute == 'long_hair' %}selected{% endif %}" data-attribute="long_hair" data-category="top">Long Hair</button>
+                        <button type="button" class="attribute-btn {% if selections.top.attribute == 'no_hair' %}selected{% endif %}" data-attribute="no_hair" data-category="top">No Hair</button>
                     </div>
 
                     <div class="color-selection">
                         <label for="top-color">Color:</label>
                         <select id="top-color" name="top_color" class="color-select" data-category="top">
                             <option value="">Select Color</option>
-                            <option value="black">Black</option>
-                            <option value="brown">Brown</option>
-                            <option value="red">Red</option>
-                            <option value="gray">Gray</option>
-                            <option value="blonde">Blonde</option>
-                            <option value="unnatural">Unnatural</option>
+                            <option value="black"{% if selections.top.color == "black" %}selected{% endif %}>Black</option>
+                            <option value="brown"{% if selections.top.color == "brown" %}selected{% endif %}>Brown</option>
+                            <option value="red"{% if selections.top.color == "red" %}selected{% endif %}>Red</option>
+                            <option value="gray"{% if selections.top.color == "gray" %}selected{% endif %}>Gray</option>
+                            <option value="blonde"{% if selections.top.color == "blonde" %}selected{% endif %}>Blonde</option>
+                            <option value="unnatural"{% if selections.top.color == "unnatural" %}selected{% endif %}>Unnatural</option>
                         </select>                   
                     </div>
                 </div>
@@ -90,28 +90,28 @@
                 <div class="attribute-group">
                     <h3>MIDDLE</h3>
                     <div class="middle-attributes">
-                        <button type="button" class="attribute-btn" data-attribute="short_shirt" data-category="middle">Short Sleeved</button>
-                        <button type="button" class="attribute-btn" data-attribute="long_shirt" data-category="middle">Long Sleeved</button>
-                        <button type="button" class="attribute-btn" data-attribute="sleeveless_shirt" data-category="middle">Sleeveless Shirt</button>
-                        <button type="button" class="attribute-btn" data-attribute="no_shirt" data-category="middle">No Shirt</button>
+                        <button type="button" class="attribute-btn {% if selections.middle.attribute == 'short_shirt' %}selected{% endif %}" data-attribute="short_shirt" data-category="middle">Short Sleeved</button>
+                        <button type="button" class="attribute-btn {% if selections.middle.attribute == 'long_shirt' %}selected{% endif %}" data-attribute="long_shirt" data-category="middle">Long Sleeved</button>
+                        <button type="button" class="attribute-btn {% if selections.middle.attribute == 'sleeveless_shirt' %}selected{% endif %}" data-attribute="sleeveless_shirt" data-category="middle">Sleeveless Shirt</button>
+                        <button type="button" class="attribute-btn {% if selections.middle.attribute == 'no_shirt' %}selected{% endif %}" data-attribute="no_shirt" data-category="middle">No Shirt</button>
                     </div>
                     
                     <div class="color-selection">
                         <label for="middle-color">Color:</label>
                         <select id="middle-color" name="middle_color" class="color-select" data-category="middle">
                             <option value="">Select Color</option>
-                            <option value="black">Black</option>
-                            <option value="brown">Brown</option>
-                            <option value="red">Red</option>
-                            <option value="gray">Gray</option>
-                            <option value="green">Green</option>
-                            <option value="blue">Blue</option>
-                            <option value="white">White</option>
-                            <option value="orange">Orange</option>
-                            <option value="yellow">Yellow</option>
-                            <option value="purple">Purple</option>
-                            <option value="pink">Pink</option>
-                            <option value="beige">Beige</option>
+                            <option value="black" {% if selections.middle.color == "black" %}selected{% endif %}>Black</option>
+                            <option value="brown" {% if selections.middle.color == "brown" %}selected{% endif %}>Brown</option>
+                            <option value="red" {% if selections.middle.color == "red" %}selected{% endif %}>Red</option>
+                            <option value="gray" {% if selections.middle.color == "gray" %}selected{% endif %}>Gray</option>
+                            <option value="green" {% if selections.middle.color == "green" %}selected{% endif %}>Green</option>
+                            <option value="blue" {% if selections.middle.color == "blue" %}selected{% endif %}>Blue</option>
+                            <option value="white" {% if selections.middle.color == "white" %}selected{% endif %}>White</option>
+                            <option value="orange" {% if selections.middle.color == "orange" %}selected{% endif %}>Orange</option>
+                            <option value="yellow" {% if selections.middle.color == "yellow" %}selected{% endif %}>Yellow</option>
+                            <option value="purple" {% if selections.middle.color == "purple" %}selected{% endif %}>Purple</option>
+                            <option value="pink" {% if selections.middle.color == "pink" %}selected{% endif %}>Pink</option>
+                            <option value="beige" {% if selections.middle.color == "beige" %}selected{% endif %}>Beige</option>
                         </select>                        
                     </div>
                 </div>
@@ -120,27 +120,26 @@
                 <div class="attribute-group">
                     <h3>BOTTOM</h3>
                     <div class="bottom-attributes">
-                        <button type="button" class="attribute-btn" data-attribute="short_pants" data-category="bottom">Shorts</button>
-                        <button type="button" class="attribute-btn" data-attribute="long_pants" data-category="bottom">Pants</button>
-                        <button type="button" class="attribute-btn" data-attribute="skirt" data-category="bottom">Skirt</button>
+                        <button type="button" class="attribute-btn {% if selections.bottom.attribute == 'short_pants' %}selected{% endif %}" data-attribute="short_pants" data-category="bottom">Shorts</button>
+                        <button type="button" class="attribute-btn {% if selections.bottom.attribute == 'long_pants' %}selected{% endif %}" data-attribute="long_pants" data-category="bottom">Pants</button>
+                        <button type="button" class="attribute-btn {% if selections.bottom.attribute == 'skirt' %}selected{% endif %}" data-attribute="skirt" data-category="bottom">Skirt</button>
                     </div>
                     <div class="color-selection">
                         <label for="bottom-color">Color:</label>
                         <select id="bottom-color" name="bottom_color" class="color-select" data-category="bottom">
                             <option value="">Select Color</option>
-                            <option value="black">Black</option>
-                            <option value="brown">Brown</option>
-                            <option value="red">Red</option>
-                            <option value="gray">Gray</option>
-                            <option value="green">Green</option>
-                            <option value="blue">Blue</option>
-                            <option value="white">White</option>
-                            <option value="orange">Orange</option>
-                            <option value="yellow">Yellow</option>
-                            <option value="purple">Purple</option>
-                            <option value="pink">Pink</option>
-                            <option value="beige">Beige</option>
-                            
+                            <option value="black" {% if selections.bottom.color == "black" %}selected{% endif %}>Black</option>
+                            <option value="brown" {% if selections.bottom.color == "brown" %}selected{% endif %}>Brown</option>
+                            <option value="red" {% if selections.bottom.color == "red" %}selected{% endif %}>Red</option>
+                            <option value="gray" {% if selections.bottom.color == "gray" %}selected{% endif %}>Gray</option>
+                            <option value="green" {% if selections.bottom.color == "green" %}selected{% endif %}>Green</option>
+                            <option value="blue" {% if selections.bottom.color == "blue" %}selected{% endif %}>Blue</option>
+                            <option value="white" {% if selections.bottom.color == "white" %}selected{% endif %}>White</option>
+                            <option value="orange" {% if selections.bottom.color == "orange" %}selected{% endif %}>Orange</option>
+                            <option value="yellow" {% if selections.bottom.color == "yellow" %}selected{% endif %}>Yellow</option>
+                            <option value="purple" {% if selections.bottom.color == "purple" %}selected{% endif %}>Purple</option>
+                            <option value="pink" {% if selections.bottom.color == "pink" %}selected{% endif %}>Pink</option>
+                            <option value="beige" {% if selections.bottom.color == "beige" %}selected{% endif %}>Beige</option>
                         </select>
                     </div>
                 </div>
@@ -154,7 +153,7 @@
                     <select id="feed_name" name="feed_name" required>
                         <option value="">Select Video</option>
                         {% for feed in feeds %}
-                            <option value="{{ feed }}">{{ feed }}</option>
+                            <option value="{{ feed }}"{% if selections.feed_name == feed %}selected{% endif %}>{{ feed }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -177,58 +176,68 @@
         <section class="results-section">
             <h2>Results</h2>
             <div id="results-content">
-                {% if exact_matches %}
-                    <h3>100% Match</h3>
-                    <p>Number of exact matches: {{ exact_matches|length }}</p>
-                    {% for result in exact_matches %}
+                {% if results %}
+                    {% for result in results %}
                         <div class="result-content">
                             <img src="{{ result.photo }}" alt="Result Image" class="result-image">
                             <div class="result-text">
-                                <p><strong>Top:</strong> <span class="{% if 'unmatched' in result.top_type %}unmatched{% endif %}">{{ result.top_type }}</span>, <span class="{% if 'unmatched' in result.top_color %}unmatched{% endif %}">{{ result.top_color }}</span></p>
-                                <p><strong>Middle:</strong> <span class="{% if 'unmatched' in result.middle_type %}unmatched{% endif %}">{{ result.middle_type }}</span>, <span class="{% if 'unmatched' in result.middle_color %}unmatched{% endif %}">{{ result.middle_color }}</span></p>
-                                <p><strong>Bottom:</strong> <span class="{% if 'unmatched' in result.bottom_type %}unmatched{% endif %}">{{ result.bottom_type }}</span>, <span class="{% if 'unmatched' in result.bottom_color %}unmatched{% endif %}">{{ result.bottom_color }}</span></p>
+                                <p><strong>Top:</strong> 
+                                    <span class="{% if 'unmatched' in result.top_type %}unmatched{% endif %}">
+                                        {{ result.top_type }}
+                                    </span>, 
+                                    <span class="{% if 'unmatched' in result.top_color %}unmatched{% endif %}">
+                                        {{ result.top_color }}
+                                    </span>
+                                </p>
+                                <p><strong>Middle:</strong> 
+                                    <span class="{% if 'unmatched' in result.middle_type %}unmatched{% endif %}">
+                                        {{ result.middle_type }}
+                                    </span>, 
+                                    <span class="{% if 'unmatched' in result.middle_color %}unmatched{% endif %}">
+                                        {{ result.middle_color }}
+                                    </span>
+                                </p>
+                                <p><strong>Bottom:</strong> 
+                                    <span class="{% if 'unmatched' in result.bottom_type %}unmatched{% endif %}">
+                                        {{ result.bottom_type }}
+                                    </span>, 
+                                    <span class="{% if 'unmatched' in result.bottom_color %}unmatched{% endif %}">
+                                        {{ result.bottom_color }}
+                                    </span>
+                                </p>
                                 <p><strong>Time Detected:</strong> {{ result.detection_time }}</p>
-                                <p><strong>Detection Time Link:</strong> <a href="{{ result.detection_time_link }}" target="_blank">View</a></p>
+                                <p><strong>Detection Time Link:</strong> 
+                                    <a href="{{ result.detection_time_link }}" target="_blank">View</a>
+                                </p>
+                                <p><strong>Match Percentage:</strong> {{ result.match_percentage }}</p>
                             </div>
                         </div>
                     {% endfor %}
-                {% endif %}
-                
-                {% if high_matches %}
-                    <h3>80-90% Match</h3>
-                    <p>Number of high matches: {{ high_matches|length }}</p>
-                    {% for result in high_matches %}
-                        <div class="result-content">
-                            <img src="{{ result.photo }}" alt="Result Image" class="result-image">
-                            <div class="result-text">
-                                <p><strong>Top:</strong> <span class="{% if 'unmatched' in result.top_type %}unmatched{% endif %}">{{ result.top_type }}</span>, <span class="{% if 'unmatched' in result.top_color %}unmatched{% endif %}">{{ result.top_color }}</span></p>
-                                <p><strong>Middle:</strong> <span class="{% if 'unmatched' in result.middle_type %}unmatched{% endif %}">{{ result.middle_type }}</span>, <span class="{% if 'unmatched' in result.middle_color %}unmatched{% endif %}">{{ result.middle_color }}</span></p>
-                                <p><strong>Bottom:</strong> <span class="{% if 'unmatched' in result.bottom_type %}unmatched{% endif %}">{{ result.bottom_type }}</span>, <span class="{% if 'unmatched' in result.bottom_color %}unmatched{% endif %}">{{ result.bottom_color }}</span></p>
-                                <p><strong>Time Detected:</strong> {{ result.detection_time }}</p>
-                                <p><strong>Detection Time Link:</strong> <a href="{{ result.detection_time_link }}" target="_blank">View</a></p>
-                            </div>
+                    
+                    <!-- Pagination -->
+                    <div class="pagination-container">
+                        <span class="pagination-info-left">
+                            Page {{ page_number }} of {{ num_pages }}
+                        </span>
+                        <div class="pagination-controls">
+                            {% if page_obj.has_previous %}
+                                <a href="?page={{ page_obj.previous_page_number }}&top_attribute={{ selections.top.attribute }}&top_color={{ selections.top.color }}&middle_attribute={{ selections.middle.attribute }}&middle_color={{ selections.middle.color }}&bottom_attribute={{ selections.bottom.attribute }}&bottom_color={{ selections.bottom.color }}&feed_name={{ selections.feed_name }}">
+                                    Previous
+                                </a>
+                            {% endif %}
+                            {% if page_obj.has_next %}
+                                <a href="?page={{ page_obj.next_page_number }}&top_attribute={{ selections.top.attribute }}&top_color={{ selections.top.color }}&middle_attribute={{ selections.middle.attribute }}&middle_color={{ selections.middle.color }}&bottom_attribute={{ selections.bottom.attribute }}&bottom_color={{ selections.bottom.color }}&feed_name={{ selections.feed_name }}">
+                                    Next
+                                </a>
+                            {% endif %}
                         </div>
-                    {% endfor %}
-                {% endif %}
-                
-                {% if medium_matches %}
-                    <h3>60-70% Match</h3>
-                    <p>Number of medium matches: {{ medium_matches|length }}</p>
-                    {% for result in medium_matches %}
-                        <div class="result-content">
-                            <img src="{{ result.photo }}" alt="Result Image" class="result-image">
-                            <div class="result-text">
-                                <p><strong>Top:</strong> <span class="{% if 'unmatched' in result.top_type %}unmatched{% endif %}">{{ result.top_type }}</span>, <span class="{% if 'unmatched' in result.top_color %}unmatched{% endif %}">{{ result.top_color }}</span></p>
-                                <p><strong>Middle:</strong> <span class="{% if 'unmatched' in result.middle_type %}unmatched{% endif %}">{{ result.middle_type }}</span>, <span class="{% if 'unmatched' in result.middle_color %}unmatched{% endif %}">{{ result.middle_color }}</span></p>
-                                <p><strong>Bottom:</strong> <span class="{% if 'unmatched' in result.bottom_type %}unmatched{% endif %}">{{ result.bottom_type }}</span>, <span class="{% if 'unmatched' in result.bottom_color %}unmatched{% endif %}">{{ result.bottom_color }}</span></p>
-                                <p><strong>Time Detected:</strong> {{ result.detection_time }}</p>
-                                <p><strong>Detection Time Link:</strong> <a href="{{ result.detection_time_link }}" target="_blank">View</a></p>
-                            </div>
-                        </div>
-                    {% endfor %}
+                    </div>
+                {% else %}
+                    <p>No results found.</p>
                 {% endif %}
             </div>
         </section>
+        
         
         
         
@@ -242,47 +251,99 @@
 
     <!-- Script to update summary dynamically, handle submit, and enforce validation -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const attributeButtons = document.querySelectorAll('.attribute-btn');
             const colorSelects = document.querySelectorAll('.color-select');
             const feedSelect = document.getElementById('feed_name');
-
+    
             const summaryTop = document.getElementById('summary-top');
             const summaryMiddle = document.getElementById('summary-middle');
             const summaryBottom = document.getElementById('summary-bottom');
             const summaryFeedName = document.getElementById('summary-feed_name');
-
-            // Store current selections
-            let selections = {
-                top: { attribute: '', color: '' },
-                middle: { attribute: '', color: '' },
-                bottom: { attribute: '', color: '' },
-                feed_name: ''
+    
+            // Mapping object for human-readable names
+            const attributeNames = {
+                short_hair: 'Short Hair',
+                medium_hair: 'Medium Hair',
+                long_hair: 'Long Hair',
+                no_hair: 'No Hair',
+                short_shirt: 'Short Sleeved',
+                long_shirt: 'Long Sleeved',
+                sleeveless_shirt: 'Sleeveless Shirt',
+                no_shirt: 'No Shirt',
+                short_pants: 'Shorts',
+                long_pants: 'Pants',
+                skirt: 'Skirt',
+                black: 'Black',
+                brown: 'Brown',
+                red: 'Red',
+                gray: 'Gray',
+                blonde: 'Blonde',
+                unnatural: 'Unnatural',
+                green: 'Green',
+                blue: 'Blue',
+                white: 'White',
+                orange: 'Orange',
+                yellow: 'Yellow',
+                purple: 'Purple',
+                pink: 'Pink',
+                beige: 'Beige',
             };
-
+    
+            // Initialize selections with server-side data
+            let selections = {
+                top: {
+                    attribute: "{{ selections.top.attribute }}",
+                    color: "{{ selections.top.color }}"
+                },
+                middle: {
+                    attribute: "{{ selections.middle.attribute }}",
+                    color: "{{ selections.middle.color }}"
+                },
+                bottom: {
+                    attribute: "{{ selections.bottom.attribute }}",
+                    color: "{{ selections.bottom.color }}"
+                },
+                feed_name: "{{ selections.feed_name }}"
+            };
+    
+            // Function to format attribute and color
+            function formatSelection(attribute, color) {
+                const formattedAttribute = attributeNames[attribute] || attribute;
+                const formattedColor = attributeNames[color] || color;
+                if (formattedAttribute && formattedColor) {
+                    return `${formattedAttribute}, ${formattedColor}`;
+                } else if (formattedAttribute) {
+                    return formattedAttribute;
+                } else if (formattedColor) {
+                    return formattedColor;
+                }
+                return '';
+            }
+    
+            // Function to update the summary
             function updateSummary(category) {
                 const attribute = selections[category].attribute;
                 const color = selections[category].color;
                 const summaryElement = document.getElementById(`summary-${category}`);
                 let summaryText = category.charAt(0).toUpperCase() + category.slice(1) + ': ';
-
-                if (attribute && color) {
-                    summaryText += `${attribute}, ${color}`;
-                } else if (attribute) {
-                    summaryText += `${attribute}`;
-                } else if (color) {
-                    summaryText += `Color: ${color}`;
-                } else {
-                    summaryText += '';
-                }
-
+    
+                summaryText += formatSelection(attribute, color);
                 summaryElement.textContent = summaryText;
+    
                 document.getElementById(`${category}-attribute-input`).value = attribute || '';
-                document.getElementById(`${category}-color-input`).value = color.toLowerCase() || '';
+                document.getElementById(`${category}-color-input`).value = color || '';
             }
-
+    
+            // Initialize the summary with server-side data
+            function initializeSummary() {
+                ['top', 'middle', 'bottom'].forEach(updateSummary);
+                summaryFeedName.textContent = `Feed: ${selections.feed_name}`;
+            }
+    
+            // Event listeners for attribute buttons
             attributeButtons.forEach(button => {
-                button.addEventListener('click', function() {
+                button.addEventListener('click', function () {
                     const category = this.getAttribute('data-category');
                     const attribute = this.getAttribute('data-attribute');
                     selections[category].attribute = attribute;
@@ -291,33 +352,28 @@
                     updateSummary(category);
                 });
             });
-
+    
+            // Event listeners for color dropdowns
             colorSelects.forEach(select => {
-                select.addEventListener('change', function() {
+                select.addEventListener('change', function () {
                     const category = this.getAttribute('data-category');
                     const color = this.value;
                     selections[category].color = color;
                     updateSummary(category);
                 });
             });
-
-            feedSelect.addEventListener('change', function() {
+    
+            // Event listener for feed selection
+            feedSelect.addEventListener('change', function () {
                 selections.feed_name = this.value;
                 summaryFeedName.textContent = `Feed: ${selections.feed_name}`;
             });
-
-            document.querySelector('.reset-button').addEventListener('click', () => {
-                selections = { top: { attribute: '', color: '' }, middle: { attribute: '', color: '' }, bottom: { attribute: '', color: '' }, feed_name: '' };
-                summaryTop.textContent = 'Top: ';
-                summaryMiddle.textContent = 'Middle: ';
-                summaryBottom.textContent = 'Bottom: ';
-                summaryFeedName.textContent = 'Feed: ';
-                colorSelects.forEach(select => select.value = '');
-                feedSelect.value = '';
-                attributeButtons.forEach(button => button.classList.remove('selected'));
-            });
-
-            document.querySelector('form').addEventListener('submit', function(event) {
+    
+            // Initialize the summary on page load
+            initializeSummary();
+    
+            // Error handling and validation during form submission
+            document.querySelector('form').addEventListener('submit', function (event) {
                 let valid = true;
                 let errorMessage = '';
                 ['top', 'middle', 'bottom'].forEach(category => {
@@ -330,12 +386,12 @@
                         errorMessage += `Please select a ${category} color.\n`;
                     }
                 });
-
+    
                 if (!selections.feed_name) {
                     valid = false;
                     errorMessage += 'Please select a feed.\n';
                 }
-
+    
                 if (!valid) {
                     event.preventDefault();
                     alert(errorMessage);
@@ -343,5 +399,6 @@
             });
         });
     </script>
+    
 </body>
 </html>
