@@ -294,7 +294,7 @@ def admin_dashboard_view(request):
 
         # Adjust the timezone if needed
         if created_at:
-            created_at = created_at - timedelta(hours=4)
+            created_at = created_at - timedelta(hours=5)
 
         # Filter by department if specified
         if department_filter == '' or user_data.get('department_name') == department_filter:
