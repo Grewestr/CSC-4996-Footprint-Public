@@ -13,6 +13,36 @@ body {
     flex-direction: column;
 }
 
+.attribute-group {
+    text-align: center; 
+    margin: 20px 0; 
+}
+
+/* Used in Top Middle Bottom sections */
+.section-title {
+    background-color: #007BFF; 
+    color: white; 
+    text-align: center; 
+    font-weight: bold; 
+    font-size: 18px; /* Adjust size */
+    padding: 10px; 
+    border-radius: 8px; 
+    margin-bottom: 15px; /* Add space below*/
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* shadow */
+}
+
+.table-header {
+    background-color: #808080; /* Gray background */
+    color: white; 
+    text-align: center; /* Center text */
+    font-size: 24px; 
+    font-weight: bold; 
+    padding: 10px 0; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+    margin-bottom: 20px; /* Space below the header */
+}
+
 .container {
     width: 90%;
     margin: 0 auto;
@@ -28,23 +58,69 @@ body {
     flex-grow: 1;
 }
 
-/* Style attribute buttons to start as grey */
+/* Attribute Buttons with Image Background */
 .attribute-btn {
-    background-color: grey;
-    color: white;
-    padding: 10px;
-    border: none;
-    margin: 5px;
+    all: unset; /* Reset default */
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 55px; 
+    height: 55px;
+    border-radius: 20%; /* Ensures button itself is rounded */
+    margin: 5px; 
     cursor: pointer;
-    font-weight: bold;
-    border-radius: 5px;
+    background-size: cover; 
+    background-position: center; 
+    transition: transform 0.1s ease, outline-color 0.2s ease, box-shadow 0.2s ease;
+    position: relative; 
+    outline: 3px solid black; 
 }
 
-/* Change background to black when selected */
-.attribute-btn.selected {
-    background-color: black;
-    color: white;
+/* Add hover effect */
+.attribute-btn:hover {
+    transform: scale(1.1); /* zoom effect */
+    outline: 3px solid rgb(0, 0, 0); /* Add gray outline on hover */
 }
+
+/* Selected state */
+.attribute-btn.selected {
+    outline: 3px solid black; 
+    box-shadow: 0 0 10px rgba(30, 220, 5, 0.8); /* Optional glowing effect */
+    background-color: white; /*  white background */
+}
+
+/* Tooltip Text box */
+.attribute-btn:hover::after {
+    content: attr(data-tooltip); 
+    position: absolute;
+    top: calc(100% + 10px); 
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: black; 
+    color: white; 
+    font-size: 12px;
+    padding: 6px 12px; 
+    border-radius: 4px; 
+    white-space: nowrap; 
+    z-index: 9999; /* appears in front of all other elements */
+    opacity: 1;
+    transition: opacity 0.2s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5); /* Slightly stronger shadow  */
+}
+
+/* Tooltip Arrow */
+.attribute-btn:hover::before {
+    content: '';
+    position: absolute;
+    top: 100%; /* Position arrow at the bottom of the button */
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 8px; /*how big the triange is under hoverd item*/
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+    z-index: 9999; 
+}
+
 
 /* Adjusted grid areas for the layout */
 .attributes-section,
@@ -133,6 +209,7 @@ h2 {
     font-weight: bold;
 }
 
+
 .submit-button:hover,
 .reset-button:hover {
     background-color: #ff0000;
@@ -201,7 +278,7 @@ h3 {
     font-weight: bold;
 }
 
-/* Style for selected attribute buttons */
+/* Style for selected  buttons */
 .attribute-btn.selected {
     background-color: #000;
     color: white;
@@ -257,4 +334,74 @@ footer {
     text-align: center;
     margin-top: auto;
     background-color: #fff;
+}
+
+/* Used for Color Buttons */
+.color-btn {
+    all: unset; 
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 45px; 
+    height: 35px; 
+    border-radius: 10px; 
+    margin: 5px; 
+    cursor: pointer;
+    background-color: black;
+    outline: 1px solid black; /* Black outline for buttons */
+    box-sizing: border-box; /* Ensures padding/borders are included in width/height */
+    transition: transform 0.1s ease, outline 0.2s ease;
+}
+
+/* Hover effect for color buttons */
+.color-btn:hover {
+    transform: scale(1.1); /* zoom effect on hover */
+    outline: 3px solid gray; /* Hover outline */
+}
+
+/* Selected state for color buttons */
+.color-btn.selected {
+    outline: 4px solid rgb(30, 220, 5); /* Highlight selected button */
+}
+
+/* Tooltip Styles */
+.color-btn:hover::after {
+    content: attr(data-tooltip); /* Title */
+    position: absolute;
+    top: calc(100% + 10px); /* Spaced below the button */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: black; 
+    color: white; 
+    font-size: 12px;
+    padding: 5px 10px; 
+    border-radius: 4px; 
+    white-space: nowrap; /* Prevents wrapping */
+    z-index: 10;
+    opacity: 1;
+    transition: opacity 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4); /* Subtle shadow */
+}
+
+/* Tooltip Arrow */
+.color-btn:hover::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 8px;
+    border-style: solid;
+    border-color: black transparent transparent transparent; 
+    z-index: 10;
+}
+
+/* Container for Color Buttons */
+.color-options {
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: center; 
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0; 
 }

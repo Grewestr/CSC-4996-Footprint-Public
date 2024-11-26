@@ -5,8 +5,8 @@
     <title>Dashboard</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/header.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
     <!-- Header -->
@@ -61,93 +61,167 @@
         
             <!-- Attributes Section -->
             <aside class="attributes-section">
-                <h2>Attributes</h2>
+                <div class="table-header">
+                    Attributes
+                </div>
                 <!-- Top Attributes -->
                 <div class="attribute-group">
-                    <h3>TOP</h3>
-                    <div class="top-attributes">
-                        <button type="button" class="attribute-btn {% if selections.top.attribute == 'short_hair' %}selected{% endif %}" data-attribute="short_hair" data-category="top">Short Hair</button>
-                        <button type="button" class="attribute-btn {% if selections.top.attribute == 'medium_hair' %}selected{% endif %}" data-attribute="medium_hair" data-category="top">Medium Hair</button>
-                        <button type="button" class="attribute-btn {% if selections.top.attribute == 'long_hair' %}selected{% endif %}" data-attribute="long_hair" data-category="top">Long Hair</button>
-                        <button type="button" class="attribute-btn {% if selections.top.attribute == 'no_hair' %}selected{% endif %}" data-attribute="no_hair" data-category="top">No Hair</button>
+                    <div class="section-title">
+                        TOP
                     </div>
-
+                    <div class="top-attributes">
+                        <button
+                            type="button"
+                            class="attribute-btn {% if selections.top.attribute == 'short_hair' %}selected{% endif %}"
+                            data-attribute="short_hair"
+                            data-category="top"
+                            data-tooltip="Short Hair"style="background-image: url('{% static 'images/short_hair_UI.png' %}');"
+                        ></button>
+                        <button
+                            type="button"
+                            class="attribute-btn {% if selections.top.attribute == 'medium_hair' %}selected{% endif %}"
+                            data-attribute="medium_hair"
+                            data-category="top"
+                            data-tooltip="Medium Hair"style="background-image: url('{% static 'images/medium_hair_UI.png' %}');"
+                        ></button>
+                        <button
+                            type="button"
+                            class="attribute-btn {% if selections.top.attribute == 'long_hair' %}selected{% endif %}"
+                            data-attribute="long_hair"
+                            data-category="top"
+                            data-tooltip="Long Hair"style="background-image: url('{% static 'images/long_hair_UI.png' %}');"
+                        ></button>
+                        <button
+                            type="button"
+                            class="attribute-btn {% if selections.top.attribute == 'no_hair' %}selected{% endif %}"
+                            data-attribute="no_hair"
+                            data-category="top"
+                            data-tooltip="No Hair"style="background-image: url('{% static 'images/no_hair_UI.png' %}');"
+                        ></button>
+                    </div>
+                
+                    <!-- Top Attribute Color  -->
                     <div class="color-selection">
-                        <label for="top-color">Color:</label>
-                        <select id="top-color" name="top_color" class="color-select" data-category="top">
-                            <option value="">Select Color</option>
-                            <option value="black"{% if selections.top.color == "black" %}selected{% endif %}>Black</option>
-                            <option value="brown"{% if selections.top.color == "brown" %}selected{% endif %}>Brown</option>
-                            <option value="red"{% if selections.top.color == "red" %}selected{% endif %}>Red</option>
-                            <option value="gray"{% if selections.top.color == "gray" %}selected{% endif %}>Gray</option>
-                            <option value="blonde"{% if selections.top.color == "blonde" %}selected{% endif %}>Blonde</option>
-                            <option value="unnatural"{% if selections.top.color == "unnatural" %}selected{% endif %}>Unnatural</option>
-                        </select>                   
+                        <div class="color-options" data-category="top">
+                            <button type="button" class="color-btn" data-color="black" style="background-color: black; border: 3px solid black;" data-tooltip="Black"></button>
+                            <button type="button" class="color-btn" data-color="brown" style="background-color: brown; border: 3px solid black;" data-tooltip="Brown"></button>
+                            <button type="button" class="color-btn" data-color="red" style="background-color: red; border: 3px solid black;" data-tooltip="Red"></button>
+                            <button type="button" class="color-btn" data-color="gray" style="background-color: gray; border: 3px solid black;" data-tooltip="Gray"></button>
+                            <button type="button" class="color-btn" data-color="blonde" style="background-color: yellow; border: 3px solid black;" data-tooltip="Blonde"></button>
+                            <button type="button" class="color-btn" data-color="unnatural" style="background: linear-gradient(45deg, purple, cyan); border: 3px solid black;" data-tooltip="Unnatural"></button>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Middle Attributes -->
                 <div class="attribute-group">
-                    <h3>MIDDLE</h3>
-                    <div class="middle-attributes">
-                        <button type="button" class="attribute-btn {% if selections.middle.attribute == 'short_shirt' %}selected{% endif %}" data-attribute="short_shirt" data-category="middle">Short Sleeved</button>
-                        <button type="button" class="attribute-btn {% if selections.middle.attribute == 'long_shirt' %}selected{% endif %}" data-attribute="long_shirt" data-category="middle">Long Sleeved</button>
-                        <button type="button" class="attribute-btn {% if selections.middle.attribute == 'sleeveless_shirt' %}selected{% endif %}" data-attribute="sleeveless_shirt" data-category="middle">Sleeveless Shirt</button>
-                        <button type="button" class="attribute-btn {% if selections.middle.attribute == 'no_shirt' %}selected{% endif %}" data-attribute="no_shirt" data-category="middle">No Shirt</button>
+                    <div class="section-title">
+                        MIDDLE
                     </div>
-                    
+                    <div class="middle-attributes">
+                        <button
+                            type="button"
+                            class="attribute-btn {% if selections.middle.attribute == 'short_shirt' %}selected{% endif %}"
+                            data-attribute="short_shirt"
+                            data-category="middle"
+                            data-tooltip="Short Sleeved"style="background-image: url('{% static "images/short_shirt_UI.png" %}');"
+                        ></button>
+                        <button
+                            type="button"
+                            class="attribute-btn {% if selections.middle.attribute == 'long_shirt' %}selected{% endif %}"
+                            data-attribute="long_shirt"
+                            data-category="middle"
+                            data-tooltip="Long Sleeved"style="background-image: url('{% static "images/long_shirt_UI.png" %}');"
+                        ></button>
+                        <button
+                            type="button"
+                            class="attribute-btn {% if selections.middle.attribute == 'sleeveless_shirt' %}selected{% endif %}"
+                            data-attribute="sleeveless_shirt"
+                            data-category="middle"
+                            data-tooltip="Sleeveless Shirt"style="background-image: url('{% static "images/sleeveless_shirt_UI.png" %}');"
+                        ></button>
+                        <button
+                            type="button"
+                            class="attribute-btn {% if selections.middle.attribute == 'no_shirt' %}selected{% endif %}"
+                            data-attribute="no_shirt"
+                            data-category="middle"
+                            data-tooltip="No Shirt"style="background-image: url('{% static "images/no_shirt_UI.png" %}');"
+                        ></button>
+                    </div>
+                    <!-- Middle Attriubte Color -->
                     <div class="color-selection">
-                        <label for="middle-color">Color:</label>
-                        <select id="middle-color" name="middle_color" class="color-select" data-category="middle">
-                            <option value="">Select Color</option>
-                            <option value="black" {% if selections.middle.color == "black" %}selected{% endif %}>Black</option>
-                            <option value="brown" {% if selections.middle.color == "brown" %}selected{% endif %}>Brown</option>
-                            <option value="red" {% if selections.middle.color == "red" %}selected{% endif %}>Red</option>
-                            <option value="gray" {% if selections.middle.color == "gray" %}selected{% endif %}>Gray</option>
-                            <option value="green" {% if selections.middle.color == "green" %}selected{% endif %}>Green</option>
-                            <option value="blue" {% if selections.middle.color == "blue" %}selected{% endif %}>Blue</option>
-                            <option value="white" {% if selections.middle.color == "white" %}selected{% endif %}>White</option>
-                            <option value="orange" {% if selections.middle.color == "orange" %}selected{% endif %}>Orange</option>
-                            <option value="yellow" {% if selections.middle.color == "yellow" %}selected{% endif %}>Yellow</option>
-                            <option value="purple" {% if selections.middle.color == "purple" %}selected{% endif %}>Purple</option>
-                            <option value="pink" {% if selections.middle.color == "pink" %}selected{% endif %}>Pink</option>
-                            <option value="beige" {% if selections.middle.color == "beige" %}selected{% endif %}>Beige</option>
-                        </select>                        
+            
+                        <div class="color-options" data-category="middle">
+                            <button type="button" class="color-btn" data-color="black" style="background-color: black; border: 3px solid black;" data-tooltip = "Black"></button>
+                            <button type="button" class="color-btn" data-color="brown" style="background-color: brown; border: 3px solid black;" data-tooltip = "Brown"></button>
+                            <button type="button" class="color-btn" data-color="red" style="background-color: red; border: 3px solid black;" data-tooltip = "Red"></button>
+                            <button type="button" class="color-btn" data-color="gray" style="background-color: gray; border: 3px solid black;" data-tooltip = "Gray"></button>
+                            <button type="button" class="color-btn" data-color="green" style="background-color: green; border: 3px solid black;" data-tooltip = "Green"></button>
+                            <button type="button" class="color-btn" data-color="blue" style="background-color: blue; border: 3px solid black;" data-tooltip = "Blue"></button>
+                            <button type="button" class="color-btn" data-color="white" style="background-color: white; border: 3px solid black;" data-tooltip = "White"></button>
+                            <button type="button" class="color-btn" data-color="orange" style="background-color: orange; border: 3px solid black;" data-tooltip = "Orange"></button>
+                            <button type="button" class="color-btn" data-color="yellow" style="background-color: yellow; border: 3px solid black;" data-tooltip = "Yellow"></button>
+                            <button type="button" class="color-btn" data-color="purple" style="background-color: purple; border: 3px solid black;" data-tooltip = "Purlpe"></button>
+                            <button type="button" class="color-btn" data-color="pink" style="background-color: pink; border: 3px solid black;"  data-tooltip = "Pink"></button>
+                            <button type="button" class="color-btn" data-color="beige" style="background-color: beige; border: 3px solid black;" data-tooltip = "Beige"></button>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Bottom Attributes -->
                 <div class="attribute-group">
-                    <h3>BOTTOM</h3>
-                    <div class="bottom-attributes">
-                        <button type="button" class="attribute-btn {% if selections.bottom.attribute == 'short_pants' %}selected{% endif %}" data-attribute="short_pants" data-category="bottom">Shorts</button>
-                        <button type="button" class="attribute-btn {% if selections.bottom.attribute == 'long_pants' %}selected{% endif %}" data-attribute="long_pants" data-category="bottom">Pants</button>
-                        <button type="button" class="attribute-btn {% if selections.bottom.attribute == 'skirt' %}selected{% endif %}" data-attribute="skirt" data-category="bottom">Skirt</button>
+                    <div class="section-title">
+                        BOTTOM
                     </div>
+                        <div class="bottom-attributes">
+                            <button
+                                type="button"
+                                class="attribute-btn {% if selections.bottom.attribute == 'short_pants' %}selected{% endif %}"
+                                data-attribute="short_pants"
+                                data-category="bottom"
+                                data-tooltip="Shorts"style="background-image: url('{% static "images/short_UI.png" %}');"
+                            ></button>
+                            <button
+                                type="button"
+                                class="attribute-btn {% if selections.bottom.attribute == 'long_pants' %}selected{% endif %}"
+                                data-attribute="long_pants"
+                                data-category="bottom"
+                                data-tooltip="Pants"style="background-image: url('{% static "images/pants_UI.png" %}');"
+                            ></button>
+                            <button
+                                type="button"
+                                class="attribute-btn {% if selections.bottom.attribute == 'skirt' %}selected{% endif %}"
+                                data-attribute="skirt"
+                                data-category="bottom"
+                                data-tooltip="Skirt" style="background-image: url('{% static "images/skirt_UI.png" %}');"
+                            ></button>
+                        </div>
+                    <!-- Bottom Attriubte Color -->
                     <div class="color-selection">
-                        <label for="bottom-color">Color:</label>
-                        <select id="bottom-color" name="bottom_color" class="color-select" data-category="bottom">
-                            <option value="">Select Color</option>
-                            <option value="black" {% if selections.bottom.color == "black" %}selected{% endif %}>Black</option>
-                            <option value="brown" {% if selections.bottom.color == "brown" %}selected{% endif %}>Brown</option>
-                            <option value="red" {% if selections.bottom.color == "red" %}selected{% endif %}>Red</option>
-                            <option value="gray" {% if selections.bottom.color == "gray" %}selected{% endif %}>Gray</option>
-                            <option value="green" {% if selections.bottom.color == "green" %}selected{% endif %}>Green</option>
-                            <option value="blue" {% if selections.bottom.color == "blue" %}selected{% endif %}>Blue</option>
-                            <option value="white" {% if selections.bottom.color == "white" %}selected{% endif %}>White</option>
-                            <option value="orange" {% if selections.bottom.color == "orange" %}selected{% endif %}>Orange</option>
-                            <option value="yellow" {% if selections.bottom.color == "yellow" %}selected{% endif %}>Yellow</option>
-                            <option value="purple" {% if selections.bottom.color == "purple" %}selected{% endif %}>Purple</option>
-                            <option value="pink" {% if selections.bottom.color == "pink" %}selected{% endif %}>Pink</option>
-                            <option value="beige" {% if selections.bottom.color == "beige" %}selected{% endif %}>Beige</option>
-                        </select>
+     
+                        <div class="color-options" data-category="bottom">
+                            <button type="button" class="color-btn" data-color="black" style="background-color: black; border: 3px solid black;" data-tooltip = "Black"></button>
+                            <button type="button" class="color-btn" data-color="brown" style="background-color: brown; border: 3px solid black;" data-tooltip = "Brown"></button>
+                            <button type="button" class="color-btn" data-color="red" style="background-color: red; border: 3px solid black;" data-tooltip = "Red"></button>
+                            <button type="button" class="color-btn" data-color="gray" style="background-color: gray; border: 3px solid black;" data-tooltip = "Gray"></button>
+                            <button type="button" class="color-btn" data-color="green" style="background-color: green; border: 3px solid black;" data-tooltip = "Green"></button>
+                            <button type="button" class="color-btn" data-color="blue" style="background-color: blue; border: 3px solid black;" data-tooltip = "Blue"></button>
+                            <button type="button" class="color-btn" data-color="white" style="background-color: white; border: 3px solid black;" data-tooltip = "White"></button>
+                            <button type="button" class="color-btn" data-color="orange" style="background-color: orange; border: 3px solid black;" data-tooltip = "Orange"></button>
+                            <button type="button" class="color-btn" data-color="yellow" style="background-color: yellow; border: 3px solid black;" data-tooltip = "Yellow"></button>
+                            <button type="button" class="color-btn" data-color="purple" style="background-color: purple; border: 3px solid black;" data-tooltip = "Purple"></button>
+                            <button type="button" class="color-btn" data-color="pink" style="background-color: pink; border: 3px solid black;" data-tooltip = "Pink"></button>
+                            <button type="button" class="color-btn" data-color="beige" style="background-color: beige; border: 3px solid black;" data-tooltip = "Beige"></button>
+                        </div>
                     </div>
                 </div>
             </aside>
 
             <!-- video Selection Section -->
             <section class="feed-selection-section">
-                <h2>Video Selection</h2>
+                <div class="table-header">
+                    Video Selection
+                </div>
                 <div class="feed-select">
                     <label for="feed_name">Video:</label>
                     <select id="feed_name" name="feed_name" required>
@@ -161,7 +235,9 @@
 
             <!-- Summary Section -->
             <section class="summary-section">
-                <h2>Summary</h2>
+                <div class="table-header">
+                    Summary
+                </div>
                 <div class="summary-content">
                     <p id="summary-top">Top: </p>
                     <p id="summary-middle">Middle: </p>
@@ -174,7 +250,9 @@
         </form>
 
         <section class="results-section">
-            <h2>Results</h2>
+            <div class="table-header">
+                Results
+            </div>
             <div id="results-content">
                 {% if results %}
                     {% for result in results %}
@@ -253,15 +331,15 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const attributeButtons = document.querySelectorAll('.attribute-btn');
-            const colorSelects = document.querySelectorAll('.color-select');
+            const colorButtons = document.querySelectorAll('.color-btn');
             const feedSelect = document.getElementById('feed_name');
+            const resetButton = document.querySelector('.reset-button');
     
             const summaryTop = document.getElementById('summary-top');
             const summaryMiddle = document.getElementById('summary-middle');
             const summaryBottom = document.getElementById('summary-bottom');
             const summaryFeedName = document.getElementById('summary-feed_name');
     
-            // Mapping object for human-readable names
             const attributeNames = {
                 short_hair: 'Short Hair',
                 medium_hair: 'Medium Hair',
@@ -290,24 +368,13 @@
                 beige: 'Beige',
             };
     
-            // Initialize selections with server-side data
             let selections = {
-                top: {
-                    attribute: "{{ selections.top.attribute }}",
-                    color: "{{ selections.top.color }}"
-                },
-                middle: {
-                    attribute: "{{ selections.middle.attribute }}",
-                    color: "{{ selections.middle.color }}"
-                },
-                bottom: {
-                    attribute: "{{ selections.bottom.attribute }}",
-                    color: "{{ selections.bottom.color }}"
-                },
-                feed_name: "{{ selections.feed_name }}"
+                top: { attribute: null, color: null },
+                middle: { attribute: null, color: null },
+                bottom: { attribute: null, color: null },
+                feed_name: null,
             };
     
-            // Function to format attribute and color
             function formatSelection(attribute, color) {
                 const formattedAttribute = attributeNames[attribute] || attribute;
                 const formattedColor = attributeNames[color] || color;
@@ -321,13 +388,11 @@
                 return '';
             }
     
-            // Function to update the summary
             function updateSummary(category) {
                 const attribute = selections[category].attribute;
                 const color = selections[category].color;
                 const summaryElement = document.getElementById(`summary-${category}`);
-                let summaryText = category.charAt(0).toUpperCase() + category.slice(1) + ': ';
-    
+                let summaryText = `${category.charAt(0).toUpperCase() + category.slice(1)}: `;
                 summaryText += formatSelection(attribute, color);
                 summaryElement.textContent = summaryText;
     
@@ -335,68 +400,88 @@
                 document.getElementById(`${category}-color-input`).value = color || '';
             }
     
-            // Initialize the summary with server-side data
-            function initializeSummary() {
-                ['top', 'middle', 'bottom'].forEach(updateSummary);
-                summaryFeedName.textContent = `Feed: ${selections.feed_name}`;
+            function resetSelections() {
+                selections = {
+                    top: { attribute: null, color: null },
+                    middle: { attribute: null, color: null },
+                    bottom: { attribute: null, color: null },
+                    feed_name: null,
+                };
+    
+                ['top', 'middle', 'bottom'].forEach(category => {
+                    document.querySelectorAll(`.attribute-btn[data-category="${category}"]`).forEach(btn => btn.classList.remove('selected'));
+                    document.querySelectorAll(`.color-options[data-category="${category}"] .color-btn`).forEach(btn => btn.classList.remove('selected'));
+                    updateSummary(category);
+                });
+    
+                if (feedSelect) feedSelect.value = '';
+                summaryFeedName.textContent = 'Feed: None Selected';
             }
     
-            // Event listeners for attribute buttons
+            function initializeSummary() {
+                ['top', 'middle', 'bottom'].forEach(updateSummary);
+                summaryFeedName.textContent = `Feed: ${selections.feed_name || 'None Selected'}`;
+            }
+    
             attributeButtons.forEach(button => {
                 button.addEventListener('click', function () {
                     const category = this.getAttribute('data-category');
                     const attribute = this.getAttribute('data-attribute');
-                    selections[category].attribute = attribute;
-                    document.querySelectorAll(`.attribute-btn[data-category="${category}"]`).forEach(btn => btn.classList.remove('selected'));
-                    this.classList.add('selected');
+    
+                    // Check if the button is already selected
+                    if (this.classList.contains('selected')) {
+                        // Deselect the button
+                        this.classList.remove('selected');
+                        selections[category].attribute = null; // Clear the selection
+                    } else {
+                        // Deselect all other buttons and selected button
+                        document.querySelectorAll(`.attribute-btn[data-category="${category}"]`).forEach(btn => btn.classList.remove('selected'));
+                        this.classList.add('selected');
+                        selections[category].attribute = attribute; // Update the selection
+                    }
+    
                     updateSummary(category);
                 });
             });
     
-            // Event listeners for color dropdowns
-            colorSelects.forEach(select => {
-                select.addEventListener('change', function () {
-                    const category = this.getAttribute('data-category');
-                    const color = this.value;
-                    selections[category].color = color;
+            colorButtons.forEach(button => {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault(); // Used for clearing weird button bug
+                    
+                    const category = this.parentElement.getAttribute('data-category');
+                    const color = this.getAttribute('data-color');
+    
+                    // Check if the button is selected
+                    if (this.classList.contains('selected')) {
+                        // Deselect the button
+                        this.classList.remove('selected');
+                        selections[category].color = null; // Clear selection
+                    } else {
+                        // Deselect all buttons and selected buttons
+                        document.querySelectorAll(`.color-options[data-category="${category}"] .color-btn`).forEach(btn => btn.classList.remove('selected'));
+                        this.classList.add('selected');
+                        selections[category].color = color; // Update selection
+                    }
+    
                     updateSummary(category);
                 });
             });
     
-            // Event listener for feed selection
-            feedSelect.addEventListener('change', function () {
-                selections.feed_name = this.value;
-                summaryFeedName.textContent = `Feed: ${selections.feed_name}`;
-            });
-    
-            // Initialize the summary on page load
-            initializeSummary();
-    
-            // Error handling and validation during form submission
-            document.querySelector('form').addEventListener('submit', function (event) {
-                let valid = true;
-                let errorMessage = '';
-                ['top', 'middle', 'bottom'].forEach(category => {
-                    if (!selections[category].attribute) {
-                        valid = false;
-                        errorMessage += `Please select a ${category} attribute.\n`;
-                    }
-                    if (!selections[category].color) {
-                        valid = false;
-                        errorMessage += `Please select a ${category} color.\n`;
-                    }
+            if (feedSelect) {
+                feedSelect.addEventListener('change', function () {
+                    selections.feed_name = this.value;
+                    summaryFeedName.textContent = `Feed: ${selections.feed_name || 'None Selected'}`;
                 });
+            }
     
-                if (!selections.feed_name) {
-                    valid = false;
-                    errorMessage += 'Please select a feed.\n';
-                }
-    
-                if (!valid) {
+            if (resetButton) {
+                resetButton.addEventListener('click', function (event) {
                     event.preventDefault();
-                    alert(errorMessage);
-                }
-            });
+                    resetSelections();
+                });
+            }
+    
+            initializeSummary();
         });
     </script>
     
