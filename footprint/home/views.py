@@ -133,9 +133,9 @@ def login_view(request):
 
                         # Redirect based on user role
                         if role == 'admin':
-                            return redirect('admin_dashboard')
+                            return redirect('homepage')
                         else:
-                            return redirect('upload')
+                            return redirect('homepage')
 
             else:
                 # If authentication fails, check the error response
@@ -921,9 +921,15 @@ def search_attributes1(request):
             elif 70 <= score < 100:
                 match_percentage = "70-90%"
                 priority = 1
-            elif 10 <= score < 70:
-                match_percentage = "10-70%"
+            elif 50 <= score < 70:
+                match_percentage = "50-70%"
                 priority = 2
+            elif 30 <= score < 50:
+                match_percentage = "30-50%"
+                priority = 3
+            elif 10 <= score < 30:
+                match_percentage = "10-30%"
+                priority = 4      
             else:
                 continue
 
