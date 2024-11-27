@@ -93,12 +93,43 @@
             </form>
         </div>
 
-        <!-- Queue Section Table -->
-        <div class="right-section queue-section">
+
+        <!-- Upload Queue Section -->
+        <div class="right-section queue-section" style="flex: 2;">
             <h2>Upload Queue</h2>
-            <!--button id="clear-queue-button" class="clear-queue-button">Clear Queue</button-->
-            {% if uploads %}
+            {% if upload_queue %}
                 <table id="queue-table">
+                    <thead>
+                        <tr>
+                            <th>Feed Name</th>
+                            <th>Processing Speed</th>
+                            <th>Status</th>
+                            <th>Uploaded At</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for upload in upload_queue %}
+                            <tr data-job-id="{{ upload.job_id }}">
+                                <td>{{ upload.feed_name }}</td>
+                                <td>{{ upload.speed }}</td>
+                                <td class="status-cell">{{ upload.feed_status }}</td>
+                                <td>{{ upload.uploaded_at }}</td>
+                                <td><button class="delete-button">Delete</button></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p id="no-uploads-message">No videos in the queue.</p>
+            {% endif %}
+        </div>
+    
+        <!-- Upload History Section -->
+        <div class="right-section queue-section" style="flex: 2;">
+            <h2>Upload History</h2>
+            {% if upload_history %}
+                <table id="history-table">
                     <thead>
                         <tr>
                             <th>Feed Name</th>
@@ -108,18 +139,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for upload in uploads %}
-                            <tr data-job-id="{{ upload.job_id }}">
+                        {% for upload in upload_history %}
+                            <tr>
                                 <td>{{ upload.feed_name }}</td>
-                                <td>{{ upload.processing_speed }}</td>
-                                <td class="status-cell">{{ upload.status }}</td>
+                                <td>{{ upload.speed }}</td>
+                                <td>{{ upload.feed_status }}</td>
                                 <td>{{ upload.uploaded_at }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             {% else %}
-                <p id="no-uploads-message">No videos in the queue.</p>
+                <p id="no-history-message">No completed uploads.</p>
             {% endif %}
         </div>
 

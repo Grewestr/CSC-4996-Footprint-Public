@@ -601,7 +601,7 @@ BOOT_COMMANDS_RUN = False  # Global flag to check if boot commands are run
 def check_and_run_boot_commands():
     global BOOT_COMMANDS_RUN
     if not BOOT_COMMANDS_RUN:
-        boot_directory = R"C:\Wayne State\Senior Capstone\Footprint Github clone\CSC-4996-Footprint\footprint"
+        boot_directory = R"C:\Users\17344\Documents\Capstone2\CSC-4996-Footprint\footprint"
         run_docker_command("docker-compose build", cwd=boot_directory)
         run_docker_command("docker-compose up -d", cwd=boot_directory)  # Run in detached mode
         BOOT_COMMANDS_RUN = True
@@ -624,8 +624,8 @@ def clear_live_feeds_collection():
 
 @require_http_methods(["GET", "POST"])
 def upload_view(request):
-    #clear_live_feeds_collection()
-    check_and_run_boot_commands()  # Ensure boot commands run before proceeding
+    # Ensure boot commands run before proceeding
+    check_and_run_boot_commands()
 
     if request.method == 'POST':
         feed_name = request.POST.get('feed_name')
@@ -676,7 +676,7 @@ def upload_view(request):
                     )
 
                     # Prepare parameters for the Docker command and pass the document ID
-                    script_directory = "C:\\Wayne State\\Senior Capstone\\Footprint Github clone\\CSC-4996-Footprint\\footprint\\home\\\static\\AI_Scripts"
+                    script_directory = R"C:\Users\17344\Documents\Capstone2\CSC-4996-Footprint\footprint\home\static\AI_Scripts"
                     docker_command = f'docker-compose run --rm rq-worker python video_Enqueue.py "{youtube_link}" {processing_speed} "{user_email}" "{document_id}"'
                     
                     # Run the Docker command asynchronously
@@ -691,7 +691,7 @@ def upload_view(request):
                             "upload": {
                                 "feed_name": feed_name,
                                 "processing_speed": processing_speed,
-                                "status": "Pending",
+                                "status": "queued",
                                 "uploaded_at": uploaded_at
                             }
                         })
@@ -723,18 +723,66 @@ def upload_view(request):
                 messages.error(request, error_message)
                 return redirect('upload')
 
-    live_feeds = db.collection("live_feeds").order_by("uploaded_at", direction=firestore.Query.DESCENDING).stream()
-    uploads = [
-        {
-            "feed_name": feed.get("feed_name"),
-            "processing_speed": feed.get("speed"),
-            "status": feed.get("feed_status"),
-            "uploaded_at": feed.get("uploaded_at").strftime("%Y-%m-%d %H:%M") if feed.get("uploaded_at") else ""
-        }
-        for feed in live_feeds
-    ]
-    return render(request, 'home/upload.html', {'uploads': uploads})
+    # Query live feeds and split them into "Upload Queue" and "Upload History"
+    user_email = request.session.get('email')
+    if user_email:
+        live_feeds = db.collection("live_feeds").where("user_email", "==", user_email).order_by("uploaded_at", direction=firestore.Query.DESCENDING).stream()
+    else:
+        live_feeds = []
+    
+    upload_queue = []
+    upload_history = []
 
+    for feed in live_feeds:
+        feed_data = feed.to_dict()
+        feed_data['job_id'] = feed.id  # Add the document ID for reference
+        feed_data['uploaded_at'] = feed_data['uploaded_at'].strftime("%Y-%m-%d %H:%M:%S") if 'uploaded_at' in feed_data else "N/A"
+        feed_data['updated_at'] = feed_data['updated_at'].strftime("%Y-%m-%d %H:%M:%S") if 'updated_at' in feed_data else "N/A"
+
+        if feed_data['feed_status'] == 'finished':
+            upload_history.append(feed_data)
+        else:
+            upload_queue.append(feed_data)
+
+    return render(request, 'home/upload.html', {
+        'upload_queue': upload_queue,
+        'upload_history': upload_history
+    })
+
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_protect
+from django.http import JsonResponse
+from google.cloud import firestore
+
+@csrf_protect
+@require_POST
+def delete_upload_view(request):
+    """
+    Handle the deletion of an upload from the queue.
+    Only allows deletion if the status is not "finished".
+    """
+    job_id = request.POST.get('job_id')
+    user_email = request.session.get('email')
+
+    if not job_id or not user_email:
+        return JsonResponse({"success": False, "message": "Missing job ID or user not logged in."})
+
+    try:
+        # Reference to the 'live_feeds' document to be deleted
+        job_ref = db.collection('live_feeds').document(job_id)
+        job_data = job_ref.get().to_dict()
+
+        # Ensure that the user owns the job and the status is not "finished"
+        if job_data and job_data['user_email'] == user_email and job_data['feed_status'] != "finished":
+            job_ref.delete()
+            return JsonResponse({"success": True, "message": "Job deleted successfully."})
+        else:
+            return JsonResponse({"success": False, "message": "Cannot delete job. It may be finished or not owned by the user."})
+
+    except Exception as e:
+        return JsonResponse({"success": False, "message": f"Error deleting job: {str(e)}"})
+
+    
 
 from django.http import JsonResponse
 
@@ -762,8 +810,6 @@ def check_job_status(request):
         # Log the error and return an error message
         print(f"Error fetching job statuses: {e}")
         return JsonResponse({"error": "Could not fetch job statuses. Please try again later."}, status=500)
-
-
 
 
 def search_attributes1(request):
