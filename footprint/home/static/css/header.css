@@ -188,3 +188,69 @@ body {
         margin-top: 130px; /* Adjust if header height changes */
     }
 }
+
+
+/* Burger Menu Button */
+.burger-menu {
+    display: none; /* Hidden by default, visible on mobile screens */
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 1100;
+  }
+  
+  .burger-menu span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: var(--primary-color);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  
+  .burger-menu.open span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+  
+  .burger-menu.open span:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .burger-menu.open span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+  
+  /* Navigation Visibility */
+  .nav.hidden {
+    display: none; /* Hidden by default */
+  }
+  
+  .nav.show {
+    display: flex; /* Show navigation when toggled */
+    flex-direction: column;
+    gap: 15px;
+    background-color: var(--background-color);
+    position: absolute;
+    top: 100%; /* Below header */
+    left: 0;
+    right: 0;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .burger-menu {
+        display: flex;
+    }
+  
+    .nav {
+        display: none; /* Hidden by default */
+    }
+  
+    .nav.show {
+        display: flex;
+    }
+  }
+  /* End of Burger Menu Button */

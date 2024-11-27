@@ -6,6 +6,7 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'css/header.css' %}">
+    <script src="{% static 'js/header.js' %}" defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
@@ -18,6 +19,14 @@
                 </a>
                 <h1 class="site-title">Footprint</h1>
             </div>
+
+            <!-- Burger Menu Button -->
+            <button class="burger-menu" aria-label="Toggle Navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
             <nav class="nav">
                 {% if request.session.uid %}
                     {% if request.session.role == 'user' %}

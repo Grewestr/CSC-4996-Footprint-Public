@@ -9,6 +9,9 @@
     display: flex;
     flex-direction: column;
 }
+main{
+    padding: 20px 0;
+}
 
 /* Container Styles */
 .container {
@@ -144,3 +147,89 @@ footer {
     width: 100%;
     margin-top: auto; /* Pushes footer to the bottom */
   }
+
+
+
+/* Page responsivness styling */
+
+@media (max-width: 1200px) {
+    .main-content {
+        gap: 10px; /* Reduce gap between sections */
+        padding: calc(150px + 20px) 10px 10px; /* Adjust padding to account for nav height */
+    }
+
+    .left-section, .right-section {
+        padding: 15px; /* Reduce padding inside sections */
+        box-shadow: none; /* Simplify layout for smaller screens */
+    }
+
+    .queue-section table th, 
+    .queue-section table td {
+        font-size: 0.9em; /* Reduce table font size */
+    }
+
+    .speed-button {
+        padding: 6px 10px; /* Smaller buttons */
+        font-size: 0.9em; /* Adjust font size */
+    }
+
+    .clear-queue-button {
+        padding: 8px 12px; /* Adjust padding */
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column; /* Stack sections vertically */
+        gap: 20px; /* Add spacing between sections */
+        padding: calc(150px + 20px) 10px 20px; /* Adjust padding for smaller screens */
+    }
+
+    .left-section, .right-section {
+        width: 100%; /* Full width for each section */
+    }
+
+    .upload-form input[type="text"], 
+    .upload-form input[type="url"] {
+        font-size: 0.9em; /* Smaller font size */
+    }
+
+    .queue-section table {
+        font-size: 0.8em; /* Smaller font size for the table */
+    }
+
+    .queue-section table th, 
+    .queue-section table td {
+        padding: 8px; /* Reduce padding in table cells */
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content {
+        padding: calc(120px + 10px) 5px 20px; /* Minimal padding for very small screens */
+    }
+
+    .upload-form input[type="text"], 
+    .upload-form input[type="url"] {
+        padding: 8px; /* Reduce input padding */
+        font-size: 0.8em; /* Smaller font size */
+    }
+
+    .speed-button {
+        padding: 5px 8px; /* Minimal button padding */
+        font-size: 0.8em; /* Smaller text */
+    }
+
+    .clear-queue-button {
+        padding: 6px 10px; /* Adjust padding */
+        font-size: 0.8em; /* Adjust font size */
+    }
+
+    .queue-section table th, 
+    .queue-section table td {
+        font-size: 0.7em; /* Smallest font size for table */
+        padding: 6px; /* Minimal padding for table cells */
+    }
+}
+
+/* End of Page responsivness styling */

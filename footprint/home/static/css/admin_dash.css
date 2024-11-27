@@ -392,3 +392,110 @@ footer {
 }
 
 
+/* Responsive Styles */
+@media (max-width: 1200px) {
+  .container {
+    width: 100%; /* Adjust container width */
+    padding: 0 10px; /* Add padding for smaller screens */
+  }
+
+  .scaled-wrapper {
+    flex-direction: column; /* Stack items vertically */
+    padding: 10px; /* Adjust padding */
+  }
+
+  .content-box {
+    padding: 20px 15px; /* Reduce padding inside the box */
+  }
+
+  table {
+    font-size: 0.9em; /* Adjust font size for tables */
+  }
+
+  .status-box {
+    width: auto; /* Allow the status box to adjust to its content */
+    font-size: 0.8em; /* Reduce font size */
+  }
+
+  .pagination-box {
+    padding: 15px; /* Reduce padding */
+  }
+
+  .pagination-controls {
+    flex-wrap: wrap; /* Allow wrapping of controls */
+    justify-content: center; /* Center the controls */
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 10px; /* Add padding around the body */
+  }
+
+  .container {
+    width: 100%; /* Full width for smaller screens */
+  }
+
+  .content-box {
+    padding: 15px; /* Further reduce padding */
+    box-shadow: none; /* Remove shadow for simplicity */
+  }
+
+  h2 {
+    font-size: 1.2em; /* Adjust heading size */
+  }
+
+  form {
+    flex-direction: column; /* Stack form elements */
+    gap: 10px; /* Reduce gap */
+  }
+
+  table {
+    font-size: 0.8em; /* Further reduce font size */
+  }
+
+  table thead th, table tbody td {
+    padding: 8px; /* Reduce padding in table cells */
+  }
+
+  .status-box {
+    padding: 5px; /* Reduce padding */
+    font-size: 0.75em; /* Smaller font size */
+  }
+
+  .pagination-controls a, .pagination-controls button {
+    padding: 5px 8px; /* Smaller buttons */
+    font-size: 0.8em; /* Smaller text */
+  }
+}
+
+@media (max-width: 480px) {
+  .content-box {
+    padding: 10px; /* Minimal padding */
+  }
+
+  .pagination-box {
+    padding: 10px; /* Minimal padding */
+  }
+
+  form {
+    gap: 5px; /* Tighten spacing */
+  }
+
+  input[type="text"], select, button {
+    font-size: 0.8em; /* Reduce input font size */
+    padding: 6px; /* Smaller padding */
+  }
+
+  .status-box {
+    font-size: 0.7em; /* Further reduce font size */
+  }
+
+  table {
+    font-size: 0.75em; /* Further reduce table font size */
+  }
+
+  .pagination-info-left {
+    font-size: 0.75em; /* Smaller font size */
+  }
+}

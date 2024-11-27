@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/homepage.css' %}">
     <link rel="stylesheet" href="{% static 'css/header.css' %}">
     <script src="{% static 'js/script.js' %}" defer></script>
+    <script src="{% static 'js/header.js' %}" defer></script>
 </head>
 <body>
     <!-- Header -->
@@ -20,6 +21,14 @@
                 </a>
                 <h1 class="site-title">Footprint</h1>
             </div>
+
+            <!-- Burger Menu Button -->
+            <button class="burger-menu" aria-label="Toggle Navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
             <nav class="nav">
                 {% if request.session.uid %}
                     {% if request.session.role == 'user' %}
