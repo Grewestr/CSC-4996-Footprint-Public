@@ -19,6 +19,10 @@ from datetime import timedelta, datetime
 import csv
 from django.core.paginator import Paginator
 from urllib.parse import urlencode
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from urllib.parse import urlencode
 
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
@@ -465,6 +469,16 @@ def delete_email_view(request):
                 for doc in live_feeds_query:
                     db.collection('live_feeds').document(doc.id).delete()  # Delete each matching document
 
+                # Query and delete "pending" live feeds
+                pending_feeds_query = db.collection('live_feeds')\
+                                        .where('user_email', '==', session_email)\
+                                        .where('feed_status', '==', 'pending')\
+                                        .stream()
+
+                for doc in pending_feeds_query:
+                    db.collection('live_feeds').document(doc.id).delete()
+
+
                 # Query and delete documents from the IdentifiedPersons collection where user_email matches session_email
                 identified_persons_query = db.collection('IdentifiedPersons')\
                                               .where('user_email', '==', session_email)\
@@ -472,6 +486,7 @@ def delete_email_view(request):
 
                 for doc in identified_persons_query:
                     db.collection('IdentifiedPersons').document(doc.id).delete()  # Delete each matching document
+
          
                 messages.success(request, "Your account has been successfully deleted.", extra_tags='delete_email')
                 return logout_view(request)  # Log out the user after deletion
@@ -780,7 +795,7 @@ def search_attributes1(request):
         "pink": "Pink",
         "beige": "Beige",
         "NULL": "Undetected",
-        "unknown": "Undetected"
+        "Unknown": "Undetected"
     }
 
     # Helper function to format attributes
@@ -790,8 +805,16 @@ def search_attributes1(request):
     # Existing code
     user_email = request.session.get('email')
     live_feed_names = []
-    items_per_page = 5
-    page_number = int(request.GET.get('page', 1))
+    items_per_page = 6
+
+    # Validate page number
+    page_number = request.GET.get('page', 1)
+    try:
+        page_number = int(page_number)
+        if page_number < 1:
+            page_number = 1
+    except ValueError:
+        page_number = 1
 
     if user_email:
         try:
@@ -895,26 +918,26 @@ def search_attributes1(request):
             if score == 100:
                 match_percentage = "100%"
                 priority = 0
-            elif 80 <= score < 100:
-                match_percentage = "80-90%"
+            elif 70 <= score < 100:
+                match_percentage = "70-90%"
                 priority = 1
-            elif 60 <= score < 80:
-                match_percentage = "60-80%"
+            elif 10 <= score < 70:
+                match_percentage = "10-70%"
                 priority = 2
             else:
                 continue
 
             results.append({
-                'detection_time': doc_data.get('detection_time'),
+                'detection_time': format_time_detected(float(doc_data.get('detection_time'))),
                 'detection_time_link': doc_data.get('detection_time_link'),
                 'photo': doc_data.get('photo'),
                 'feed_name': format_attribute(doc_data.get('feed_name')),
-                'top_type': f"{format_attribute(doc_data.get('top_type'))} (unmatched)" if 'top_type' in unmatched_attributes else format_attribute(doc_data.get('top_type')),
-                'top_color': f"{format_attribute(doc_data.get('top_color'))} (unmatched)" if 'top_color' in unmatched_attributes else format_attribute(doc_data.get('top_color')),
-                'middle_type': f"{format_attribute(doc_data.get('middle_type'))} (unmatched)" if 'middle_type' in unmatched_attributes else format_attribute(doc_data.get('middle_type')),
-                'middle_color': f"{format_attribute(doc_data.get('middle_color'))} (unmatched)" if 'middle_color' in unmatched_attributes else format_attribute(doc_data.get('middle_color')),
-                'bottom_type': f"{format_attribute(doc_data.get('bottom_type'))} (unmatched)" if 'bottom_type' in unmatched_attributes else format_attribute(doc_data.get('bottom_type')),
-                'bottom_color': f"{format_attribute(doc_data.get('bottom_color'))} (unmatched)" if 'bottom_color' in unmatched_attributes else format_attribute(doc_data.get('bottom_color')),
+                'top_type': format_attribute(doc_data.get('top_type')),
+                'top_color': format_attribute(doc_data.get('top_color')),
+                'middle_type': format_attribute(doc_data.get('middle_type')),
+                'middle_color':format_attribute(doc_data.get('middle_color')),
+                'bottom_type': format_attribute(doc_data.get('bottom_type')),
+                'bottom_color': format_attribute(doc_data.get('bottom_color')),
                 'match_percentage': match_percentage,
                 'priority': priority
             })
@@ -923,9 +946,17 @@ def search_attributes1(request):
         messages.error(request, f"Error querying database: {str(e)}")
         return render(request, 'home/dashboard.html', {'feeds': live_feed_names})
 
+    # Save results to the session for export
+    request.session['export_results'] = results
+
+
     results.sort(key=lambda x: x['priority'])
     paginator = Paginator(results, items_per_page)
-    page_obj = paginator.get_page(page_number)
+
+    try:
+        page_obj = paginator.page(page_number)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
 
     context = {
         'page_obj': page_obj,
@@ -938,9 +969,20 @@ def search_attributes1(request):
             'feed_name': feed_name
         },
         'num_pages': paginator.num_pages,
-        'page_number': page_number,
+        'page_number': page_obj.number,
     }
     return render(request, 'home/dashboard.html', context)
+
+
+def format_time_detected(decimal_seconds):
+    # Convert decimal seconds to total seconds
+    total_seconds = int(decimal_seconds)
+    hours = total_seconds // 3600
+    minutes = (total_seconds % 3600) // 60
+    seconds = total_seconds % 60
+
+    # Format time as hh:mm:ss
+    return f"{hours:02}:{minutes:02}:{seconds:02}"
 
 from django.conf import settings
 from redis import Redis

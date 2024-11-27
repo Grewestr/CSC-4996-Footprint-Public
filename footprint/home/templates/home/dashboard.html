@@ -253,73 +253,57 @@
             <div class="table-header">
                 Results
             </div>
-            <div id="results-content">
+            <div id="preview-area" class="preview-area">
+                <img id="preview-image" src="" alt="Preview" class="preview-image hidden">
+                <div id="preview-details" class="preview-details hidden">
+                    <p><strong>Top:</strong> <span id="preview-top"></span></p>
+                    <p><strong>Middle:</strong> <span id="preview-middle"></span></p>
+                    <p><strong>Bottom:</strong> <span id="preview-bottom"></span></p>
+                    <p><strong>Time Detected:</strong> <span id="preview-time"></span></p>
+                    <p><strong>Detection Time Link:</strong>
+                        <a id="preview-link" href="#" target="_blank">View</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Grid Area -->
+            <div id="results-content" class="grid-container">
                 {% if results %}
                     {% for result in results %}
-                        <div class="result-content">
+                        <div class="result-item" 
+                             data-image="{{ result.photo }}" 
+                             data-top="{{ result.top_type }}, {{ result.top_color }}" 
+                             data-middle="{{ result.middle_type }}, {{ result.middle_color }}" 
+                             data-bottom="{{ result.bottom_type }}, {{ result.bottom_color }}" 
+                             data-time="{{ result.detection_time }}" 
+                             data-link="{{ result.detection_time_link }}">
                             <img src="{{ result.photo }}" alt="Result Image" class="result-image">
-                            <div class="result-text">
-                                <p><strong>Top:</strong> 
-                                    <span class="{% if 'unmatched' in result.top_type %}unmatched{% endif %}">
-                                        {{ result.top_type }}
-                                    </span>, 
-                                    <span class="{% if 'unmatched' in result.top_color %}unmatched{% endif %}">
-                                        {{ result.top_color }}
-                                    </span>
-                                </p>
-                                <p><strong>Middle:</strong> 
-                                    <span class="{% if 'unmatched' in result.middle_type %}unmatched{% endif %}">
-                                        {{ result.middle_type }}
-                                    </span>, 
-                                    <span class="{% if 'unmatched' in result.middle_color %}unmatched{% endif %}">
-                                        {{ result.middle_color }}
-                                    </span>
-                                </p>
-                                <p><strong>Bottom:</strong> 
-                                    <span class="{% if 'unmatched' in result.bottom_type %}unmatched{% endif %}">
-                                        {{ result.bottom_type }}
-                                    </span>, 
-                                    <span class="{% if 'unmatched' in result.bottom_color %}unmatched{% endif %}">
-                                        {{ result.bottom_color }}
-                                    </span>
-                                </p>
-                                <p><strong>Time Detected:</strong> {{ result.detection_time }}</p>
-                                <p><strong>Detection Time Link:</strong> 
-                                    <a href="{{ result.detection_time_link }}" target="_blank">View</a>
-                                </p>
-                                <p><strong>Match Percentage:</strong> {{ result.match_percentage }}</p>
-                            </div>
                         </div>
                     {% endfor %}
-                    
-                    <!-- Pagination -->
-                    <div class="pagination-container">
-                        <span class="pagination-info-left">
-                            Page {{ page_number }} of {{ num_pages }}
-                        </span>
-                        <div class="pagination-controls">
-                            {% if page_obj.has_previous %}
-                                <a href="?page={{ page_obj.previous_page_number }}&top_attribute={{ selections.top.attribute }}&top_color={{ selections.top.color }}&middle_attribute={{ selections.middle.attribute }}&middle_color={{ selections.middle.color }}&bottom_attribute={{ selections.bottom.attribute }}&bottom_color={{ selections.bottom.color }}&feed_name={{ selections.feed_name }}">
-                                    Previous
-                                </a>
-                            {% endif %}
-                            {% if page_obj.has_next %}
-                                <a href="?page={{ page_obj.next_page_number }}&top_attribute={{ selections.top.attribute }}&top_color={{ selections.top.color }}&middle_attribute={{ selections.middle.attribute }}&middle_color={{ selections.middle.color }}&bottom_attribute={{ selections.bottom.attribute }}&bottom_color={{ selections.bottom.color }}&feed_name={{ selections.feed_name }}">
-                                    Next
-                                </a>
-                            {% endif %}
-                        </div>
-                    </div>
                 {% else %}
-                    <p>No results found.</p>
+                    <p class="no-results">No results found.</p>
                 {% endif %}
             </div>
+
+            <!-- Pagination -->
+            <div class="pagination-container">
+                <span class="pagination-info-left">
+                    Page {{ page_number }} of {{ num_pages }}
+                </span>
+                <div class="pagination-controls">
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}&top_attribute={{ selections.top.attribute }}&top_color={{ selections.top.color }}&middle_attribute={{ selections.middle.attribute }}&middle_color={{ selections.middle.color }}&bottom_attribute={{ selections.bottom.attribute }}&bottom_color={{ selections.bottom.color }}&feed_name={{ selections.feed_name }}">
+                            Previous
+                        </a>
+                    {% endif %}
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}&top_attribute={{ selections.top.attribute }}&top_color={{ selections.top.color }}&middle_attribute={{ selections.middle.attribute }}&middle_color={{ selections.middle.color }}&bottom_attribute={{ selections.bottom.attribute }}&bottom_color={{ selections.bottom.color }}&feed_name={{ selections.feed_name }}">
+                            Next
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
         </section>
-        
-        
-        
-        
-        
         
     </div>
 
@@ -369,11 +353,21 @@
             };
     
             let selections = {
-                top: { attribute: null, color: null },
-                middle: { attribute: null, color: null },
-                bottom: { attribute: null, color: null },
-                feed_name: null,
+                top: {
+                    attribute: "{{ selections.top.attribute|default:'' }}",
+                    color: "{{ selections.top.color|default:'' }}"
+                },
+                middle: {
+                    attribute: "{{ selections.middle.attribute|default:'' }}",
+                    color: "{{ selections.middle.color|default:'' }}"
+                },
+                bottom: {
+                    attribute: "{{ selections.bottom.attribute|default:'' }}",
+                    color: "{{ selections.bottom.color|default:'' }}"
+                },
+                feed_name: "{{ selections.feed_name|default:'' }}"
             };
+
     
             function formatSelection(attribute, color) {
                 const formattedAttribute = attributeNames[attribute] || attribute;
@@ -419,9 +413,34 @@
             }
     
             function initializeSummary() {
-                ['top', 'middle', 'bottom'].forEach(updateSummary);
+                ['top', 'middle', 'bottom'].forEach(category => {
+                    // Restore selected attribute button
+                    if (selections[category].attribute) {
+                        const button = document.querySelector(`.attribute-btn[data-category="${category}"][data-attribute="${selections[category].attribute}"]`);
+                        if (button) {
+                            button.classList.add('selected');
+                        }
+                    }
+
+                    // Restore selected color button
+                    if (selections[category].color) {
+                        const button = document.querySelector(`.color-btn[data-category="${category}"][data-color="${selections[category].color}"]`);
+                        if (button) {
+                            button.classList.add('selected');
+                        }
+                    }
+
+                    // Update the summary
+                    updateSummary(category);
+                });
+
+                // Restore feed selection
+                if (selections.feed_name) {
+                    feedSelect.value = selections.feed_name;
+                }
                 summaryFeedName.textContent = `Feed: ${selections.feed_name || 'None Selected'}`;
             }
+
     
             attributeButtons.forEach(button => {
                 button.addEventListener('click', function () {
@@ -482,8 +501,101 @@
             }
     
             initializeSummary();
+
+            // Error handling and validation during form submission
+            document.querySelector('form').addEventListener('submit', function (event) {
+                let valid = true;
+                let errorMessage = '';
+                ['top', 'middle', 'bottom'].forEach(category => {
+                    if (!selections[category].attribute) {
+                        valid = false;
+                        errorMessage += `Please select a ${category} attribute.\n`;
+                    }
+                    if (!selections[category].color) {
+                        valid = false;
+                        errorMessage += `Please select a ${category} color.\n`;
+                    }
+                });
+        
+                if (!selections.feed_name) {
+                    valid = false;
+                    errorMessage += 'Please select a feed.\n';
+                }
+        
+                if (!valid) {
+                    event.preventDefault();
+                    alert(errorMessage);
+                }
+            });
         });
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const previewArea = document.getElementById('preview-area');
+            const previewImage = document.getElementById('preview-image');
+            const previewPlaceholder = document.querySelector('.preview-placeholder');
+            const previewDetails = document.getElementById('preview-details');
+            const previewTop = document.getElementById('preview-top');
+            const previewMiddle = document.getElementById('preview-middle');
+            const previewBottom = document.getElementById('preview-bottom');
+            const previewTime = document.getElementById('preview-time');
+            const previewLink = document.getElementById('preview-link');
+            const resultItems = document.querySelectorAll('.result-item');
+
+            // Function to toggle preview visibility based on results
+            function togglePreviewVisibility() {
+                if (resultItems.length === 0) {
+                    previewArea.classList.add('hidden-preview-section'); // Hide preview if no results
+                } else {
+                    previewArea.classList.remove('hidden-preview-section'); // Show preview if results exist
+                }
+            }
+
+            // Function to update the preview area with details
+            function updatePreview(item) {
+                const imageUrl = item.getAttribute('data-image');
+                const topDetails = item.getAttribute('data-top');
+                const middleDetails = item.getAttribute('data-middle');
+                const bottomDetails = item.getAttribute('data-bottom');
+                const detectionTime = item.getAttribute('data-time');
+                const detectionLink = item.getAttribute('data-link');
+
+                // Update the preview image
+                if (imageUrl) {
+                    previewImage.src = imageUrl;
+                    previewImage.classList.remove('hidden');
+                    previewPlaceholder?.classList.add('hidden');
+                }
+
+                // Update the preview details
+                previewTop.textContent = topDetails || 'N/A';
+                previewMiddle.textContent = middleDetails || 'N/A';
+                previewBottom.textContent = bottomDetails || 'N/A';
+                previewTime.textContent = detectionTime || 'N/A';
+                previewLink.href = detectionLink || '#';
+
+                // Show the preview details
+                previewDetails.classList.remove('hidden');
+            }
+
+            // Call togglePreviewVisibility initially to set the correct state
+            togglePreviewVisibility();
+
+            // Set the first item as the default preview
+            if (resultItems.length > 0) {
+                updatePreview(resultItems[0]); // Use the first grid item
+            }
+
+            // Add click event listeners to all result items
+            resultItems.forEach(item => {
+                item.addEventListener('click', function () {
+                    updatePreview(this);
+                });
+            });
+        });
+    </script>
+
     
 </body>
 </html>

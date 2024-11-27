@@ -4,7 +4,7 @@
 
 /* General Styles */
 body {
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'Roboto', sans-serif;
     background-color: #e0e0e0; 
     color: #000;
     margin: 0;
@@ -320,6 +320,25 @@ h3 {
     .image-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+    .results-section .grid-container {
+        grid-template-columns: repeat(2, 1fr); /* Two columns */
+        gap: 10px;
+    }
+
+    .preview-area {
+        flex-direction: column; /* Stack image and details vertically */
+        gap: 10px; /* Reduce space between image and details */
+    }
+
+    .preview-image {
+        max-height: 150px; /* Adjust image size for smaller screens */
+        max-width: 250px;
+    }
+
+    .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
 }
 
 .unmatched {
@@ -404,4 +423,103 @@ footer {
     align-items: center;
     gap: 10px;
     margin: 10px 0; 
+}
+
+/* Preview Area */
+.preview-area {
+    display: flex; /* Arrange children (image and text) in a row */
+    align-items: center; /* Center items vertically */
+    justify-content: center; /* Center the entire block horizontally */
+    gap: 20px; /* Add space between the image and text */
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-bottom: 2px solid #000;
+    width: 100%; /* Ensure it spans the container */
+}
+
+/* Preview Image */
+.preview-image {
+    height: 250px; /* Fixed height */
+    width: auto; /* Maintain aspect ratio */
+    max-width: 300px; /* Ensure image doesn't get too wide */
+    object-fit: contain;
+    border-radius: 10px;
+    border: 2px solid #000;
+    display: block; /* Ensure it's treated as a block element */
+}
+
+/* Preview Details */
+.preview-details {
+    flex: 1; /* Allow it to grow and take up remaining space */
+    text-align: left; /* Align text to the left */
+    font-size: 1.2rem;
+}
+
+.preview-details p {
+    margin: 10px 0; /* Add spacing between each text line */
+    font-weight: 500;
+}
+
+.preview-details a {
+    color: #0000ff; /* Blue color for the link */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.preview-details a:hover {
+    text-decoration: underline; /* Underline on hover */
+}
+
+/* Grid Container */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Three columns */
+    grid-template-rows: repeat(2, auto); /* Two rows */
+    gap: 20px; /* Space between grid items */
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.result-item {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px; /* Reduce padding for smaller items */
+    background-color: #fff;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.result-item:hover {
+    transform: scale(1.05);
+}
+
+.result-image {
+    max-width: 40%; /* controls images size */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 5px;
+    margin-bottom: 5px; 
+    border: 2px solid #000;
+}
+
+/* Hide grid details */
+.result-item .result-text {
+    display: none;
+}
+
+
+
+/* Adjusted grid areas for the layout */
+.results-section,
+.image-gallery-section {
+    background-color: #fff;
+    border: 2px solid #000;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hidden-preview-section {
+    display: none !important;
 }
