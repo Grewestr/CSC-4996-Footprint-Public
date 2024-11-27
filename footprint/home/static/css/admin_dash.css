@@ -16,6 +16,13 @@
   box-sizing: border-box;
 }
 
+/* Container Styles */
+.container {
+  width: 95%;
+  max-width: 1200px; 
+  margin: 0 auto;
+}
+
 /* Body Styles */
 body {
   font-family: 'Roboto', sans-serif;

@@ -6,6 +6,8 @@ html, body {
 
 }
 
+
+
 .signup-page {
   font-family: 'Roboto', sans-serif;
   background-color: #e0e0e0; 
@@ -27,6 +29,13 @@ main {
   padding: 0 20px;
   flex: 1;
   padding-top: 90px;
+}
+
+/* Container Styles */
+.container {
+  width: 95%;
+  max-width: 1200px; 
+  margin: 0 auto;
 }
 
 .signup-form-section {

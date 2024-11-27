@@ -10,11 +10,11 @@
     flex-direction: column;
 }
 
+/* Container Styles */
 .container {
-    max-width: 1200px;
+    width: 95%;
+    max-width: 1200px; 
     margin: 0 auto;
-    padding-top: 140px;
-    padding-bottom: 60px;
 }
 
 /* Main content layout */
