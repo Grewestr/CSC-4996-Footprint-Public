@@ -601,7 +601,7 @@ BOOT_COMMANDS_RUN = False  # Global flag to check if boot commands are run
 def check_and_run_boot_commands():
     global BOOT_COMMANDS_RUN
     if not BOOT_COMMANDS_RUN:
-        boot_directory = R"C:\Users\17344\Documents\Capstone2\CSC-4996-Footprint\footprint"
+        boot_directory = R"C:\Wayne State\Senior Capstone\Footprint Github clone\CSC-4996-Footprint\footprint"
         run_docker_command("docker-compose build", cwd=boot_directory)
         run_docker_command("docker-compose up -d", cwd=boot_directory)  # Run in detached mode
         BOOT_COMMANDS_RUN = True
@@ -676,7 +676,7 @@ def upload_view(request):
                     )
 
                     # Prepare parameters for the Docker command and pass the document ID
-                    script_directory = R"C:\Users\17344\Documents\Capstone2\CSC-4996-Footprint\footprint\home\static\AI_Scripts"
+                    script_directory = R"C:\Wayne State\Senior Capstone\Footprint Github clone\CSC-4996-Footprint\footprint\home\static\AI_Scripts"
                     docker_command = f'docker-compose run --rm rq-worker python video_Enqueue.py "{youtube_link}" {processing_speed} "{user_email}" "{document_id}"'
                     
                     # Run the Docker command asynchronously
@@ -927,6 +927,15 @@ def search_attributes1(request):
         docs = query.stream()
         for doc in docs:
             doc_data = doc.to_dict()
+
+            # Generate detection_time_link dynamically
+            video_link = doc_data.get('video_link')
+            detection_time = doc_data.get('detection_time')
+            detection_time_link = generate_detection_time_link(video_link, detection_time)
+            
+            doc_data['detection_time_link'] = detection_time_link
+
+
             score = 0
             unmatched_attributes = []
 
@@ -981,7 +990,7 @@ def search_attributes1(request):
 
             results.append({
                 'detection_time': format_time_detected(float(doc_data.get('detection_time'))),
-                'detection_time_link': doc_data.get('detection_time_link'),
+                'detection_time_link': detection_time_link,
                 'photo': doc_data.get('photo'),
                 'feed_name': format_attribute(doc_data.get('feed_name')),
                 'top_type': format_attribute(doc_data.get('top_type')),
@@ -997,9 +1006,6 @@ def search_attributes1(request):
     except Exception as e:
         messages.error(request, f"Error querying database: {str(e)}")
         return render(request, 'home/dashboard.html', {'feeds': live_feed_names})
-
-    # Save results to the session for export
-    request.session['export_results'] = results
 
 
     results.sort(key=lambda x: x['priority'])
@@ -1035,6 +1041,21 @@ def format_time_detected(decimal_seconds):
 
     # Format time as hh:mm:ss
     return f"{hours:02}:{minutes:02}:{seconds:02}"
+
+
+
+def generate_detection_time_link(video_link, detection_time):
+    """
+    Generates a YouTube link with embedded timestamp in seconds.
+    :param video_link: Original YouTube link.
+    :param detection_time: Time in seconds as a string.
+    :return: Modified link with timestamp.
+    """
+    if not video_link or not detection_time:
+        return None
+    if "?" in video_link:
+        return video_link + "&t=" + detection_time + "s"
+    return video_link + "?t=" + detection_time + "s"
 
 from django.conf import settings
 from redis import Redis
