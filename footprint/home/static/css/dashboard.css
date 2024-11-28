@@ -412,11 +412,10 @@ footer {
 }
 
 .color-btn.selected:hover {
-    transform: scale(1.20); 
+    transform: scale(1.15); 
 }
 
 .color-btn.selected {
-    transform: scale(1.20); /* stay bigger for selected */
     box-shadow: 0 0 0 8px rgb(50, 255, 50);
 }
 
