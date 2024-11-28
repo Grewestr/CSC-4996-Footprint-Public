@@ -365,7 +365,6 @@ footer {
 }
 /* Selected state for color buttons */
 .attribute-btn.selected {
-    transform: scale(1.15); /* stay bigger for selected */
     box-shadow: 0 0 0 8px rgb(50, 255, 50);
 }
 
