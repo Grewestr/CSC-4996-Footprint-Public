@@ -67,7 +67,7 @@ body {
     width: 55px; 
     height: 55px;
     border-radius: 20%; /* Ensures button itself is rounded */
-    margin: 5px; 
+    margin: 7px; 
     cursor: pointer;
     background-size: cover; 
     background-position: center; 
@@ -361,11 +361,12 @@ footer {
     outline: 3px solid rgb(131, 131, 131);
 }
 .attribute-btn.selected:hover {
-    transform: scale(1.1); /* Zoom effect on hover for selected buttons */
+    transform: scale(1.15); /* Zoom effect on hover for selected buttons */
 }
 /* Selected state for color buttons */
 .attribute-btn.selected {
-    box-shadow: 0 0 0 7px rgb(30, 220, 5);
+    transform: scale(1.15); /* stay bigger for selected */
+    box-shadow: 0 0 0 8px rgb(50, 255, 50);
 }
 
 /* Tooltip Text box */
@@ -410,13 +411,15 @@ footer {
     outline: 3.25px solid rgb(131, 131, 131); /* Add outline for non-selected buttons */
 }
 
-.color-btn.selected {
-    box-shadow: 0 0 0 7px rgb(30, 220, 5); /* Highlight selected button */
+.color-btn.selected:hover {
+    transform: scale(1.20); 
 }
 
-.color-btn.selected:hover {
-    transform: scale(1.2); /* More zoom for selected buttons */
+.color-btn.selected {
+    transform: scale(1.20); /* stay bigger for selected */
+    box-shadow: 0 0 0 8px rgb(50, 255, 50);
 }
+
 
 /* Container for Color Buttons */
 .color-options {
