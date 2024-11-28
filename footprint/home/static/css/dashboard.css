@@ -67,7 +67,7 @@ body {
     width: 55px; 
     height: 55px;
     border-radius: 20%; /* Ensures button itself is rounded */
-    margin: 7px; 
+    margin: 8px; 
     cursor: pointer;
     background-size: cover; 
     background-position: center; 
