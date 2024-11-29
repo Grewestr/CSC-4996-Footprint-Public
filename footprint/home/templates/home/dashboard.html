@@ -84,28 +84,32 @@
                             class="attribute-btn {% if selections.top.attribute == 'short_hair' %}selected{% endif %}"
                             data-attribute="short_hair"
                             data-category="top"
-                            data-tooltip="Short Hair"style="background-image: url('{% static 'images/short_hair_UI.png' %}');"
+                            data-tooltip="Short Hair"
+                            style="background-image: url('{% static 'images/short_hair_UI.png' %}'); border: 3px solid black;"
                         ></button>
                         <button
                             type="button"
                             class="attribute-btn {% if selections.top.attribute == 'medium_hair' %}selected{% endif %}"
                             data-attribute="medium_hair"
-                            data-category="top"
-                            data-tooltip="Medium Hair"style="background-image: url('{% static 'images/medium_hair_UI.png' %}');"
+                            data-category="top"  
+                            data-tooltip="Medium Hair"
+                            style="background-image: url('{% static 'images/medium_hair_UI.png' %}'); border: 3px solid black;"
                         ></button>
                         <button
                             type="button"
                             class="attribute-btn {% if selections.top.attribute == 'long_hair' %}selected{% endif %}"
                             data-attribute="long_hair"
                             data-category="top"
-                            data-tooltip="Long Hair"style="background-image: url('{% static 'images/long_hair_UI.png' %}');"
+                            data-tooltip="Long Hair"
+                            style="background-image: url('{% static 'images/long_hair_UI.png' %}'); border: 3px solid black;"
                         ></button>
                         <button
                             type="button"
                             class="attribute-btn {% if selections.top.attribute == 'no_hair' %}selected{% endif %}"
                             data-attribute="no_hair"
                             data-category="top"
-                            data-tooltip="No Hair"style="background-image: url('{% static 'images/no_hair_UI.png' %}');"
+                            data-tooltip="No Hair"
+                            style="background-image: url('{% static 'images/no_hair_UI.png' %}'); border: 3px solid black;"
                         ></button>
                     </div>
                 
@@ -133,28 +137,32 @@
                             class="attribute-btn {% if selections.middle.attribute == 'short_shirt' %}selected{% endif %}"
                             data-attribute="short_shirt"
                             data-category="middle"
-                            data-tooltip="Short Sleeved"style="background-image: url('{% static "images/short_shirt_UI.png" %}');"
+                            data-tooltip="Short Sleeved"
+                            style="background-image: url('{% static "images/short_shirt_UI.png" %}'); border: 3px solid black;"
                         ></button>
                         <button
                             type="button"
                             class="attribute-btn {% if selections.middle.attribute == 'long_shirt' %}selected{% endif %}"
                             data-attribute="long_shirt"
                             data-category="middle"
-                            data-tooltip="Long Sleeved"style="background-image: url('{% static "images/long_shirt_UI.png" %}');"
+                            data-tooltip="Long Sleeved"
+                            style="background-image: url('{% static "images/long_shirt_UI.png" %}'); border: 3px solid black;"
                         ></button>
                         <button
                             type="button"
                             class="attribute-btn {% if selections.middle.attribute == 'sleeveless_shirt' %}selected{% endif %}"
                             data-attribute="sleeveless_shirt"
                             data-category="middle"
-                            data-tooltip="Sleeveless Shirt"style="background-image: url('{% static "images/sleeveless_shirt_UI.png" %}');"
+                            data-tooltip="Sleeveless Shirt"
+                            style="background-image: url('{% static "images/sleeveless_shirt_UI.png" %}'); border: 3px solid black;"
                         ></button>
                         <button
                             type="button"
                             class="attribute-btn {% if selections.middle.attribute == 'no_shirt' %}selected{% endif %}"
                             data-attribute="no_shirt"
                             data-category="middle"
-                            data-tooltip="No Shirt"style="background-image: url('{% static "images/no_shirt_UI.png" %}');"
+                            data-tooltip="No Shirt"
+                            style="background-image: url('{% static "images/no_shirt_UI.png" %}'); border: 3px solid black;"
                         ></button>
                     </div>
                     <!-- Middle Attriubte Color -->
@@ -188,21 +196,24 @@
                                 class="attribute-btn {% if selections.bottom.attribute == 'short_pants' %}selected{% endif %}"
                                 data-attribute="short_pants"
                                 data-category="bottom"
-                                data-tooltip="Shorts"style="background-image: url('{% static "images/short_UI.png" %}');"
+                                data-tooltip="Shorts"
+                                style="background-image: url('{% static "images/short_UI.png" %}'); border: 3px solid black;"
                             ></button>
                             <button
                                 type="button"
                                 class="attribute-btn {% if selections.bottom.attribute == 'long_pants' %}selected{% endif %}"
                                 data-attribute="long_pants"
                                 data-category="bottom"
-                                data-tooltip="Pants"style="background-image: url('{% static "images/pants_UI.png" %}');"
+                                data-tooltip="Pants"
+                                style="background-image: url('{% static "images/pants_UI.png" %}'); border: 3px solid black;"
                             ></button>
                             <button
                                 type="button"
                                 class="attribute-btn {% if selections.bottom.attribute == 'skirt' %}selected{% endif %}"
                                 data-attribute="skirt"
                                 data-category="bottom"
-                                data-tooltip="Skirt" style="background-image: url('{% static "images/skirt_UI.png" %}');"
+                                data-tooltip="Skirt" 
+                                style="background-image: url('{% static "images/skirt_UI.png" %}'); border: 3px solid black;"
                             ></button>
                         </div>
                     <!-- Bottom Attriubte Color -->
@@ -304,11 +315,15 @@
                         <a href="?page={{ page_obj.previous_page_number }}&top_attribute={{ selections.top.attribute }}&top_color={{ selections.top.color }}&middle_attribute={{ selections.middle.attribute }}&middle_color={{ selections.middle.color }}&bottom_attribute={{ selections.bottom.attribute }}&bottom_color={{ selections.bottom.color }}&feed_name={{ selections.feed_name }}">
                             Previous
                         </a>
+                    {% else %}
+                        <a class="disabled">Previous</a>
                     {% endif %}
                     {% if page_obj.has_next %}
                         <a href="?page={{ page_obj.next_page_number }}&top_attribute={{ selections.top.attribute }}&top_color={{ selections.top.color }}&middle_attribute={{ selections.middle.attribute }}&middle_color={{ selections.middle.color }}&bottom_attribute={{ selections.bottom.attribute }}&bottom_color={{ selections.bottom.color }}&feed_name={{ selections.feed_name }}">
                             Next
                         </a>
+                    {% else %}
+                        <a class="disabled">Next</a>
                     {% endif %}
                 </div>
             </div>

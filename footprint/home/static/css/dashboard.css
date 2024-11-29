@@ -71,23 +71,32 @@ body {
     cursor: pointer;
     background-size: cover; 
     background-position: center; 
-    transition: transform 0.1s ease, outline-color 0.2s ease, box-shadow 0.2s ease;
+    outline: 1px solid black;
+    transition: transform 0.2s ease, outline-color 0.2s ease, box-shadow 0.2s ease;
     position: relative; 
-    outline: 3px solid black; 
+    z-index: 1;
+ 
 }
 
 /* Add hover effect */
 .attribute-btn:hover {
     transform: scale(1.1); /* zoom effect */
-    outline: 3px solid rgb(0, 0, 0); /* Add gray outline on hover */
+    outline: 3px solid gray; /* Hover outline */
+    z-index: 1; 
+    
+  
+    
 }
 
 /* Selected state */
 .attribute-btn.selected {
-    outline: 3px solid black; 
+    outline: 4px solid rgb(30, 220, 5);
     box-shadow: 0 0 10px rgba(30, 220, 5, 0.8); /* Optional glowing effect */
-    background-color: white; /*  white background */
+    background-color: rgb(255, 255, 255); /*  white background */
 }
+
+
+
 
 /* Tooltip Text box */
 .attribute-btn:hover::after {
@@ -102,10 +111,11 @@ body {
     padding: 6px 12px; 
     border-radius: 4px; 
     white-space: nowrap; 
-    z-index: 9999; /* appears in front of all other elements */
+    z-index: 10; 
     opacity: 1;
     transition: opacity 0.2s ease-in-out;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5); /* Slightly stronger shadow  */
+    
 }
 
 /* Tooltip Arrow */
@@ -118,8 +128,9 @@ body {
     border-width: 8px; /*how big the triange is under hoverd item*/
     border-style: solid;
     border-color: black transparent transparent transparent;
-    z-index: 9999; 
+    z-index: 10; 
 }
+
 
 
 /* Adjusted grid areas for the layout */
@@ -278,11 +289,7 @@ h3 {
     font-weight: bold;
 }
 
-/* Style for selected  buttons */
-.attribute-btn.selected {
-    background-color: #000;
-    color: white;
-}
+
 
 .hidden {
     display: none;
