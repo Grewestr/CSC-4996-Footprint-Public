@@ -111,7 +111,6 @@ body {
     opacity: 1;
     transition: opacity 0.1s ease-in-out;
    
-    
 }
 
 /* Tooltip Arrow */
@@ -206,25 +205,39 @@ h2 {
 /* Button styling */
 .submit-button,
 .reset-button {
-    background-color: #000;
-    color: white;
     padding: 10px 20px;
     border: 2px solid #000;
-    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    font-size: 1em;
+    font-family: 'Courier New', Courier, monospace;
     font-weight: bold;
-}
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+    text-decoration: none;
+  }
 
 
-.submit-button:hover,
-.reset-button:hover {
-    background-color: #ff0000;
+.submit-button:hover {
+    background-color: #6cc8ec;
 }
+
+.submit-button {
+    background-color: #3fb2d8;
+  }
 
 .color-selection label {
     font-weight: bold;
 }
+
+.reset-button:hover {
+    background-color: #fd5c5c93; 
+  }
+  
+  .reset-button {
+    background-color: #f05858;
+    font-weight: bold;
+    color:#000;
+  }
 
 /* Adjusted styles for the Results Section */
 .result-content {
@@ -525,4 +538,15 @@ footer {
 
 .hidden-preview-section {
     display: none !important;
+}
+
+.validation-message {
+    color: #d9534f; /* Bootstrap's danger color */
+    font-size: 0.9rem;
+    margin-top: 5px;
+    padding: 5px;
+    border: 1px solid #d9534f;
+    border-radius: 4px;
+    background-color: #f2dede; /* Light red background */
+    display: block;
 }
