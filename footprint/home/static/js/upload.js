@@ -9,7 +9,39 @@ document.addEventListener('DOMContentLoaded', function() {
     const queueTable = document.getElementById('queue-table');
     const noUploadsMessage = document.getElementById('no-uploads-message');
     const uploadForm = document.querySelector('.upload-form'); // Form to handle new uploads
+    const checkStatusUrl = "{% url 'check_job_status' %}";
 
+
+    
+    queueTable.addEventListener('click', function(event) {
+        if (event.target.classList.contains('delete-button')) {
+            const row = event.target.closest('tr');
+            const jobId = row.getAttribute('data-job-id');
+
+            if (jobId) {
+                // Send AJAX POST request to delete the job
+                fetch('{% url "delete_upload_view" %}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value,
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({ job_id: jobId }).toString()
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Remove the row from the queue table
+                        row.remove();
+                        console.log(`Job ${jobId} deleted successfully.`);
+                    } else {
+                        console.error(`Failed to delete job: ${data.message}`);
+                    }
+                })
+                .catch(error => console.error('Error deleting job:', error));
+            }
+        }
+    });
     // Update video preview when the YouTube link changes
     youtubeLinkInput.addEventListener('input', function() {
         const url = youtubeLinkInput.value;
@@ -108,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function updateQueueStatus() {
-        fetch("{% url 'check_job_status' %}")
+        fetch(checkStatusUrl)
             .then(response => {
                 if (!response.ok) {
                     console.error("Status check error:", response.status, response.statusText);
