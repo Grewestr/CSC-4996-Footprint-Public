@@ -244,7 +244,7 @@
                 </div>
                 <div class="feed-select">
                     <label for="feed_name">Video:</label>
-                    <select id="feed_name" name="feed_name" required>
+                    <select id="feed_name" name="feed_name">
                         <option value="">Select Video</option>
                         {% for feed in feeds %}
                             <option value="{{ feed }}"{% if selections.feed_name == feed %}selected{% endif %}>{{ feed }}</option>
@@ -266,6 +266,12 @@
                     <button type="reset" class="reset-button">Reset</button>
                     <button type="submit" class="submit-button">Submit</button>
                 </div>
+                <div class="error-section">
+                    <div id="error-container" class="hidden">
+                        <h3>Validation Errors</h3>
+                        <ul id="error-messages"></ul>
+                    </div>
+                </div>
             </section>
         </form>
 
@@ -273,56 +279,73 @@
             <div class="table-header">
                 Results
             </div>
-
-            <div id="preview-area" class="preview-area" data-start-index="{{ page_obj.start_index|add:'-1' }}">
-                <img id="preview-image" src="" alt="Preview" class="preview-image hidden">
-                <div id="preview-details" class="preview-details hidden">
-                    <p><strong>Top:</strong> <span id="preview-top"></span></p>
-                    <p><strong>Middle:</strong> <span id="preview-middle"></span></p>
-                    <p><strong>Bottom:</strong> <span id="preview-bottom"></span></p>
-                    <p><strong>Time Detected:</strong> <span id="preview-time"></span></p>
-                    <p><strong>Detection Time Link:</strong>
-                        <a id="preview-link" href="#" target="_blank">View</a>
-                    </p>
-                    <p><strong>Result Item:</strong> <span id="result-item-number"></span></p>
-                    <div class="navigation-buttons-image">
-                        <button id="prev-item" class="nav-button-image">Previous Image</button>
-                        <button id="next-item" class="nav-button-image">Next Image</button>
+        
+            <div class="results-section">
+                <!-- Preview Container -->
+                <div class="preview-container">
+                    <div id="preview-area" data-start-index="{{ page_obj.start_index|add:'-1' }}">
+                        <div class="preview-content">
+                            <!-- Image Section -->
+                            <div class="image-container">
+                                <img id="preview-image" src="" alt="Preview" class="preview-image">
+                            </div>
+                
+                            <!-- Details Section -->
+                            <div id="preview-details" class="preview-details">
+                                <p><strong>Top:</strong> <span id="preview-top"></span></p>
+                                <p><strong>Middle:</strong> <span id="preview-middle"></span></p>
+                                <p><strong>Bottom:</strong> <span id="preview-bottom"></span></p>
+                                <p><strong>Time Detected:</strong> <span id="preview-time"></span></p>
+                                <p><strong>Detection Time Link:</strong>
+                                    <a id="preview-link" href="#" target="_blank">View</a>
+                                </p>
+                                <div class="result-item-navigation">
+                                    <p><strong>Result Item:</strong> <span id="result-item-number"></span></p>
+                                    <div class="navigation-buttons-image">
+                                        <button id="prev-item" class="nav-button-image">Previous Image</button>
+                                        <button id="next-item" class="nav-button-image">Next Image</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Grid Area -->
-            <div id="results-content" class="grid-container">
-                {% if results %}
-                    {% for result in results %}
-                        <div class="result-item" 
-                             data-image="{{ result.photo }}" 
-                             data-top="{{ result.top_type }}, {{ result.top_color }}" 
-                             data-middle="{{ result.middle_type }}, {{ result.middle_color }}" 
-                             data-bottom="{{ result.bottom_type }}, {{ result.bottom_color }}" 
-                             data-time="{{ result.detection_time }}" 
-                             data-link="{{ result.detection_time_link }}">
-                            <img src="{{ result.photo }}" alt="Result Image" class="result-image">
+            
+                <!-- Grid Container -->
+                <div id="results-content" class="grid-container">
+                    {% if results %}
+                        {% for result in results %}
+                            <div class="result-item" 
+                                 data-image="{{ result.photo }}" 
+                                 data-top="{{ result.top_type }}, {{ result.top_color }}" 
+                                 data-middle="{{ result.middle_type }}, {{ result.middle_color }}" 
+                                 data-bottom="{{ result.bottom_type }}, {{ result.bottom_color }}" 
+                                 data-time="{{ result.detection_time }}" 
+                                 data-link="{{ result.detection_time_link }}">
+                                <img src="{{ result.photo }}" alt="Result Image" class="result-image">
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="no-results-container">
+                            <p><strong>No results found.</strong></p>
+                            <p>Try adjusting the search filters.</p>
                         </div>
-                    {% endfor %}
-                {% else %}
-                    <p class="no-results">No results found.</p>
-                {% endif %}
+                    {% endif %}
+                </div>
             </div>
-
+        
             <!-- Pagination -->
             <div class="pagination-container">
                 <!-- Page Info -->
                 <div class="pagination-info">
                     <span class="page-details">
-                        Page {{ page_number }} of {{ num_pages }}
+                        Page {% if num_pages > 0 %}{{ page_number }}{% else %}0{% endif %} of {% if num_pages > 0 %}{{ num_pages }}{% else %}0{% endif %}
                     </span>
                     <span class="result-range">
-                        Displaying results {{ page_obj.start_index }}–{{ page_obj.end_index }} out of a total of {{ page_obj.paginator.count }}
+                        Displaying results {% if page_obj.start_index %}{{ page_obj.start_index }}{% else %}0{% endif %}–{% if page_obj.end_index %}{{ page_obj.end_index }}{% else %}0{% endif %} out of a total of {% if page_obj.paginator.count %}{{ page_obj.paginator.count }}{% else %}0{% endif %}
                     </span>
                 </div>
-
+        
                 <!-- Pagination Controls -->
                 <div class="pagination-controls">
                     {% if page_obj.has_previous %}
@@ -408,28 +431,19 @@
 
     
             function formatSelection(attribute, color) {
-                const formattedAttribute = attributeNames[attribute] || attribute;
-                const formattedColor = attributeNames[color] || color;
-                if (formattedAttribute && formattedColor) {
-                    return `${formattedAttribute}, ${formattedColor}`;
-                } else if (formattedAttribute) {
-                    return formattedAttribute;
-                } else if (formattedColor) {
-                    return formattedColor;
-                }
-                return '';
+                const formattedAttribute = attributeNames[attribute] || 'None Selected';
+                const formattedColor = attributeNames[color] || 'None Selected';
+                return `${formattedAttribute}, ${formattedColor}`;
             }
     
             function updateSummary(category) {
-                const attribute = selections[category].attribute;
-                const color = selections[category].color;
+                const attribute = selections[category].attribute || 'None Selected';
+                const color = selections[category].color || 'None Selected';
                 const summaryElement = document.getElementById(`summary-${category}`);
-                let summaryText = `${category.charAt(0).toUpperCase() + category.slice(1)}: `;
-                summaryText += formatSelection(attribute, color);
-                summaryElement.textContent = summaryText;
-    
-                document.getElementById(`${category}-attribute-input`).value = attribute || '';
-                document.getElementById(`${category}-color-input`).value = color || '';
+                summaryElement.textContent = `${category.charAt(0).toUpperCase() + category.slice(1)}: ${attribute}, ${color}`;
+
+                document.getElementById(`${category}-attribute-input`).value = selections[category].attribute || '';
+                document.getElementById(`${category}-color-input`).value = selections[category].color || '';
             }
     
             function resetSelections() {
@@ -544,6 +558,11 @@
             document.querySelector('form').addEventListener('submit', function (event) {
                 let valid = true;
                 let errorMessage = '';
+                const feedSelect = document.getElementById('feed_name');
+                
+
+
+                // Validate other fields (if needed)
                 ['top', 'middle', 'bottom'].forEach(category => {
                     if (!selections[category].attribute) {
                         valid = false;
@@ -554,15 +573,17 @@
                         errorMessage += `Please select a ${category} color.\n`;
                     }
                 });
-        
-                if (!selections.feed_name) {
+
+
+                // Validate feed selection
+                if (!feedSelect.value) {
                     valid = false;
-                    errorMessage += 'Please select a feed.\n';
+                    errorMessage += 'Please select a video feed.\n';
                 }
-        
+
                 if (!valid) {
                     event.preventDefault();
-                    alert(errorMessage);
+                    alert(errorMessage); // Or add the error message to your custom error display
                 }
             });
         });
@@ -580,10 +601,15 @@
             const previewTime = document.getElementById('preview-time');
             const previewLink = document.getElementById('preview-link');
             const resultItemNumber = document.getElementById('result-item-number');
-            const resultItems = document.querySelectorAll('.result-item');
+            const resultItems = Array.from(document.querySelectorAll('.result-item'));
+            const prevButton = document.getElementById('prev-item');
+            const nextButton = document.getElementById('next-item');
 
-            // Capture the starting index of the current page 
+            // starting index of the current page
             const currentPageStartIndex = parseInt(previewArea.getAttribute('data-start-index') || "0", 10);
+
+            // Initialize the current index
+            let currentIndex = 0;
 
             // Function to toggle preview visibility based on results
             function togglePreviewVisibility() {
@@ -595,7 +621,10 @@
             }
 
             // Function to update the preview area with details
-            function updatePreview(item, index) {
+            function updatePreview(index) {
+                const item = resultItems[index];
+                if (!item) return;
+
                 const imageUrl = item.getAttribute('data-image');
                 const topDetails = item.getAttribute('data-top');
                 const middleDetails = item.getAttribute('data-middle');
@@ -624,29 +653,49 @@
                 previewLink.href = detectionLink || '#';
 
                 // Calculate the total result index
-                const globalIndex = currentPageStartIndex + index; 
-                resultItemNumber.textContent = globalIndex + 1; 
+                const globalIndex = currentPageStartIndex + index;
+                resultItemNumber.textContent = globalIndex + 1; // Display index starting from 1
 
                 // Show the preview details
                 previewDetails.classList.remove('hidden');
             }
 
-            // Call togglePreviewVisibility initially to set the correct state
+            // handle "Previous" button click
+            prevButton.addEventListener('click', function () {
+                if (currentIndex === 0) {
+                    currentIndex = resultItems.length - 1; // Loop to the last item in list
+                } else {
+                    currentIndex--;
+                }
+                updatePreview(currentIndex);
+            });
+
+            //  handle "Next" button click
+            nextButton.addEventListener('click', function () {
+                if (currentIndex === resultItems.length - 1) {
+                    currentIndex = 0; // Loop to the first item in list
+                } else {
+                    currentIndex++;
+                }
+                updatePreview(currentIndex);
+            });
+
+            //toggle to set the correct state
             togglePreviewVisibility();
 
             // Set the first item as the default preview
             if (resultItems.length > 0) {
-                updatePreview(resultItems[0], 0); 
+                updatePreview(currentIndex); // Update with the first item
             }
 
             // Add click event listeners to all result items
             resultItems.forEach((item, index) => {
                 item.addEventListener('click', function () {
-                    // Update the preview and highlight item
-                    updatePreview(this, index);
+                    currentIndex = index; // Update the current index
+                    updatePreview(currentIndex);
 
                     // Highlight the gallery item
-                    resultItems.forEach((el) => el.classList.remove('selected'));
+                    resultItems.forEach(el => el.classList.remove('selected'));
                     this.classList.add('selected');
                 });
             });

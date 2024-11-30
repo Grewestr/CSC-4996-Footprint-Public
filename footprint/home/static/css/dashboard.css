@@ -444,14 +444,14 @@ footer {
 }
 /* Preview Area */
 .preview-area {
-    display: flex; /* Arrange children (image and text) in a row */
-    align-items: center; /* Center items vertically */
-    justify-content: center; /* Center the entire block horizontally */
-    gap: 20px; /* Add space between the image and text */
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 20px; 
     padding: 20px;
     background-color: #f9f9f9;
     border-bottom: 2px solid #000;
-    width: 100%; /* Ensure it spans the container */
+    width: 100%; 
 }
 
 /* Preview Image */
@@ -495,28 +495,6 @@ footer {
     cursor: not-allowed;
 }
 
-/* Preview Details */
-.preview-details {
-    flex: 1; /* Allow it to grow and take up remaining space */
-    text-align: left; /* Align text to the left */
-    font-size: 1.2rem;
-}
-
-.preview-details p {
-    margin: 10px 0; /* Add spacing between each text line */
-    font-weight: 500;
-}
-
-.preview-details a {
-    color: #0000ff; /* Blue color for the link */
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.preview-details a:hover {
-    text-decoration: underline; /* Underline on hover */
-}
-
 /* Grid Container */
 .grid-container {
     display: grid;
@@ -543,6 +521,7 @@ footer {
 
 .result-item.active {
     border: 3px solid rgba(30, 220, 5, 0.8); 
+    box-shadow: 0 0 10px rgba(30, 220, 5, 0.8);
     transform: scale(1.05); 
     z-index: 10; 
 }
@@ -594,7 +573,6 @@ footer {
 
 
 .result-item.highlight {
-    box-shadow: 0 0 10px rgba(30, 220, 5, 0.8);
     transform: scale(1.05); 
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -606,6 +584,7 @@ footer {
     align-items: center;
     font-size: 16px;
     margin-bottom: 10px;
+    margin-top: 10px;
     color: #333;
 }
 .result-range {
@@ -617,6 +596,7 @@ footer {
 .pagination-controls {
     display: flex;
     gap: 10px;
+   
 }
 
 .pagination-link {
@@ -643,25 +623,170 @@ footer {
     font-weight: bold;
 }
 
+
+
 /* Pagination Container */
 .pagination-container {
+    margin-top: 20px; /* Ensure space from the grid */
     display: flex;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    margin-top: 25px;
     flex-direction: column;
     align-items: center;
+    padding: 10px;
+    background-color: #ffffff; /* Match the rest of the design */
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+
+/* No Results Styling */
+.no-results-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center; 
+    height: 100%; 
+    width: 100%; 
+    background-color: #f9f9f9; 
+    border: none; 
+    text-align: center;
+    padding: 20px; 
+    margin: 0; 
+    grid-column: 1 / -1; /* Ensure it spans across the full grid if inside a grid layout */
+}
+
+.no-results-container p {
+    font-size: 16px; /* Adjust text size */
+    color: #333; /* Neutral text color */
+    margin: 10px 0; /* Space between paragraphs */
+}
+
+.no-results-container p:first-of-type {
+    font-weight: bold; /* Highlight primary message */
+    font-size: 18px; /* Slightly larger font for emphasis */
+}
+
+/* Grid Container */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); 
+    gap: 15px; /* Space between grid items */
+    height: 740px; /* Fixed height */
+    padding: 10px;
+    background-color: #fff; 
+    border: 1px solid #ddd; 
+    border-radius: 10px;
+    overflow-y: auto; /* Scroll for overflow */
+}
+
+.preview-container {
+    display: flex;
+    justify-content: flex-start; 
+    align-items: center; 
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    margin: 10px auto; 
+    width:95%; 
+    max-width: 900px; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    height: 240px;
+}
+
+.preview-content {
+    display: flex;
+    gap: 30px; /* Space between image and details */
+    align-items: flex-start; /* Align content to the top */
+    
+}
+
+.image-container {
+    display: flex;
+    margin-left: 20px;
     justify-content: center;
-    padding-bottom: 10px;
+    align-items: center;
+    width: 200px; /* Fixed width for image */
+    height: 200px; /* Fixed height for image */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-
 }
 
-.result-item.selected {
-    box-shadow: 0 0 10px rgba(30, 220, 5, 0.8); 
-    border: 2px solid rgba(30, 220, 5, 0.8); 
-    transform: scale(1.05); 
+.preview-image {
+    width: 100%; 
+    height: auto; 
 }
 
+
+
+.preview-details p {
+    margin: 5px 0;
+}
+
+.preview-details strong {
+    font-weight: 600; /* Highlight labels */
+}
+
+.preview-details a {
+    color: #007BFF;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.preview-details a:hover {
+    text-decoration: underline;
+}
+
+
+.preview-details {
+    font-size: 14px;
+    color: #333;
+    gap: 4px; 
+    line-height: 1.2; 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.result-item-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Space between the text and buttons */
+    gap: 20px; /* Space between the buttons and text */
+}
+
+.result-item-navigation p {
+    min-width: 150px; /* Fixed width for the Result Item text */
+    text-align: left; /* Align text to the left */
+    margin: 0;
+}
+
+.navigation-buttons-image {
+    display: flex;
+    gap: 10px; /* Space between buttons */
+}
+
+.nav-button-image {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.nav-button-image:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.nav-button-image:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
 
