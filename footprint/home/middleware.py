@@ -11,10 +11,10 @@ class AuthenticationMiddleware:
         public_urls = ['/', '/login/', '/signup/','/password_reset/'] 
 
         # URLs accessible by regular users
-        user_allowed_urls = ['/','/dashboard/','/logout/','/profile/','/change_password/','/delete_email/', '/upload/','/search_attributes1/','/format_time_detected/','/generate_detection_time_link/']
+        user_allowed_urls = ['/','/dashboard/','/logout/','/profile/','/change_password/','/delete_email/', '/upload/','/search_attributes1/','/format_time_detected/','/generate_detection_time_link/','/edit_profile/']
 
         # URLs accessible by admins
-        admin_allowed_urls = ['/','/admin_dashboard/','/logout/','/profile/','/update_account_status/','/change_password/','/delete_email/', '/upload/','/dashboard/','/format_time_detected/','/generate_detection_time_link/']
+        admin_allowed_urls = ['/','/admin_dashboard/','/logout/','/profile/','/update_account_status/','/change_password/','/delete_email/', '/upload/','/dashboard/','/format_time_detected/','/generate_detection_time_link/','/edit_profile/']
 
         # Get the role and uid from the session
         uid = request.session.get('uid')

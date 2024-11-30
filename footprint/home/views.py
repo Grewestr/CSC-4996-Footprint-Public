@@ -23,6 +23,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from urllib.parse import urlencode
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt  # Add this import
+
 
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
@@ -41,9 +44,6 @@ desired_timezone = pytz.timezone("America/New_York")  # This is UTC-4 when in da
 
 def homepage_view(request):
     return render(request, 'home/homepage.html')
-
-
-
 
 def dashboard_view(request):
     # Get the user's email from the session
@@ -65,21 +65,22 @@ def dashboard_view(request):
     # Pass live feed names to the template for the dropdown
     return render(request, 'home/dashboard.html', {'feeds': live_feed_names})
 
-
-
 def profile_view(request):
     # Retrieve user information from the session
-    full_name = request.session.get('full_name', 'Not available')
+    first_name = request.session.get('first_name', 'Not available')
+    last_name = request.session.get('last_name', 'Not available')
     email = request.session.get('email', 'Not available')
     department_name = request.session.get('department_name', 'Not available')
+    role = request.session.get('role','Not available')
 
     # Render the profile template with the user's info
     return render(request, 'home/profile.html', {
-        'full_name': full_name,
+        'first_name': first_name,
+        'last_name': last_name,
         'email': email,
         'department_name': department_name,
+        'role': role
     })
-
 
 def logout_view(request):
     logout(request) 
@@ -128,6 +129,8 @@ def login_view(request):
 
                         request.session['uid'] = user.uid  # Firebase UID
                         request.session['role'] = role  # User role
+                        request.session['first_name'] = user_info.get('first_name')  # First name
+                        request.session['last_name'] = user_info.get('last_name') # Last name
                         request.session['full_name'] = full_name  # Full name
                         request.session['email'] = email  # User email
                         request.session['department_name'] = department_name  # Store department name
@@ -159,13 +162,11 @@ def login_view(request):
 
     return render(request, 'home/login.html')
 
-
 def validate_password(password):
      # Password must be at least 8 characters, with one lowercase and one uppercase letter
     if len(password) < 8 or not any(c.islower() for c in password) or not any(c.isupper() for c in password):
         return False
     return True
-
 
 def signup_view(request):
     if request.method == 'POST':
@@ -235,7 +236,6 @@ def signup_view(request):
 
         # Step 4: Store user in 'accounts' collection for admin approval
         try:
-
             # Create the user in Firebase Authentication
             user = auth.create_user(
                 email=email,
@@ -372,7 +372,6 @@ def update_account_status(request, email):
     return redirect(url)
 
 def password_reset_view(request):
-
     # The URL for sending the password reset request to Firebase API
     reset_password_url = f'https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key={firebase_api_key}'
 
@@ -508,7 +507,93 @@ def delete_email_view(request):
     # Redirect to the profile page if the request is not a POST
     return redirect('/profile/')
 
+def edit_profile(request):
+    try:
+        if request.method == 'POST':
+            old_email = request.session.get('email').lower()
+            print (old_email)
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            email = request.POST.get('email').lower()
+            print(email)
+            department_name = request.POST.get('department_name')
 
+            # Check if the new email is already in the Firestore 'accounts' collection
+            account_ref = db.collection('accounts').document(email).get()
+            if account_ref.exists and old_email != email: # If new email exists and isn't equal to the old email, check status
+                account_data = account_ref.to_dict()
+                account_status = account_data.get('account_status')
+                print(account_status)
+                # Check the account status and show the appropriate message
+                if account_status == 'approved':
+                    print(first_name)
+                    return render(request, 'profile', {
+                        'invalid_message': 'This account is already registered and approved.'
+                    })
+                elif account_status == 'pending':
+                    return render(request, 'profile', {
+                        'invalid_message': 'Your account is pending approval. Please wait for admin approval.',
+                        # 'email': email,
+                        # 'first_name': first_name,
+                        # 'last_name': last_name,
+                        # 'department_name': department_name
+                    })
+                elif account_status == 'denied':
+                    return render(request, 'profile', {
+                        'invalid_message': 'Your registration was denied. Please contact support.',
+                        'email': email,
+                        'first_name': first_name,
+                        'last_name': last_name,
+                        'department_name': department_name
+                    })
+                print("NOOOO")
+            try:
+                # If different email but doesn't exist, store user data in new account and update
+                account_ref = db.collection('accounts').document(old_email).get()
+                account_data = account_ref.to_dict()
+                print("WRONG")
+                db.collection('accounts').document(email).set({account_data}, merge=True)
+                db.collection('accounts').document(email).update({
+                    'first_name': first_name,
+                    'last_name': last_name,
+                    'department_name': department_name
+                })
+                messages.success(request, 'Profile edited successfully!')
+                
+                # Delete old account
+                db.collection('accounts').document(old_email).delete()
+
+                # Update session
+                request.session['first_name'] = first_name
+                request.session['last_name'] = last_name
+                request.session['department_name'] = department_name
+                request.session['email'] = email
+
+                return redirect('profile')
+
+            except Exception as e:
+                messages.error(request, f"Error editing profile: {str(e)}")
+        
+        # If email is the same and editing first, last, or department
+        else:
+            print("No email change")
+            db.collection('accounts').document(email).set({
+                'first_name': first_name,
+                'last_name': last_name,
+                'email': email,
+                'department_name': department_name
+            }, merge=True)
+
+            # Update session items
+            request.session['first_name'] = first_name
+            request.session['last_name'] = last_name
+            request.session['department_name'] = department_name
+            request.session['email'] = email
+            messages.success(request, 'Profile edited successfully!')            
+    except Exception as e:
+        messages.error(request, f"Error editing profile: {str(e)}")
+
+    return redirect('profile')
 
 def change_password(request):
     # Handle requests to change a user's password.
