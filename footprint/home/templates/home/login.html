@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
     <link rel="stylesheet" href="{% static 'css/header.css' %}">
     <script src="{% static 'js/header.js' %}" defer></script>
+    <script src="{% static 'js/login.js' %}" defer></script>
 </head>
 <body>
     <!-- Header -->
@@ -68,7 +69,10 @@
 
                 <!-- Password Input -->
                 <label for="password">Password:</label>
-                <input type="password" name="password" required>
+                <div class="password-container">
+                    <input type="password" name="password" id="password" required autocomplete="off" spellcheck="false">
+                    <span id="toggle-password" class="toggle-text">Show</span>
+                </div>
 
                 <!-- Submit Button -->
                 <button type="submit">Login</button>

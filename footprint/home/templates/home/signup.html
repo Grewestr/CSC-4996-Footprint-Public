@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{% static 'css/signup.css' %}">
     <link rel="stylesheet" href="{% static 'css/name-validation.css' %}">
     <script src="{% static 'js/header.js' %}" defer></script>
+    <script src="{% static 'js/signup.js' %}" defer></script>
 </head>
 <body class="signup-page">
     <!-- Header -->
@@ -87,11 +88,18 @@
 
                 <!-- Password Input -->
                 <label for="signup-password">Password:</label>
-                <input type="password" id="signup-password" name="password" required >
+                <div class="password-container">
+                    <input type="password" name="password" id="signup-password" required autocomplete="off" spellcheck="false">
+                    <span id="toggle-signup-password" class="toggle-text">Show</span>
+                </div>
+
 
                 <!-- Retype Password Input -->
                 <label for="signup-password-confirm">Retype Password:</label>
-                <input type="password" id="signup-password-confirm" name="password_confirm"  required />
+                <div class="password-container">
+                    <input type="password" id="signup-password-confirm" name="password_confirm"  required autocomplete="off" spellcheck="false">
+                    <span id="toggle-signup-retyped-password" class="toggle-text">Show</span>
+                </div>
                 <p class="error-message" id="password-match-error" style="color: red; display: none;">Passwords do not match.</p>
 
                 <!-- Password Requirements -->

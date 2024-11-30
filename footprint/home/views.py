@@ -88,9 +88,10 @@ def logout_view(request):
 
 def login_view(request):
     if request.method == 'POST':
-        email = request.POST.get('email').lower()
+        email = request.POST.get('email')
+        orignal_email = email
+        email = email.lower()
         password = request.POST.get('password')
-
         try:
             # Check if the user exists in Firebase Authentication
             user = auth.get_user_by_email(email)
@@ -154,7 +155,7 @@ def login_view(request):
             # This will catch any Firebase-related errors
             messages.error(request, f'Firebase error occurred: {str(e)}')
 
-        return render(request, 'home/login.html', {'email': email})
+        return render(request, 'home/login.html', {'email': orignal_email})
 
     return render(request, 'home/login.html')
 
@@ -1043,14 +1044,8 @@ def format_time_detected(decimal_seconds):
     return f"{hours:02}:{minutes:02}:{seconds:02}"
 
 
-
+# Generates a YouTube link with embedded timestamp in seconds.
 def generate_detection_time_link(video_link, detection_time):
-    """
-    Generates a YouTube link with embedded timestamp in seconds.
-    :param video_link: Original YouTube link.
-    :param detection_time: Time in seconds as a string.
-    :return: Modified link with timestamp.
-    """
     if not video_link or not detection_time:
         return None
     if "?" in video_link:
