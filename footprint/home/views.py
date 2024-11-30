@@ -601,7 +601,7 @@ BOOT_COMMANDS_RUN = False  # Global flag to check if boot commands are run
 def check_and_run_boot_commands():
     global BOOT_COMMANDS_RUN
     if not BOOT_COMMANDS_RUN:
-        boot_directory = R"C:\Wayne State\Senior Capstone\Footprint Github clone\CSC-4996-Footprint\footprint"
+        boot_directory = R"C:/Fall2024/Capstone/Footprint Website/CSC-4996-Footprint/footprint"
         run_docker_command("docker-compose build", cwd=boot_directory)
         run_docker_command("docker-compose up -d", cwd=boot_directory)  # Run in detached mode
         BOOT_COMMANDS_RUN = True
@@ -676,7 +676,7 @@ def upload_view(request):
                     )
 
                     # Prepare parameters for the Docker command and pass the document ID
-                    script_directory = R"C:\Wayne State\Senior Capstone\Footprint Github clone\CSC-4996-Footprint\footprint\home\static\AI_Scripts"
+                    script_directory = R"C:/Fall2024/Capstone/Footprint Website/CSC-4996-Footprint/footprint/home/static/AI_Scripts"
                     docker_command = f'docker-compose run --rm rq-worker python video_Enqueue.py "{youtube_link}" {processing_speed} "{user_email}" "{document_id}"'
                     
                     # Run the Docker command asynchronously
@@ -851,7 +851,7 @@ def search_attributes1(request):
     # Existing code
     user_email = request.session.get('email')
     live_feed_names = []
-    items_per_page = 6
+    items_per_page = 30
 
     # Validate page number
     page_number = request.GET.get('page', 1)

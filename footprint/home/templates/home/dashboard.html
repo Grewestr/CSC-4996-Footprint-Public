@@ -273,7 +273,8 @@
             <div class="table-header">
                 Results
             </div>
-            <div id="preview-area" class="preview-area">
+
+            <div id="preview-area" class="preview-area" data-start-index="{{ page_obj.start_index|add:'-1' }}">
                 <img id="preview-image" src="" alt="Preview" class="preview-image hidden">
                 <div id="preview-details" class="preview-details hidden">
                     <p><strong>Top:</strong> <span id="preview-top"></span></p>
@@ -283,6 +284,11 @@
                     <p><strong>Detection Time Link:</strong>
                         <a id="preview-link" href="#" target="_blank">View</a>
                     </p>
+                    <p><strong>Result Item:</strong> <span id="result-item-number"></span></p>
+                    <div class="navigation-buttons-image">
+                        <button id="prev-item" class="nav-button-image">Previous Image</button>
+                        <button id="next-item" class="nav-button-image">Next Image</button>
+                    </div>
                 </div>
             </div>
 
@@ -307,23 +313,31 @@
 
             <!-- Pagination -->
             <div class="pagination-container">
-                <span class="pagination-info-left">
-                    Page {{ page_number }} of {{ num_pages }}
-                </span>
+                <!-- Page Info -->
+                <div class="pagination-info">
+                    <span class="page-details">
+                        Page {{ page_number }} of {{ num_pages }}
+                    </span>
+                    <span class="result-range">
+                        Displaying results {{ page_obj.start_index }}–{{ page_obj.end_index }} out of a total of {{ page_obj.paginator.count }}
+                    </span>
+                </div>
+
+                <!-- Pagination Controls -->
                 <div class="pagination-controls">
                     {% if page_obj.has_previous %}
-                        <a href="?page={{ page_obj.previous_page_number }}&top_attribute={{ selections.top.attribute }}&top_color={{ selections.top.color }}&middle_attribute={{ selections.middle.attribute }}&middle_color={{ selections.middle.color }}&bottom_attribute={{ selections.bottom.attribute }}&bottom_color={{ selections.bottom.color }}&feed_name={{ selections.feed_name }}">
-                            Previous
+                        <a href="?page={{ page_obj.previous_page_number }}&top_attribute={{ selections.top.attribute }}&top_color={{ selections.top.color }}&middle_attribute={{ selections.middle.attribute }}&middle_color={{ selections.middle.color }}&bottom_attribute={{ selections.bottom.attribute }}&bottom_color={{ selections.bottom.color }}&feed_name={{ selections.feed_name }}" class="pagination-link">
+                            Previous Page
                         </a>
                     {% else %}
-                        <a class="disabled">Previous</a>
+                        <span class="disabled-link">Previous Page</span>
                     {% endif %}
                     {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}&top_attribute={{ selections.top.attribute }}&top_color={{ selections.top.color }}&middle_attribute={{ selections.middle.attribute }}&middle_color={{ selections.middle.color }}&bottom_attribute={{ selections.bottom.attribute }}&bottom_color={{ selections.bottom.color }}&feed_name={{ selections.feed_name }}">
-                            Next
+                        <a href="?page={{ page_obj.next_page_number }}&top_attribute={{ selections.top.attribute }}&top_color={{ selections.top.color }}&middle_attribute={{ selections.middle.attribute }}&middle_color={{ selections.middle.color }}&bottom_attribute={{ selections.bottom.attribute }}&bottom_color={{ selections.bottom.color }}&feed_name={{ selections.feed_name }}" class="pagination-link">
+                            Next Page
                         </a>
                     {% else %}
-                        <a class="disabled">Next</a>
+                        <span class="disabled-link">Next Page</span>
                     {% endif %}
                 </div>
             </div>
@@ -342,7 +356,7 @@
             const colorButtons = document.querySelectorAll('.color-btn');
             const feedSelect = document.getElementById('feed_name');
             const resetButton = document.querySelector('.reset-button');
-    
+            const resultItems = document.querySelectorAll('.result-item');
             const summaryTop = document.getElementById('summary-top');
             const summaryMiddle = document.getElementById('summary-middle');
             const summaryBottom = document.getElementById('summary-bottom');
@@ -565,7 +579,11 @@
             const previewBottom = document.getElementById('preview-bottom');
             const previewTime = document.getElementById('preview-time');
             const previewLink = document.getElementById('preview-link');
+            const resultItemNumber = document.getElementById('result-item-number');
             const resultItems = document.querySelectorAll('.result-item');
+
+            // Capture the starting index of the current page 
+            const currentPageStartIndex = parseInt(previewArea.getAttribute('data-start-index') || "0", 10);
 
             // Function to toggle preview visibility based on results
             function togglePreviewVisibility() {
@@ -577,13 +595,19 @@
             }
 
             // Function to update the preview area with details
-            function updatePreview(item) {
+            function updatePreview(item, index) {
                 const imageUrl = item.getAttribute('data-image');
                 const topDetails = item.getAttribute('data-top');
                 const middleDetails = item.getAttribute('data-middle');
                 const bottomDetails = item.getAttribute('data-bottom');
                 const detectionTime = item.getAttribute('data-time');
                 const detectionLink = item.getAttribute('data-link');
+
+                // Remove 'active' class from all items
+                resultItems.forEach(i => i.classList.remove('active'));
+
+                // Add 'active' class to the clicked item
+                item.classList.add('active');
 
                 // Update the preview image
                 if (imageUrl) {
@@ -599,6 +623,10 @@
                 previewTime.textContent = detectionTime || 'N/A';
                 previewLink.href = detectionLink || '#';
 
+                // Calculate the total result index
+                const globalIndex = currentPageStartIndex + index; 
+                resultItemNumber.textContent = globalIndex + 1; 
+
                 // Show the preview details
                 previewDetails.classList.remove('hidden');
             }
@@ -608,13 +636,18 @@
 
             // Set the first item as the default preview
             if (resultItems.length > 0) {
-                updatePreview(resultItems[0]); // Use the first grid item
+                updatePreview(resultItems[0], 0); 
             }
 
             // Add click event listeners to all result items
-            resultItems.forEach(item => {
+            resultItems.forEach((item, index) => {
                 item.addEventListener('click', function () {
-                    updatePreview(this);
+                    // Update the preview and highlight item
+                    updatePreview(this, index);
+
+                    // Highlight the gallery item
+                    resultItems.forEach((el) => el.classList.remove('selected'));
+                    this.classList.add('selected');
                 });
             });
         });
