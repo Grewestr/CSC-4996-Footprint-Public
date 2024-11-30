@@ -116,12 +116,12 @@
                     <!-- Top Attribute Color  -->
                     <div class="color-selection">
                         <div class="color-options" data-category="top">
-                            <button type="button" class="color-btn" data-color="black" style="background-color: black; border: 3px solid black;" data-tooltip="Black"></button>
-                            <button type="button" class="color-btn" data-color="brown" style="background-color: brown; border: 3px solid black;" data-tooltip="Brown"></button>
-                            <button type="button" class="color-btn" data-color="red" style="background-color: red; border: 3px solid black;" data-tooltip="Red"></button>
-                            <button type="button" class="color-btn" data-color="gray" style="background-color: gray; border: 3px solid black;" data-tooltip="Gray"></button>
-                            <button type="button" class="color-btn" data-color="blonde" style="background-color: yellow; border: 3px solid black;" data-tooltip="Blonde"></button>
-                            <button type="button" class="color-btn" data-color="unnatural" style="background: linear-gradient(45deg, purple, cyan);border: 3px solid black;" data-tooltip="Unnatural"></button>
+                            <button type="button" class="color-btn {% if selections.top.color == 'black' %}selected{% endif %}" data-color="black" style="background-color: black; border: 3px solid black;" data-tooltip="Black"></button>
+                            <button type="button" class="color-btn {% if selections.top.color == 'brown' %}selected{% endif %}" data-color="brown" style="background-color: brown; border: 3px solid black;" data-tooltip="Brown"></button>
+                            <button type="button" class="color-btn {% if selections.top.color == 'red' %}selected{% endif %}" data-color="red" style="background-color: red; border: 3px solid black;" data-tooltip="Red"></button>
+                            <button type="button" class="color-btn {% if selections.top.color == 'gray' %}selected{% endif %}" data-color="gray" style="background-color: gray; border: 3px solid black;" data-tooltip="Gray"></button>
+                            <button type="button" class="color-btn {% if selections.top.color == 'blonde' %}selected{% endif %}" data-color="blonde" style="background-color: yellow; border: 3px solid black;" data-tooltip="Blonde"></button>
+                            <button type="button" class="color-btn {% if selections.top.color == 'unnatural' %}selected{% endif %}" data-color="unnatural" style="background: linear-gradient(45deg, purple, cyan);border: 3px solid black;" data-tooltip="Unnatural"></button>
                         </div>
                     </div>
                 </div>
@@ -169,18 +169,18 @@
                     <div class="color-selection">
             
                         <div class="color-options" data-category="middle">
-                            <button type="button" class="color-btn" data-color="black" style="background-color: black; border: 3px solid black;" data-tooltip = "Black"></button>
-                            <button type="button" class="color-btn" data-color="brown" style="background-color: brown; border: 3px solid black;" data-tooltip = "Brown"></button>
-                            <button type="button" class="color-btn" data-color="red" style="background-color: red; border: 3px solid black;" data-tooltip = "Red"></button>
-                            <button type="button" class="color-btn" data-color="gray" style="background-color: gray; border: 3px solid black;" data-tooltip = "Gray"></button>
-                            <button type="button" class="color-btn" data-color="green" style="background-color: green; border: 3px solid black;" data-tooltip = "Green"></button>
-                            <button type="button" class="color-btn" data-color="blue" style="background-color: blue; border: 3px solid black;" data-tooltip = "Blue"></button>
-                            <button type="button" class="color-btn" data-color="white" style="background-color: white; border: 3px solid black;" data-tooltip = "White"></button>
-                            <button type="button" class="color-btn" data-color="orange" style="background-color: orange; border: 3px solid black;" data-tooltip = "Orange"></button>
-                            <button type="button" class="color-btn" data-color="yellow" style="background-color: yellow; border: 3px solid black;" data-tooltip = "Yellow"></button>
-                            <button type="button" class="color-btn" data-color="purple" style="background-color: purple; border: 3px solid black;" data-tooltip = "Purple"></button>
-                            <button type="button" class="color-btn" data-color="pink" style="background-color: pink; border: 3px solid black;"  data-tooltip = "Pink"></button>
-                            <button type="button" class="color-btn" data-color="beige" style="background-color: rgba(238, 186, 151, 0.998); border: 3px solid black;" data-tooltip = "Beige"></button>
+                            <button type="button" class="color-btn {% if selections.middle.color == 'black' %}selected{% endif %}" data-color="black" style="background-color: black; border: 3px solid black;" data-tooltip = "Black"></button>
+                            <button type="button" class="color-btn {% if selections.middle.color == 'brown' %}selected{% endif %}" data-color="brown" style="background-color: brown; border: 3px solid black;" data-tooltip = "Brown"></button>
+                            <button type="button" class="color-btn {% if selections.middle.color == 'red' %}selected{% endif %}" data-color="red" style="background-color: red; border: 3px solid black;" data-tooltip = "Red"></button>
+                            <button type="button" class="color-btn {% if selections.middle.color == 'gray' %}selected{% endif %}" data-color="gray" style="background-color: gray; border: 3px solid black;" data-tooltip = "Gray"></button>
+                            <button type="button" class="color-btn {% if selections.middle.color == 'green' %}selected{% endif %}" data-color="green" style="background-color: green; border: 3px solid black;" data-tooltip = "Green"></button>
+                            <button type="button" class="color-btn {% if selections.middle.color == 'blue' %}selected{% endif %}" data-color="blue" style="background-color: blue; border: 3px solid black;" data-tooltip = "Blue"></button>
+                            <button type="button" class="color-btn {% if selections.middle.color == 'white' %}selected{% endif %}" data-color="white" style="background-color: white; border: 3px solid black;" data-tooltip = "White"></button>
+                            <button type="button" class="color-btn {% if selections.middle.color == 'orange' %}selected{% endif %}" data-color="orange" style="background-color: orange; border: 3px solid black;" data-tooltip = "Orange"></button>
+                            <button type="button" class="color-btn {% if selections.middle.color == 'yellow' %}selected{% endif %}" data-color="yellow" style="background-color: yellow; border: 3px solid black;" data-tooltip = "Yellow"></button>
+                            <button type="button" class="color-btn {% if selections.middle.color == 'purple' %}selected{% endif %}" data-color="purple" style="background-color: purple; border: 3px solid black;" data-tooltip = "Purple"></button>
+                            <button type="button" class="color-btn {% if selections.middle.color == 'pink' %}selected{% endif %}" data-color="pink" style="background-color: pink; border: 3px solid black;"  data-tooltip = "Pink"></button>
+                            <button type="button" class="color-btn {% if selections.middle.color == 'beige' %}selected{% endif %}" data-color="beige" style="background-color: rgba(238, 186, 151, 0.998); border: 3px solid black;" data-tooltip = "Beige"></button>
                         </div>
                     </div>
                 </div>
@@ -220,18 +220,18 @@
                     <div class="color-selection">
      
                         <div class="color-options" data-category="bottom">
-                            <button type="button" class="color-btn" data-color="black" style="background-color: black;  border: 3px solid black;" data-tooltip = "Black"></button>
-                            <button type="button" class="color-btn" data-color="brown" style="background-color: brown;  border: 3px solid black;" data-tooltip = "Brown"></button>
-                            <button type="button" class="color-btn" data-color="red" style="background-color: red; border: 3px solid black;" data-tooltip = "Red"></button>
-                            <button type="button" class="color-btn" data-color="gray" style="background-color: gray; border: 3px solid black;" data-tooltip = "Gray"></button>
-                            <button type="button" class="color-btn" data-color="green" style="background-color: green; border: 3px solid black;" data-tooltip = "Green"></button>
-                            <button type="button" class="color-btn" data-color="blue" style="background-color: blue; border: 3px solid black;" data-tooltip = "Blue"></button>
-                            <button type="button" class="color-btn" data-color="white" style="background-color: white; border: 3px solid black;" data-tooltip = "White"></button>
-                            <button type="button" class="color-btn" data-color="orange" style="background-color: orange; border: 3px solid black;" data-tooltip = "Orange"></button>
-                            <button type="button" class="color-btn" data-color="yellow" style="background-color: yellow; border: 3px solid black;" data-tooltip = "Yellow"></button>
-                            <button type="button" class="color-btn" data-color="purple" style="background-color: purple; border: 3px solid black;" data-tooltip = "Purple"></button>
-                            <button type="button" class="color-btn" data-color="pink" style="background-color: pink; border: 3px solid black;"  data-tooltip = "Pink"></button>
-                            <button type="button" class="color-btn" data-color="beige" style="background-color: rgba(238, 186, 151, 0.998);  border: 3px solid black;" data-tooltip = "Beige"></button>
+                            <button type="button" class="color-btn {% if selections.bottom.color == 'black' %}selected{% endif %}" data-color="black" style="background-color: black;  border: 3px solid black;" data-tooltip = "Black"></button>
+                            <button type="button" class="color-btn {% if selections.bottom.color == 'brown' %}selected{% endif %}" data-color="brown" style="background-color: brown;  border: 3px solid black;" data-tooltip = "Brown"></button>
+                            <button type="button" class="color-btn {% if selections.bottom.color == 'red' %}selected{% endif %}" data-color="red" style="background-color: red; border: 3px solid black;" data-tooltip = "Red"></button>
+                            <button type="button" class="color-btn {% if selections.bottom.color == 'gray' %}selected{% endif %}" data-color="gray" style="background-color: gray; border: 3px solid black;" data-tooltip = "Gray"></button>
+                            <button type="button" class="color-btn {% if selections.bottom.color == 'green' %}selected{% endif %}" data-color="green" style="background-color: green; border: 3px solid black;" data-tooltip = "Green"></button>
+                            <button type="button" class="color-btn {% if selections.bottom.color == 'blue' %}selected{% endif %}" data-color="blue" style="background-color: blue; border: 3px solid black;" data-tooltip = "Blue"></button>
+                            <button type="button" class="color-btn {% if selections.bottom.color == 'white' %}selected{% endif %}" data-color="white" style="background-color: white; border: 3px solid black;" data-tooltip = "White"></button>
+                            <button type="button" class="color-btn {% if selections.bottom.color == 'orange' %}selected{% endif %}" data-color="orange" style="background-color: orange; border: 3px solid black;" data-tooltip = "Orange"></button>
+                            <button type="button" class="color-btn {% if selections.bottom.color == 'yellow' %}selected{% endif %}" data-color="yellow" style="background-color: yellow; border: 3px solid black;" data-tooltip = "Yellow"></button>
+                            <button type="button" class="color-btn {% if selections.bottom.color == 'purple' %}selected{% endif %}" data-color="purple" style="background-color: purple; border: 3px solid black;" data-tooltip = "Purple"></button>
+                            <button type="button" class="color-btn {% if selections.bottom.color == 'pink' %}selected{% endif %}" data-color="pink" style="background-color: pink; border: 3px solid black;"  data-tooltip = "Pink"></button>
+                            <button type="button" class="color-btn {% if selections.bottom.color == 'beige' %}selected{% endif %}" data-color="beige" style="background-color: rgba(238, 186, 151, 0.998);  border: 3px solid black;" data-tooltip = "Beige"></button>
                         </div>
                     </div>
                 </div>
