@@ -510,6 +510,10 @@ def delete_email_view(request):
 def edit_profile(request):
     try:
         if request.method == 'POST':
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            email = request.POST.get('email')
+            '''
             old_email = request.session.get('email').lower()
             print (old_email)
             first_name = request.POST.get('first_name')
@@ -546,28 +550,27 @@ def edit_profile(request):
                         'last_name': last_name,
                         'department_name': department_name
                     })
-                print("NOOOO")
+            '''
             try:
                 # If different email but doesn't exist, store user data in new account and update
-                account_ref = db.collection('accounts').document(old_email).get()
-                account_data = account_ref.to_dict()
-                print("WRONG")
-                db.collection('accounts').document(email).set({account_data}, merge=True)
+                #account_ref = db.collection('accounts').document(old_email).get()
+                #account_data = account_ref.to_dict()
+                #db.collection('accounts').document(email).set({account_data}, merge=True)
                 db.collection('accounts').document(email).update({
                     'first_name': first_name,
                     'last_name': last_name,
-                    'department_name': department_name
+                    #'department_name': department_name
                 })
                 messages.success(request, 'Profile edited successfully!')
                 
                 # Delete old account
-                db.collection('accounts').document(old_email).delete()
+                #db.collection('accounts').document(old_email).delete()
 
                 # Update session
                 request.session['first_name'] = first_name
                 request.session['last_name'] = last_name
-                request.session['department_name'] = department_name
-                request.session['email'] = email
+                #request.session['department_name'] = department_name
+                #request.session['email'] = email
 
                 return redirect('profile')
 
@@ -575,6 +578,7 @@ def edit_profile(request):
                 messages.error(request, f"Error editing profile: {str(e)}")
         
         # If email is the same and editing first, last, or department
+        '''
         else:
             print("No email change")
             db.collection('accounts').document(email).set({
@@ -589,7 +593,8 @@ def edit_profile(request):
             request.session['last_name'] = last_name
             request.session['department_name'] = department_name
             request.session['email'] = email
-            messages.success(request, 'Profile edited successfully!')            
+            messages.success(request, 'Profile edited successfully!')
+        '''            
     except Exception as e:
         messages.error(request, f"Error editing profile: {str(e)}")
 
