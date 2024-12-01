@@ -93,7 +93,6 @@ body {
     
 }
 
-
 /* Tooltip Text box */
 .attribute-btn:hover::after {
     content: attr(data-tooltip); 
@@ -294,11 +293,28 @@ h3 {
 }
 
 /* Summary content styling */
-.summary-content p {
-    margin: 5px 0;
-    font-weight: bold;
+.summary-content {
+    display: grid;
+    gap: 10px; /* Vertical spacing between rows */
+    padding: 10px;
 }
 
+.summary-row {
+    display: grid;
+    grid-template-columns: 50px 1fr; /* Fixed width for labels, flexible for values */
+    gap: 15px; /* Space between label and value */
+    align-items: center; /* Vertically align items */
+}
+
+.summary-row strong {
+    text-align: left; /* Align label to the left */
+    white-space: nowrap; /* Prevent label wrapping */
+}
+
+.summary-row .summary-value {
+    text-align: left; /* Align value to the left */
+    word-break: break-word; /* Allow long words to break and wrap */
+}
 
 
 .hidden {
@@ -356,11 +372,6 @@ h3 {
         grid-template-columns: repeat(2, 1fr); /* Two columns */
         gap: 10px; /* Smaller gaps */
     }
-}
-
-.unmatched {
-    color: rgb(60, 141, 240);
-    font-weight: bold;
 }
 
 /* Footer Styles */
@@ -732,7 +743,7 @@ footer {
 .preview-details a {
     color: #007BFF;
     text-decoration: none;
-    font-weight: bold;
+    font-weight: normal;
 }
 
 .preview-details a:hover {
@@ -788,5 +799,20 @@ footer {
 .nav-button-image:disabled {
     background-color: #cccccc;
     cursor: not-allowed;
+}
+
+/* General styling for summary content */
+.summary-content p {
+    margin: 5px 0;
+}
+
+/* Ensure only titles (inside <strong>) are bold */
+.summary-content p strong {
+    font-weight: bold;
+}
+
+/* Ensure only values (inside .summary-value) are not bold */
+.summary-content p .summary-value {
+    font-weight: normal;
 }
 

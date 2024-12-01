@@ -259,13 +259,26 @@
                     Summary
                 </div>
                 <div class="summary-content">
-                    <p id="summary-top">Top: </p>
-                    <p id="summary-middle">Middle: </p>
-                    <p id="summary-bottom">Bottom: </p>
-                    <p id="summary-feed_name">Feed: </p>
+                    <div class="summary-row" id="summary-top">
+                        <strong>Top:</strong>
+                        <span class="summary-value">None Selected</span>
+                    </div>
+                    <div class="summary-row" id="summary-middle">
+                        <strong>Middle:</strong>
+                        <span class="summary-value">None Selected</span>
+                    </div>
+                    <div class="summary-row" id="summary-bottom">
+                        <strong>Bottom:</strong>
+                        <span class="summary-value">None Selected</span>
+                    </div>
+                    <div class="summary-row" id="summary-feed_name">
+                        <strong>Feed:</strong>
+                        <span class="summary-value">None Selected</span>
+                    </div>
                     <button type="reset" class="reset-button">Reset</button>
                     <button type="submit" class="submit-button">Submit</button>
                 </div>
+                
                 <div class="error-section">
                     <div id="error-container" class="hidden">
                         <h3>Validation Errors</h3>
@@ -379,12 +392,12 @@
             const colorButtons = document.querySelectorAll('.color-btn');
             const feedSelect = document.getElementById('feed_name');
             const resetButton = document.querySelector('.reset-button');
-            const resultItems = document.querySelectorAll('.result-item');
             const summaryTop = document.getElementById('summary-top');
             const summaryMiddle = document.getElementById('summary-middle');
             const summaryBottom = document.getElementById('summary-bottom');
             const summaryFeedName = document.getElementById('summary-feed_name');
-    
+
+            // Mapping raw values to readable names
             const attributeNames = {
                 short_hair: 'Short Hair',
                 medium_hair: 'Medium Hair',
@@ -412,7 +425,8 @@
                 pink: 'Pink',
                 beige: 'Beige',
             };
-    
+
+            // Initial selections object populated from Django template
             let selections = {
                 top: {
                     attribute: "{{ selections.top.attribute|default:'' }}",
@@ -429,23 +443,30 @@
                 feed_name: "{{ selections.feed_name|default:'' }}"
             };
 
-    
             function formatSelection(attribute, color) {
                 const formattedAttribute = attributeNames[attribute] || 'None Selected';
                 const formattedColor = attributeNames[color] || 'None Selected';
                 return `${formattedAttribute}, ${formattedColor}`;
             }
-    
-            function updateSummary(category) {
-                const attribute = selections[category].attribute || 'None Selected';
-                const color = selections[category].color || 'None Selected';
-                const summaryElement = document.getElementById(`summary-${category}`);
-                summaryElement.textContent = `${category.charAt(0).toUpperCase() + category.slice(1)}: ${attribute}, ${color}`;
 
-                document.getElementById(`${category}-attribute-input`).value = selections[category].attribute || '';
-                document.getElementById(`${category}-color-input`).value = selections[category].color || '';
+            function updateSummary(category) {
+                const rawAttribute = selections[category].attribute || 'None Selected';
+                const rawColor = selections[category].color || 'None Selected';
+
+                // Convert raw values to readable names
+                const formattedAttribute = attributeNames[rawAttribute] || rawAttribute;
+                const formattedColor = attributeNames[rawColor] || rawColor;
+
+                // Update the value part of the summary
+                const summaryValueElement = document.querySelector(`#summary-${category} .summary-value`);
+                summaryValueElement.textContent = `${formattedAttribute}, ${formattedColor}`;
+
+                // Update hidden input fields
+                document.getElementById(`${category}-attribute-input`).value = rawAttribute || '';
+                document.getElementById(`${category}-color-input`).value = rawColor || '';
             }
-    
+
+
             function resetSelections() {
                 selections = {
                     top: { attribute: null, color: null },
@@ -453,17 +474,21 @@
                     bottom: { attribute: null, color: null },
                     feed_name: null,
                 };
-    
+
                 ['top', 'middle', 'bottom'].forEach(category => {
                     document.querySelectorAll(`.attribute-btn[data-category="${category}"]`).forEach(btn => btn.classList.remove('selected'));
                     document.querySelectorAll(`.color-options[data-category="${category}"] .color-btn`).forEach(btn => btn.classList.remove('selected'));
                     updateSummary(category);
                 });
-    
+
                 if (feedSelect) feedSelect.value = '';
-                summaryFeedName.textContent = 'Feed: None Selected';
+                
+                // Update the summary for feed_name with proper structure
+                const summaryFeedName = document.getElementById('summary-feed_name');
+                summaryFeedName.innerHTML = `<strong>Feed:</strong> <span class="summary-value">None Selected</span>`;
             }
-    
+
+
             function initializeSummary() {
                 ['top', 'middle', 'bottom'].forEach(category => {
                     // Restore selected attribute button
@@ -490,79 +515,74 @@
                 if (selections.feed_name) {
                     feedSelect.value = selections.feed_name;
                 }
-                summaryFeedName.textContent = `Feed: ${selections.feed_name || 'None Selected'}`;
+                const feedValueElement = document.querySelector('#summary-feed_name .summary-value');
+                feedValueElement.textContent = selections.feed_name || 'None Selected';
+
             }
 
-    
             attributeButtons.forEach(button => {
                 button.addEventListener('click', function () {
                     const category = this.getAttribute('data-category');
                     const attribute = this.getAttribute('data-attribute');
-    
-                    // Check if the button is already selected
+
+                    // Update selections
                     if (this.classList.contains('selected')) {
-                        // Deselect the button
                         this.classList.remove('selected');
-                        selections[category].attribute = null; // Clear the selection
+                        selections[category].attribute = null;
                     } else {
-                        // Deselect all other buttons and selected button
                         document.querySelectorAll(`.attribute-btn[data-category="${category}"]`).forEach(btn => btn.classList.remove('selected'));
                         this.classList.add('selected');
-                        selections[category].attribute = attribute; // Update the selection
+                        selections[category].attribute = attribute;
                     }
-    
+
                     updateSummary(category);
                 });
             });
-    
+
             colorButtons.forEach(button => {
-                button.addEventListener('click', function (event) {
-                    event.preventDefault(); // Used for clearing weird button bug
-                    
+                button.addEventListener('click', function () {
                     const category = this.parentElement.getAttribute('data-category');
                     const color = this.getAttribute('data-color');
-    
-                    // Check if the button is selected
+
+                    // Update selections
                     if (this.classList.contains('selected')) {
-                        // Deselect the button
                         this.classList.remove('selected');
-                        selections[category].color = null; // Clear selection
+                        selections[category].color = null;
                     } else {
-                        // Deselect all buttons and selected buttons
                         document.querySelectorAll(`.color-options[data-category="${category}"] .color-btn`).forEach(btn => btn.classList.remove('selected'));
                         this.classList.add('selected');
-                        selections[category].color = color; // Update selection
+                        selections[category].color = color;
                     }
-    
+
                     updateSummary(category);
                 });
             });
-    
+
             if (feedSelect) {
-                feedSelect.addEventListener('change', function () {
-                    selections.feed_name = this.value;
-                    summaryFeedName.textContent = `Feed: ${selections.feed_name || 'None Selected'}`;
-                });
+                    feedSelect.addEventListener('change', function () {
+                        const summaryFeedName = document.getElementById('summary-feed_name');
+                        const feedValue = this.value || 'None Selected';
+
+                        // Update the content with proper structure
+                        summaryFeedName.innerHTML = `<strong>Feed:</strong> <span class="summary-value">${feedValue}</span>`;
+                    });
             }
-    
+
             if (resetButton) {
                 resetButton.addEventListener('click', function (event) {
                     event.preventDefault();
                     resetSelections();
                 });
             }
-    
+
             initializeSummary();
 
             // Error handling and validation during form submission
             document.querySelector('form').addEventListener('submit', function (event) {
                 let valid = true;
                 let errorMessage = '';
-                const feedSelect = document.getElementById('feed_name');
-                
 
-
-                // Validate other fields (if needed)
+                // Validate other fields
                 ['top', 'middle', 'bottom'].forEach(category => {
                     if (!selections[category].attribute) {
                         valid = false;
@@ -574,7 +594,6 @@
                     }
                 });
 
-
                 // Validate feed selection
                 if (!feedSelect.value) {
                     valid = false;
@@ -583,10 +602,11 @@
 
                 if (!valid) {
                     event.preventDefault();
-                    alert(errorMessage); // Or add the error message to your custom error display
+                    alert(errorMessage);
                 }
             });
         });
+
     </script>
 
     <script>
