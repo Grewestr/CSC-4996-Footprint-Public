@@ -63,60 +63,62 @@
     <!-- Main Content -->
     <main class="container">
         <!-- Display User Information -->
-        <div class="user-info">
-            <!-- Edit Profile Button-->
-            <button id="editProfileButton">Edit Profile</button>
-            <div style="display: none;" id="saveCancelButtons">
-                <button type="submit" id="saveChangesButton">Save</button>
-                <button id="cancelEditButton">Cancel</button>
-            </div>
-
-            <!-- Profile Picture-->
-            <div class="image-container">
-                <img src="{% if profile_picture_url %}{{ profile_picture_url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" class="profile-picture">
-            </div>
-
-            <div class="profile">
-                <form method="POST" action="{% url 'edit_profile' %}" id="editProfileForm">
-                    {% csrf_token %}
-                    <div class="infoType">
-                        <p class="infoTypeDisplay"><strong>First Name</strong></p>
-                        <p class="infoDisplay" id="firstNameDisplay">{{ first_name }}</p>
-                        <input type="text" name="first_name" id="firstNameInput" value="{{ first_name }}" style="display: none;">
-                    </div>
-                    
-                    <div class="infoType">
-                        <p class="infoTypeDisplay"><strong>Last Name</strong></p>
-                        <p class="infoDisplay" id="lastNameDisplay">{{ last_name }}</p>
-                        <input type="text" name="last_name" id="lastNameInput" value="{{ last_name }}" style="display: none;">
-                    </div>
-                    
-                    <div class="infoType">
-                        <p class="infoTypeDisplay"><strong>Email</strong></p>
-                        <p class="infoDisplay" id="emailDisplay">{{ email }}</p>
-                        <input type="email" name="email" id="emailInput" value="{{ email }}" style="display: none;">
-                    </div>
-                    
-                    <div class="infoType">
-                        <p class="infoTypeDisplay"><strong>Department</strong></p>
-                        <p class="infoDisplay" id="departmentDisplay">{{ department_name }}</p>
-                        <input type="text" name="department_name" id="departmentInput" value="{{ department_name }}" style="display: none;">
-                    </div> 
-            </div>
-            
+        <div class="profile-container">
+            <div class="user-info">
+                <!-- Edit Profile Button-->
+                <button id="editProfileButton">Edit Profile</button>
+                <div style="display: none;" id="saveCancelButtons">
+                    <button type="submit" id="saveChangesButton">Save</button>
+                    <button id="cancelEditButton">Cancel</button>
+                </div>
+    
+                <!-- Profile Picture-->
+                <div class="image-container">
+                    <img src="{% if profile_picture_url %}{{ profile_picture_url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" class="profile-picture">
+                </div>
+    
+                <div class="profile">
+                    <form method="POST" action="{% url 'edit_profile' %}" id="editProfileForm">
+                        {% csrf_token %}
+                        <div class="infoType">
+                            <p class="infoTypeDisplay"><strong>First Name</strong></p>
+                            <p class="infoDisplay" id="firstNameDisplay">{{ first_name }}</p>
+                            <input type="text" name="first_name" id="firstNameInput" value="{{ first_name }}" style="display: none;">
+                        </div>
+                        
+                        <div class="infoType">
+                            <p class="infoTypeDisplay"><strong>Last Name</strong></p>
+                            <p class="infoDisplay" id="lastNameDisplay">{{ last_name }}</p>
+                            <input type="text" name="last_name" id="lastNameInput" value="{{ last_name }}" style="display: none;">
+                        </div>
+                        
+                        <div class="infoType">
+                            <p class="infoTypeDisplay"><strong>Email</strong></p>
+                            <p class="infoDisplay" id="emailDisplay">{{ email }}</p>
+                            <input type="email" name="email" id="emailInput" value="{{ email }}" style="display: none;">
+                        </div>
+                        
+                        <div class="infoType">
+                            <p class="infoTypeDisplay"><strong>Department</strong></p>
+                            <p class="infoDisplay" id="departmentDisplay">{{ department_name }}</p>
+                            <input type="text" name="department_name" id="departmentInput" value="{{ department_name }}" style="display: none;">
+                        </div>
+                    </form>
+                </div>
+    
             {% if invalid_message %}
                 <p style="color: red;">{{ invalid_message }}</p>
             {% endif %}
-        </div>
+            </div>
 
-
-        <!-- Button Container -->
-        <div class="button-container">
-            <!-- Change Password Button -->
-            <button id="changePasswordButton" class="button">Change Password</button>
-
-            <!-- Delete Account Button -->
-            <button id="deleteEmailButton" class="button">Delete Account</button>
+            <!-- Button Container -->
+            <div class="button-container">
+                <!-- Change Password Button -->
+                <button id="changePasswordButton" class="button">Change Password</button>
+            
+                <!-- Delete Account Button -->
+                <button id="deleteEmailButton" class="button">Delete Account</button>
+            </div> 
         </div>
     </main>
 
@@ -124,48 +126,72 @@
     <div id="changePasswordModal" class="modal {% if keep_modal_open %}open{% endif %}">
         <div class="modal-content">
             <span id="closeModal" class="close">&times;</span>
-            <h2>Change Password</h2>
-            <!-- Display Backend Messages -->
+
+            <div class="center-element">
+                <h2>Change Password</h2>   
+            </div>
             
-    
-            <form method="post" action="{% url 'change_password' %}">
-                {% csrf_token %}
-                <label for="current_password">Current Password:</label>
-                <input type="password" id="current_password" name="current_password" required><br>
-    
-                <label for="new_password">New Password:</label>
-                <input type="password" id="new_password" name="new_password" required><br>
-    
-                <!-- Password Requirements Section -->
-                <ul class="password-requirements">
-                    <li id="length" class="requirement">
-                        <i class="x-mark"></i> At least 8 characters
-                    </li>
-                    <li id="uppercase" class="requirement">
-                        <i class="x-mark"></i> At least one uppercase letter
-                    </li>
-                    <li id="lowercase" class="requirement">
-                        <i class="x-mark"></i> At least one lowercase letter
-                    </li>
-                </ul>
-    
-                <label for="retype_password">Retype New Password:</label>
-                <input type="password" id="retype_password" name="retype_password" required><br>
-    
-                <p class="error-message" id="password-match-error" style="color: red; display: none;">Passwords do not match.</p>
-                {% if messages %}
-                    <div class="messages">
-                        {% for message in messages %}
-                            <p class="message {% if message.tags %}{{ message.tags }}{% endif %}" style="color: red;">
+            <div id="change_password_form">
+                <form method="post" action="{% url 'change_password' %}">
+                    {% csrf_token %}
+                    <div class="infoType">
+                        <label for="current_password">Current Password</label><br>
+                        <div class="password-container">
+                            <input type="password" id="current_password" name="current_password" required autocomplete="off" spellcheck="false">
+                            {% load static %}
+                            <img src="{% static 'images/eye_hide.svg' %}" id="current-toggle-password" class="toggle-text" data-eye-show="{% static 'images/eye.svg' %}" data-eye-hide="{% static 'images/eye_hide.svg' %}">
+                        </div>
+                    </div>
+                    
+                    <div class="infoType">
+                        <label for="new_password">New Password</label><br>
+                        <div class="password-container">
+                            <input type="password" id="new_password" name="new_password" required autocomplete="off" spellcheck="false">
+                            {% load static %}
+                            <img src="{% static 'images/eye_hide.svg' %}" id="new-toggle-password" class="toggle-text" data-eye-show="{% static 'images/eye.svg' %}" data-eye-hide="{% static 'images/eye_hide.svg' %}">
+                        </div>
+
+                        <!-- Password Requirements Section -->
+                        <ul class="password-requirements">
+                            <li id="length" class="requirement">
+                                <i class="x-mark"></i> At least 8 characters
+                            </li>
+                            <li id="uppercase" class="requirement">
+                                <i class="x-mark"></i> At least one uppercase letter
+                            </li>
+                            <li id="lowercase" class="requirement">
+                                <i class="x-mark"></i> At least one lowercase letter
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="infoType">
+                        <label for="retype_password">Retype New Password</label><br>
+                        <div class="password-container">
+                            <input type="password" id="retype_password" name="retype_password" required>
+                            {% load static %}
+                            <img src="{% static 'images/eye_hide.svg' %}" id="retype-toggle-password" class="toggle-text" data-eye-show="{% static 'images/eye.svg' %}" data-eye-hide="{% static 'images/eye_hide.svg' %}">
+                        </div>
+                    </div>
+                    
+                    <p class="error-message" id="password-match-error" style="color: red; display: none;">Passwords do not match.</p>
+                    
+                    {% if messages %}
+                        <div class="message">
+                            {% for message in messages %}
+                            <p id="{% if message.tags %}{{ message.extra_tags }}{% endif %}">
                                 {{ message }}
                             </p>
-                        {% endfor %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- Submit Button -->
+                    <div class="center-element">
+                        <button type="submit" id="setPasswordButton" class="button" disabled>Set Password</button>
                     </div>
-                {% endif %}
-                <!-- Submit and Cancel Buttons -->
-                <button type="submit" id="submitPasswordChange" class="button" disabled>Submit</button>
-                <button type="button" id="cancelButton" class="button">Cancel</button>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
     

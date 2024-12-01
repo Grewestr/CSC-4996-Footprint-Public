@@ -166,14 +166,14 @@ toggling password visibality
   right: 10px;
   transform: translateY(-50%);
   font-size: 1em; /* Match input font size */
-  color: #333; /* Optional: Adjust to match design */
+  color: #333;
   font-weight: bold;
   cursor: pointer;
   user-select: none;
 }
 
 .toggle-text:hover {
-  text-decoration: underline; /* Optional hover effect */
+  text-decoration: underline;
 }
 
 /* Remove browser's built-in password visibility icon */

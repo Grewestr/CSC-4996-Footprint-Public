@@ -43,11 +43,9 @@ main {
 }
 
 /* User Information Styles */
-.user-info {
-  display: flex;
+.profile-container {
+  justify-content: center;
   align-items: center;
-  gap: 80px;
-  position: relative;
   margin-top: 80px;
   margin-bottom: 40px;
   padding: 20px;
@@ -55,6 +53,13 @@ main {
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   background-color: #cecece;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 80px;
+  position: relative;
 }
 
 .user-info strong {
@@ -73,8 +78,7 @@ main {
 
 /* Input Style */
 .profile input[type="text"], 
-.profile input[type="email"], 
-.profile input[type="password"] {
+.profile input[type="email"] {
   padding: 12px;
   margin-bottom: 19.2px;
   border: 1px solid #ccc;
@@ -85,8 +89,7 @@ main {
 }
 
 .profile input[type="text"]:focus, 
-.profile input[type="email"]:focus, 
-.profile input[type="password"]:focus {
+.profile input[type="email"]:focus {
   border-color: #000;
   outline: none;
 }
@@ -103,8 +106,8 @@ main {
 }
 
 #editProfileButton:hover {
-  background-color: #b6b6b6;
-  transform: scale(1.05);
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 #saveChangesButton {
@@ -151,6 +154,12 @@ main {
 
 #deleteEmailButton {
   background-color:#ff00009d;
+  color: #000000;
+}
+
+#deleteEmailButton:hover {
+  background-color:#aa00009d;
+  transform: scale(1.05);
   color: #fff;
 }
 
@@ -180,6 +189,7 @@ main {
 .button:hover {
   background-color: #6cc8ec;
   transform: scale(1.05);
+  color: #fff;
 }
 
 .infoType {
@@ -224,6 +234,23 @@ main {
   border-radius: 10px;
 }
 
+.center-element {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#submitButton {
+  font-size: 16px;
+  color: #fff;
+  background-color: #4cb95b;
+  width: 65px;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 7px;
+  border: 1px solid #747474;
+}
+
 .close {
   color: #000;
   float: right;
@@ -246,11 +273,6 @@ main {
 
 .requirement {
   margin-bottom: 10px;
-}
-
-.error-message {
-  color: red;
-  font-weight: bold;
 }
 
 /* Footer Styles */
