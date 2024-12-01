@@ -98,14 +98,13 @@ main {
   border-radius: 4px;
   cursor: pointer;
   font-size: 1.1em;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: 'Roboto', sans-serif;
   font-weight: bold;
   transition: transform 0.3s, background-color 0.3s;
 }
 
 .signup-page button[type="submit"]:hover {
   background-color: #6cc8ec;
-  transform: scale(1.1);
 }
 
 /* ================================
