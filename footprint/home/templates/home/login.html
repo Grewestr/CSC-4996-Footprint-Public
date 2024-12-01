@@ -71,7 +71,8 @@
                 <label for="password">Password:</label>
                 <div class="password-container">
                     <input type="password" name="password" id="password" required autocomplete="off" spellcheck="false">
-                    <span id="toggle-password" class="toggle-text">Show</span>
+                    {% load static %}
+                    <img src="{% static 'images/eye_hide.svg' %}" id="toggle-password" class="toggle-text" data-eye-show="{% static 'images/eye.svg' %}" data-eye-hide="{% static 'images/eye_hide.svg' %}">                
                 </div>
 
                 <!-- Submit Button -->

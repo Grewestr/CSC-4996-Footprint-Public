@@ -90,15 +90,16 @@
                 <label for="signup-password">Password:</label>
                 <div class="password-container">
                     <input type="password" name="password" id="signup-password" required autocomplete="off" spellcheck="false">
-                    <span id="toggle-signup-password" class="toggle-text">Show</span>
-                </div>
+                    {% load static %}
+                    <img src="{% static 'images/eye_hide.svg' %}" id="toggle-signup-password" class="toggle-text" data-eye-show="{% static 'images/eye.svg' %}" data-eye-hide="{% static 'images/eye_hide.svg' %}">                </div>
 
 
                 <!-- Retype Password Input -->
                 <label for="signup-password-confirm">Retype Password:</label>
                 <div class="password-container">
                     <input type="password" id="signup-password-confirm" name="password_confirm"  required autocomplete="off" spellcheck="false">
-                    <span id="toggle-signup-retyped-password" class="toggle-text">Show</span>
+                    {% load static %}
+                    <img src="{% static 'images/eye_hide.svg' %}" id="toggle-signup-retyped-password" class="toggle-text" data-eye-show="{% static 'images/eye.svg' %}" data-eye-hide="{% static 'images/eye_hide.svg' %}">
                 </div>
                 <p class="error-message" id="password-match-error" style="color: red; display: none;">Passwords do not match.</p>
 

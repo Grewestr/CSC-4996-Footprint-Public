@@ -10,10 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
   signupTogglePassword?.addEventListener('click', () => {
       if (signupPasswordInput.type === 'password') {
           signupPasswordInput.type = 'text';
-          signupTogglePassword.textContent = 'Hide';
+          signupTogglePassword.src = signupTogglePassword.getAttribute('data-eye-show');
       } else {
           signupPasswordInput.type = 'password';
-          signupTogglePassword.textContent = 'Show';
+          signupTogglePassword.src = signupTogglePassword.getAttribute('data-eye-hide');
       }
   });
 
@@ -24,10 +24,10 @@ document.addEventListener('DOMContentLoaded', () => {
   signupToggleRetypedPassword?.addEventListener('click', () => {
       if (signupPasswordConfirmInput.type === 'password') {
           signupPasswordConfirmInput.type = 'text';
-          signupToggleRetypedPassword.textContent = 'Hide';
+          signupToggleRetypedPassword.src = signupToggleRetypedPassword.getAttribute('data-eye-show');
       } else {
           signupPasswordConfirmInput.type = 'password';
-          signupToggleRetypedPassword.textContent = 'Show';
+          signupToggleRetypedPassword.src = signupToggleRetypedPassword.getAttribute('data-eye-hide');
       }
   });
 
