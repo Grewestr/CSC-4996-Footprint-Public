@@ -8,11 +8,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const newPasswordInput = document.getElementById("new_password");
     const retypePasswordInput = document.getElementById("retype_password");
     
-    // Messages
+    // Error messages
     const passwordMatchError = document.getElementById('password-match-error');
-    const currentPasswordError = document.getElementById('change_password_current_error');
-    const generalError = document.getElementById('change_password_general_error');
-    const changeSuccess = document.getElementById('change_password_success');
 
     // Toggle password to show/hide icon
     const currentTogglePassword = document.getElementById('current-toggle-password');
@@ -32,9 +29,16 @@ document.addEventListener("DOMContentLoaded", function() {
             // Reset UI states when modal is closed
             passwordMatchError.style.display = "none";
             requirementsBox.style.display = "none";
+
+            // Hide all messages
             document.querySelectorAll('.message').forEach(msg => {
                 msg.style.display = 'none'; // Hide all message elements
             });
+
+             // Clear input fields
+            currentPasswordInput.value = '';
+            newPasswordInput.value = '';
+            retypePasswordInput.value = '';
         }
     }
 
