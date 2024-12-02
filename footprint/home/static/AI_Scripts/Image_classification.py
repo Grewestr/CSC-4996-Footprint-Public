@@ -67,20 +67,20 @@ def dominant_color_detection(image, bbox, middle_or_bottom):
     x, y, width, height = bbox
 
     if middle_or_bottom == 'pants':
-        x_start = int(max(0, x - width // 2))
-        y_start = int(max(0, y - height // 2))
-        x_end = int(min(image.shape[1], x + width // 2))
-        y_end = int(min(image.shape[0], y))
+        x_start = max(0, x - width // 2)
+        y_start = max(0, y - height // 2)
+        x_end = min(image.shape[1], x + width // 2)
+        y_end = min(image.shape[0], y)
     else:
-        x_start = int(max(0, x - width // 2))
-        y_start = int(max(0, y - height // 2))
-        x_end = int(min(image.shape[1], x + width // 2))
-        y_end = int(min(image.shape[0], y + height // 2))
+        x_start = max(0, x - width // 2)
+        y_start = max(0, y - height // 2)
+        x_end = min(image.shape[1], x + width // 2)
+        y_end = min(image.shape[0], y + height // 2)
 
-    x_start *= 1.1
-    y_start *= 1.1
-    x_end *= 0.9
-    y_end *= 0.9
+    x_start = int(x_start * 1.1)
+    y_start = int(y_start * 1.1)
+    x_end = int(x_end * 1.1)
+    y_end = int(y_end * 1.1)
     
     subimage = image[y_start:y_end, x_start:x_end]
     subimage = cv2.cvtColor(subimage, cv2.COLOR_BGR2RGB)
