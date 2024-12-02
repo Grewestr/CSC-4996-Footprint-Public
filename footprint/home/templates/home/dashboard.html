@@ -453,15 +453,40 @@
                 const rawAttribute = selections[category].attribute || 'None Selected';
                 const rawColor = selections[category].color || 'None Selected';
 
-                // Convert raw values to readable names
+                //retreive all colors
+                const colorButtons = document.querySelectorAll(`.color-options[data-category="${category}"] .color-btn`);
+
+                // Check for special cases"No Hair" or "No Shirt" 
+                if (rawAttribute === 'no_hair' || rawAttribute === 'no_shirt') {
+                    // Disable and gray out buttons
+                    colorButtons.forEach(button => {
+                        button.disabled = true;
+                        button.style.opacity = 0.4; // Gray out button 40%
+                    });
+
+                    // Update the summary tab for "No Hair, No Color" or "No Shirt, No Color" if selected
+                    const formattedAttribute = attributeNames[rawAttribute] || rawAttribute;
+                    const summaryValueElement = document.querySelector(`#summary-${category} .summary-value`);
+                    summaryValueElement.textContent = `${formattedAttribute}, No Color`;
+
+                    // Update Hidden fields
+                    document.getElementById(`${category}-attribute-input`).value = rawAttribute || '';
+                    document.getElementById(`${category}-color-input`).value = 'No Color';
+                    return;
+                }
+
+                // Restore and enable buttons
+                colorButtons.forEach(button => {
+                    button.disabled = false;
+                    button.style.opacity = 1; // Restore original selection 
+                });
+
                 const formattedAttribute = attributeNames[rawAttribute] || rawAttribute;
                 const formattedColor = attributeNames[rawColor] || rawColor;
 
-                // Update the value part of the summary
                 const summaryValueElement = document.querySelector(`#summary-${category} .summary-value`);
                 summaryValueElement.textContent = `${formattedAttribute}, ${formattedColor}`;
 
-                // Update hidden input fields
                 document.getElementById(`${category}-attribute-input`).value = rawAttribute || '';
                 document.getElementById(`${category}-color-input`).value = rawColor || '';
             }
@@ -535,6 +560,31 @@
                         selections[category].attribute = attribute;
                     }
 
+                    // Check for special cases"No Hair" or "No Shirt" 
+                    const colorButtons = document.querySelectorAll(`.color-options[data-category="${category}"] .color-btn`);
+                    if (attribute === 'no_hair' || attribute === 'no_shirt') {
+                        // Disable and gray out color buttons
+                        colorButtons.forEach(button => {
+                            button.disabled = true;
+                            button.style.opacity = 0.4; // Gray out at 40%
+                            button.classList.remove('selected'); // Remove "selected" glow
+                        });
+                        selections[category].color = 'No Color'; // Force "No Color" result
+                    } else {
+                        // Enable and restore color buttons
+                        colorButtons.forEach(button => {
+                            button.disabled = false;
+                            button.style.opacity = 1; // Restore original style
+                        });
+
+                        // dealing with edge case from selectiong from No Color to another selected attriubte to update selecred value
+                        if (selections[category].color === 'No Color') {
+                            selections[category].color = null;
+                            document.querySelectorAll(`.color-options[data-category="${category}"] .color-btn`).forEach(btn => btn.classList.remove('selected'));
+                        }
+                    }
+
+                    // Update Summary
                     updateSummary(category);
                 });
             });
@@ -582,27 +632,33 @@
                 let valid = true;
                 let errorMessage = '';
 
-                // Validate other fields
                 ['top', 'middle', 'bottom'].forEach(category => {
-                    if (!selections[category].attribute) {
+                    const attribute = selections[category].attribute;
+                    const color = selections[category].color;
+
+                    // Validation: Attribute must be selected
+                    if (!attribute) {
                         valid = false;
                         errorMessage += `Please select a ${category} attribute.\n`;
                     }
-                    if (!selections[category].color) {
+
+                    // Validation: Color must be selected unless "No Hair" or "No Shirt" is chosen
+                    if ((attribute !== 'no_hair' && attribute !== 'no_shirt') && !color) {
                         valid = false;
                         errorMessage += `Please select a ${category} color.\n`;
                     }
                 });
 
                 // Validate feed selection
-                if (!feedSelect.value) {
+                const feedName = document.getElementById('feed_name').value;
+                if (!feedName) {
                     valid = false;
                     errorMessage += 'Please select a video feed.\n';
                 }
 
                 if (!valid) {
                     event.preventDefault();
-                    alert(errorMessage); // Or add the error message to your custom error display
+                    alert(errorMessage); // Show validation errors
                 }
             });
         });
