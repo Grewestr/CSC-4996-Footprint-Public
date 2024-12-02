@@ -16,7 +16,7 @@ body {
 /* Container Styles */
 .container {
   width: 95%;
-  max-width: 1200px; 
+  max-width: 900px; 
   margin: 0 auto;
 }
 
@@ -26,7 +26,6 @@ main {
   margin: 120px auto 20px; 
   padding: 0 20px;
   flex: 1;
-  padding-top: 90px;
 }
 
 .site-title {
@@ -36,15 +35,31 @@ main {
   margin: 0;
 }
 
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 50px;
+}
+
 /* User Information Styles */
-.user-info {
-  margin: 40px 0;
-  font-size: 1.2em;
-  line-height: 1.5;
+.profile-container {
+  justify-content: center;
+  align-items: center;
+  margin-top: 80px;
+  margin-bottom: 40px;
   padding: 20px;
   background-color: #fff;
   border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  background-color: #cecece;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 80px;
+  position: relative;
 }
 
 .user-info strong {
@@ -52,21 +67,121 @@ main {
   font-weight: 700;
 }
 
+.user-info .profile-picture {
+  width: 270px;
+  height: 270px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+/* Input Style */
+.profile input[type="text"], 
+.profile input[type="email"] {
+  padding: 12px;
+  margin-bottom: 19.2px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+  width: 370px;
+  box-sizing: border-box;
+}
+
+.profile input[type="text"]:focus, 
+.profile input[type="email"]:focus {
+  border-color: #000;
+  outline: none;
+}
+
 /* Button Styles */
+#editProfileButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 16px;
+  border: #fff;
+  border-radius: 5px;
+  background-color: #cecece;
+}
+
+#editProfileButton:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+#saveChangesButton {
+  font-size: 16px;
+  color: #fff;
+  background-color: #4cb95b;
+  width: 65px;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 7px;
+  border: 1px solid #747474;
+}
+
+#saveChangesButton:hover {
+  background-color: #43a250;
+  transform: scale(1.05);
+}
+
+#cancelEditButton {
+  font-size: 16px;
+  background-color: #cecece;
+  width: 65px;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 7px;
+  border: 1px solid #a7a7a7;
+}
+
+#cancelEditButton:hover {
+  background-color: #bebebe;
+  transform: scale(1.05);
+}
+
+#saveCancelButtons {
+  position: absolute;
+  grid-template-columns: repeat(2, auto);
+  justify-content: right;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 0.8em;
+  border: #fff;
+}
+
+#deleteEmailButton {
+  background-color:#ff00009d;
+  color: #000000;
+}
+
+#deleteEmailButton:hover {
+  background-color:#aa00009d;
+  transform: scale(1.05);
+  color: #fff;
+}
+
 .button-container {
-  margin-top: 20px;
-  text-align: center;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 40px;
+  justify-content: center;
+  width: 95%;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .button {
+  width: 200px;
   background-color: #3fb2d8;
   color: #000;
   padding: 10px 20px;
   margin: 10px;
-  border: 2px solid #000;
+  border: 1px solid #747474;
   cursor: pointer;
   font-size: 1.2em;
-  font-weight: bold;
   transition: transform 0.3s, background-color 0.3s;
   border-radius: 5px;
 }
@@ -74,6 +189,22 @@ main {
 .button:hover {
   background-color: #6cc8ec;
   transform: scale(1.05);
+  color: #fff;
+}
+
+.infoType {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.infoTypeDisplay {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.infoDisplay {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 /* Modal Styles */
@@ -103,6 +234,23 @@ main {
   border-radius: 10px;
 }
 
+.center-element {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#submitButton {
+  font-size: 16px;
+  color: #fff;
+  background-color: #4cb95b;
+  width: 65px;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 7px;
+  border: 1px solid #747474;
+}
+
 .close {
   color: #000;
   float: right;
@@ -125,11 +273,6 @@ main {
 
 .requirement {
   margin-bottom: 10px;
-}
-
-.error-message {
-  color: red;
-  font-weight: bold;
 }
 
 /* Footer Styles */

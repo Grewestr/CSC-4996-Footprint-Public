@@ -63,19 +63,35 @@ body {
     all: unset; /* Reset default */
     display: inline-flex;
     justify-content: center;
-    align-items: center;
+    align-items: center; 
     width: 55px; 
     height: 55px;
     border-radius: 20%; /* Ensures button itself is rounded */
-    margin: 8px; 
+    margin: 5px; 
     cursor: pointer;
     background-size: cover; 
     background-position: center; 
-    transition: transform 0.1s ease, outline-color 0.2s ease, box-shadow 0.2s ease;
+    outline: 1px solid black;
+    transition: transform 0.1s ease, outline 0.2s ease;
     position: relative; 
-    outline: 3.25px solid black; 
+ 
 }
 
+/* Add hover effect */
+.attribute-btn:hover {
+    transform: scale(1.1); /* zoom effect */
+    outline: 3px solid gray; /* Hover outline */
+    z-index: 1; 
+    
+}
+
+/* Selected state */
+.attribute-btn.selected {
+    outline: 3px solid rgb(30, 220, 5);
+    background-color: rgb(255, 255, 255);
+
+    
+}
 
 /* Tooltip Text box */
 .attribute-btn:hover::after {
@@ -90,10 +106,10 @@ body {
     padding: 6px 12px; 
     border-radius: 4px; 
     white-space: nowrap; 
-    z-index: 9999; /* appears in front of all other elements */
+    z-index: 10; 
     opacity: 1;
-    transition: opacity 0.2s ease-in-out;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5); /* Slightly stronger shadow  */
+    transition: opacity 0.1s ease-in-out;
+   
 }
 
 /* Tooltip Arrow */
@@ -106,8 +122,9 @@ body {
     border-width: 8px; /*how big the triange is under hoverd item*/
     border-style: solid;
     border-color: black transparent transparent transparent;
-    z-index: 9999; 
+    z-index: 10; 
 }
+
 
 
 /* Adjusted grid areas for the layout */
@@ -120,6 +137,7 @@ body {
     border: 2px solid #000;
     border-radius: 10px;
     padding: 20px;
+    margin-top: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -131,7 +149,7 @@ body {
     grid-column: 1 / 2;
 }
 
-.feed-selection-section { /* Feed selection section styled like attributes section */
+.feed-selection-section { 
     grid-column: 1 / 2;
 }
 
@@ -151,7 +169,7 @@ body {
     padding: 10px;
     font-size: 1rem;
     border-radius: 5px;
-    border: 1px solid #000;
+    border: 2px solid #000;
     background-color: #f9f9f9;
     color: #333;
 }
@@ -166,7 +184,7 @@ body {
 .results-section {
     grid-column: 2 / 3;
     grid-row: 1 / 4;
-    max-height: 968px;
+    max-height: 1290px;
     overflow-y: auto;
 }
 
@@ -187,25 +205,39 @@ h2 {
 /* Button styling */
 .submit-button,
 .reset-button {
-    background-color: #000;
-    color: white;
     padding: 10px 20px;
     border: 2px solid #000;
-    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    font-size: 1em;
+    font-family: 'Roboto', sans-serif;
     font-weight: bold;
-}
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+    text-decoration: none;
+  }
 
 
-.submit-button:hover,
-.reset-button:hover {
-    background-color: #ff0000;
+.submit-button:hover {
+    background-color: #6cc8ec;
 }
+
+.submit-button {
+    background-color: #3fb2d8;
+  }
 
 .color-selection label {
     font-weight: bold;
 }
+
+.reset-button:hover {
+    background-color: #fd5c5c93; 
+  }
+  
+  .reset-button {
+    background-color: #f05858;
+    font-weight: bold;
+    color:#000;
+  }
 
 /* Adjusted styles for the Results Section */
 .result-content {
@@ -248,7 +280,7 @@ h2 {
 
 .image-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 10px;
 }
 
@@ -261,10 +293,29 @@ h3 {
 }
 
 /* Summary content styling */
-.summary-content p {
-    margin: 5px 0;
-    font-weight: bold;
+.summary-content {
+    display: grid;
+    gap: 10px; /* Vertical spacing between rows */
+    padding: 10px;
 }
+
+.summary-row {
+    display: grid;
+    grid-template-columns: 50px 1fr; /* Fixed width for labels, flexible for values */
+    gap: 15px; /* Space between label and value */
+    align-items: center; /* Vertically align items */
+}
+
+.summary-row strong {
+    text-align: left; /* Align label to the left */
+    white-space: nowrap; /* Prevent label wrapping */
+}
+
+.summary-row .summary-value {
+    text-align: left; /* Align value to the left */
+    word-break: break-word; /* Allow long words to break and wrap */
+}
+
 
 .hidden {
     display: none;
@@ -302,7 +353,7 @@ h3 {
     .image-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-    .results-section .grid-container {
+    .results-section  {
         grid-template-columns: repeat(2, 1fr); /* Two columns */
         gap: 10px;
     }
@@ -318,14 +369,9 @@ h3 {
     }
 
     .grid-container {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
+        grid-template-columns: repeat(2, 1fr); /* Two columns */
+        gap: 10px; /* Smaller gaps */
     }
-}
-
-.unmatched {
-    color: rgb(60, 141, 240);
-    font-weight: bold;
 }
 
 /* Footer Styles */
@@ -337,6 +383,7 @@ footer {
     background-color: #fff;
 }
 
+
 /* Used for Color Buttons */
 .color-btn {
     all: unset; 
@@ -346,78 +393,56 @@ footer {
     width: 45px; 
     height: 35px; 
     border-radius: 10px; 
-    margin: 5px;
+    margin: 5px; 
     cursor: pointer;
+    background-color: black;
+    outline: 1px solid black; /* Black outline for buttons */
     box-sizing: border-box; /* Ensures padding/borders are included in width/height */
     transition: transform 0.1s ease, outline 0.2s ease;
-    outline: 3.50px solid black; 
-
 }
 
-
-
-.attribute-btn:hover:not(.selected) {
+/* Hover effect for color buttons */
+.color-btn:hover {
     transform: scale(1.1); /* zoom effect on hover */
-    outline: 3px solid rgb(131, 131, 131);
-}
-.attribute-btn.selected:hover {
-    transform: scale(1.15); /* Zoom effect on hover for selected buttons */
-}
-/* Selected state for color buttons */
-.attribute-btn.selected {
-    box-shadow: 0 0 0 8px rgb(50, 255, 50);
+    outline: 3px solid gray; /* Hover outline */
 }
 
-/* Tooltip Text box */
+/* Selected state for color buttons */
+.color-btn.selected {
+    outline: 3px solid rgb(30, 220, 5); /* Highlight selected button */
+}
+
+/* Tooltip Styles */
 .color-btn:hover::after {
-    content: attr(data-tooltip); 
+    content: attr(data-tooltip); /* Title */
     position: absolute;
-    top: calc(100% + 10px); 
+    top: calc(100% + 10px); /* Spaced below the button */
     left: 50%;
     transform: translateX(-50%);
     background-color: black; 
     color: white; 
     font-size: 12px;
-    padding: 6px 12px; 
+    padding: 5px 10px; 
     border-radius: 4px; 
-    white-space: nowrap; 
-    z-index: 9999; /* appears in front of all other elements */
+    white-space: nowrap; /* Prevents wrapping */
+    z-index: 10;
     opacity: 1;
-    transition: opacity 0.2s ease-in-out;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5); /* Slightly stronger shadow  */
+    transition: opacity 0.1s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4); /* Subtle shadow */
 }
 
 /* Tooltip Arrow */
 .color-btn:hover::before {
     content: '';
     position: absolute;
-    top: 100%; /* Position arrow at the bottom of the button */
+    top: 100%;
     left: 50%;
     transform: translateX(-50%);
-    border-width: 8px; /*how big the triange is under hoverd item*/
+    border-width: 8px;
     border-style: solid;
-    border-color: black transparent transparent transparent;
-    z-index: 9999; 
+    border-color: black transparent transparent transparent; 
+    z-index: 10;
 }
-
-/* Hover effect for color buttons */
-.color-btn:hover {
-    transform: scale(1.15); /* Default zoom for all buttons */
-    transition: transform 0.2s ease; /* Smooth transition */
-}
-
-.color-btn:hover:not(.selected) {
-    outline: 3.25px solid rgb(131, 131, 131); /* Add outline for non-selected buttons */
-}
-
-.color-btn.selected:hover {
-    transform: scale(1.15); 
-}
-
-.color-btn.selected {
-    box-shadow: 0 0 0 8px rgb(50, 255, 50);
-}
-
 
 /* Container for Color Buttons */
 .color-options {
@@ -428,22 +453,21 @@ footer {
     gap: 10px;
     margin: 10px 0; 
 }
-
 /* Preview Area */
 .preview-area {
-    display: flex; /* Arrange children (image and text) in a row */
-    align-items: center; /* Center items vertically */
-    justify-content: center; /* Center the entire block horizontally */
-    gap: 20px; /* Add space between the image and text */
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 20px; 
     padding: 20px;
     background-color: #f9f9f9;
     border-bottom: 2px solid #000;
-    width: 100%; /* Ensure it spans the container */
+    width: 100%; 
 }
 
 /* Preview Image */
 .preview-image {
-    height: 250px; /* Fixed height */
+    height: 300px; /* Fixed height */
     width: auto; /* Maintain aspect ratio */
     max-width: 300px; /* Ensure image doesn't get too wide */
     object-fit: contain;
@@ -452,34 +476,41 @@ footer {
     display: block; /* Ensure it's treated as a block element */
 }
 
-/* Preview Details */
-.preview-details {
-    flex: 1; /* Allow it to grow and take up remaining space */
-    text-align: left; /* Align text to the left */
-    font-size: 1.2rem;
+/* Navigation Buttons for Images */
+.navigation-buttons-image {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }
 
-.preview-details p {
-    margin: 10px 0; /* Add spacing between each text line */
-    font-weight: 500;
-}
-
-.preview-details a {
-    color: #0000ff; /* Blue color for the link */
-    text-decoration: none;
+.nav-button-image {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 14px;
     font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
-.preview-details a:hover {
-    text-decoration: underline; /* Underline on hover */
+.nav-button-image:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.nav-button-image:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
 }
 
 /* Grid Container */
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Three columns */
-    grid-template-rows: repeat(2, auto); /* Two rows */
-    gap: 20px; /* Space between grid items */
+    grid-template-columns: repeat(6, 1fr); /* Six columns */
+    gap: 15px; /* Space between grid items */
     overflow-y: auto;
     padding: 10px;
 }
@@ -487,24 +518,33 @@ footer {
 .result-item {
     border: 1px solid #ccc;
     border-radius: 8px;
-    padding: 10px; /* Reduce padding for smaller items */
     background-color: #fff;
-    text-align: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
     cursor: pointer;
+    transition: transform 0.3s ease;
+    aspect-ratio: 1 / 1; 
+    overflow: hidden; 
 }
 
 .result-item:hover {
     transform: scale(1.05);
 }
 
+.result-item.active {
+    border: 3px solid rgba(30, 220, 5, 0.8); 
+    box-shadow: 0 0 10px rgba(30, 220, 5, 0.8);
+    transform: scale(1.05); 
+    z-index: 10; 
+}
+
 .result-image {
-    max-width: 40%; /* controls images size */
-    height: auto; /* Maintain aspect ratio */
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
     border-radius: 5px;
-    margin-bottom: 5px; 
-    border: 2px solid #000;
+    border: 3px solid #000; 
+    display: block; 
+    
 }
 
 /* Hide grid details */
@@ -524,6 +564,255 @@ footer {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+
+
 .hidden-preview-section {
     display: none !important;
 }
+
+.validation-message {
+    color: #d9534f; /* Bootstrap's danger color */
+    font-size: 0.9rem;
+    margin-top: 5px;
+    padding: 5px;
+    border: 1px solid #d9534f;
+    border-radius: 4px;
+    background-color: #f2dede; /* Light red background */
+    display: block;
+}
+
+
+
+.result-item.highlight {
+    transform: scale(1.05); 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Info Section */
+.pagination-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 16px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    color: #333;
+}
+.result-range {
+    font-size: 14px;
+    color: #555;
+}
+
+/* Pagination Controls */
+.pagination-controls {
+    display: flex;
+    gap: 10px;
+   
+}
+
+.pagination-link {
+    padding: 8px 12px;
+    background-color: #007BFF;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.pagination-link:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.disabled-link {
+    padding: 8px 12px;
+    background-color: #ccc;
+    color: #666;
+    border-radius: 5px;
+    cursor: not-allowed;
+    font-weight: bold;
+}
+
+
+
+/* Pagination Container */
+.pagination-container {
+    margin-top: 20px; /* Ensure space from the grid */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    background-color: #ffffff; /* Match the rest of the design */
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+
+/* No Results Styling */
+.no-results-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center; 
+    height: 100%; 
+    width: 100%; 
+    background-color: #f9f9f9; 
+    border: none; 
+    text-align: center;
+    padding: 20px; 
+    margin: 0; 
+    grid-column: 1 / -1; /* Ensure it spans across the full grid if inside a grid layout */
+}
+
+.no-results-container p {
+    font-size: 16px; /* Adjust text size */
+    color: #333; /* Neutral text color */
+    margin: 10px 0; /* Space between paragraphs */
+}
+
+.no-results-container p:first-of-type {
+    font-weight: bold; /* Highlight primary message */
+    font-size: 18px; /* Slightly larger font for emphasis */
+}
+
+/* Grid Container */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); 
+    gap: 15px; /* Space between grid items */
+    height: 740px; /* Fixed height */
+    padding: 10px;
+    background-color: #fff; 
+    border: 1px solid #ddd; 
+    border-radius: 10px;
+    overflow-y: auto; /* Scroll for overflow */
+}
+
+.preview-container {
+    display: flex;
+    justify-content: flex-start; 
+    align-items: center; 
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    margin: 10px auto; 
+    width:95%; 
+    max-width: 900px; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    height: 240px;
+}
+
+.preview-content {
+    display: flex;
+    gap: 30px; /* Space between image and details */
+    align-items: flex-start; /* Align content to the top */
+    
+}
+
+.image-container {
+    display: flex;
+    margin-left: 20px;
+    justify-content: center;
+    align-items: center;
+    width: 200px; /* Fixed width for image */
+    height: 200px; /* Fixed height for image */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.preview-image {
+    width: 100%; 
+    height: auto; 
+}
+
+
+
+.preview-details p {
+    margin: 5px 0;
+}
+
+.preview-details strong {
+    font-weight: 600; /* Highlight labels */
+}
+
+.preview-details a {
+    color: #007BFF;
+    text-decoration: none;
+    font-weight: normal;
+}
+
+.preview-details a:hover {
+    text-decoration: underline;
+}
+
+
+.preview-details {
+    font-size: 14px;
+    color: #333;
+    gap: 4px; 
+    line-height: 1.2; 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.result-item-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Space between the text and buttons */
+    gap: 20px; /* Space between the buttons and text */
+}
+
+.result-item-navigation p {
+    min-width: 150px; /* Fixed width for the Result Item text */
+    text-align: left; /* Align text to the left */
+    margin: 0;
+}
+
+.navigation-buttons-image {
+    display: flex;
+    gap: 10px; /* Space between buttons */
+}
+
+.nav-button-image {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.nav-button-image:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.nav-button-image:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+/* General styling for summary content */
+.summary-content p {
+    margin: 5px 0;
+}
+
+/* Ensure only titles (inside <strong>) are bold */
+.summary-content p strong {
+    font-weight: bold;
+}
+
+/* Ensure only values (inside .summary-value) are not bold */
+.summary-content p .summary-value {
+    font-weight: normal;
+}
+

@@ -51,7 +51,6 @@ button#submitDeleteEmail:disabled {
 
 /* Error message styling */
 .error-message {
-  font-size: 0.9em;
   margin-top: 5px;
   color: red;
 }
