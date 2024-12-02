@@ -7,7 +7,8 @@ from inference_sdk import InferenceHTTPClient
 import clip
 import torch
 import sys
-sys.path.append(r"C:\Users\Kevin Zheng\CSC-4996-Footprint\CLIP") # Change to where CLIP is cloned
+from PIL import Image
+sys.path.append(R"C:\Users\17344\Documents\Capstone2\CLIP") # Change to where CLIP is cloned
 
 # Define paths relative to the container’s working directory
 input_folder = "/AI_Scripts/Identified_Person"
@@ -71,6 +72,7 @@ def color_detection(image, bbox):
     y_end = int(min(image.shape[0], y + height // 2))
     subimage = image[y_start:y_end, x_start:x_end]
     subimage = cv2.cvtColor(subimage, cv2.COLOR_BGR2RGB)
+    subimage = Image.fromarray(subimage)
 
     # Load the model
     model, preprocess = clip.load("RN101", device="cuda" if torch.cuda.is_available() else "cpu")
