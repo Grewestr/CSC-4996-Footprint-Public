@@ -618,7 +618,7 @@ def clear_live_feeds_collection():
 
     print("All documents in 'live_feeds' collection have been deleted.")
 
-
+local_timezone = pytz.timezone('America/New_York')
 @require_http_methods(["GET", "POST"])
 def upload_view(request):
     # Ensure boot commands run before proceeding
@@ -682,7 +682,7 @@ def upload_view(request):
                     # For AJAX request, return a JSON response
                     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                         # Format uploaded_at to match existing format
-                        uploaded_at = datetime.now().strftime("%m/%d %I:%M %p")  
+                        uploaded_at = datetime.now(pytz.utc).astimezone(local_timezone).strftime("%m/%d %I:%M %p")
                         
                         return JsonResponse({
                             "success": True,
@@ -736,9 +736,9 @@ def upload_view(request):
 
     for feed in live_feeds:
         feed_data = feed.to_dict()
-        feed_data['job_id'] = feed.id  # Add the document ID for reference
-        feed_data['uploaded_at'] = feed_data['uploaded_at'].strftime("%m/%d %I:%M %p") if 'uploaded_at' in feed_data else "N/A"
-        feed_data['updated_at'] = feed_data['updated_at'].strftime("%m/%d %I:%M %p") if 'updated_at' in feed_data else "N/A"
+        feed_data['job_id'] = feed.id  
+        feed_data['uploaded_at'] = feed_data['uploaded_at'].astimezone(local_timezone).strftime("%m/%d %I:%M %p") if 'uploaded_at' in feed_data else "N/A"
+        feed_data['updated_at'] = feed_data['updated_at'].astimezone(local_timezone).strftime("%m/%d %I:%M %p") if 'updated_at' in feed_data else "N/A"
         feed_data['youtube_link'] = feed_data['video_link'] if 'video_link' in feed_data else None
 
         if feed_data['feed_status'] == 'finished':
