@@ -39,14 +39,27 @@
   cursor: pointer;
 }
 
+#deleteEmailModal .infoType {
+  margin-top: 15px;
+}
+
 /* Buttons */
 button {
   margin: 10px;
   padding: 10px;
 }
 
+/* Disabled button styling */
 button#submitDeleteEmail:disabled {
   background-color: gray;
+  color: #fff;
+  opacity: 0.5;
+  font-size: 16px;
+}
+
+button#submitDeleteEmail:disabled:hover {
+  transform: none;
+  cursor: pointer;
 }
 
 /* Error message styling */

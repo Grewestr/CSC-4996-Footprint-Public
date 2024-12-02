@@ -4,10 +4,10 @@ document.addEventListener("DOMContentLoaded", function() {
     const modal = document.getElementById("deleteEmailModal"); // The delete email modal
     const deleteEmailButton = document.getElementById("deleteEmailButton"); // Button to open the delete modal
     const closeModal = document.getElementById("closeDeleteModal"); // Close button in the modal
-    const cancelButton = document.getElementById("cancelDeleteButton"); // Cancel button in the modal
     const submitButton = document.getElementById("submitDeleteEmail"); // Submit button in the modal
     const currentPasswordInput = document.getElementById("delete-current-password"); // Input field for the current password
     const passwordError = document.getElementById("delete-password-error"); // Element for displaying password-related errors
+    const deleteTogglePassword = document.getElementById("delete-toggle-password"); // For toggle show/hide password
 
     // Function to validate inputs and enable/disable the submit button
     function validateInputs() {
@@ -18,6 +18,17 @@ document.addEventListener("DOMContentLoaded", function() {
     // Attach an event listener to the current password input field to validate inputs on change
     currentPasswordInput.addEventListener("input", validateInputs);
 
+    // Toggle show/hide password using eye icon
+    deleteTogglePassword?.addEventListener('click', () => {
+        if (currentPasswordInput.type === 'password') {  // If hiding password
+            currentPasswordInput.type = 'text'; // Convert to text
+            deleteTogglePassword.src = deleteTogglePassword.getAttribute('data-eye-show'); // Show eye icon
+        } else { // If already showing password
+            currentPasswordInput.type = 'password'; // Change back to password
+            deleteTogglePassword.src = deleteTogglePassword.getAttribute('data-eye-hide'); // Change to eye show icon
+        }
+    });
+
     // Event listener to show the modal when the delete email button is clicked
     deleteEmailButton.onclick = function() {
         modal.style.display = "block"; // Display the modal
@@ -25,12 +36,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Event listener to hide the modal and reset errors when the close button is clicked
     closeModal.onclick = function() {
-        modal.style.display = "none"; // Hide the modal
-        passwordError.style.display = "none"; // Hide the error message
-    };
-
-    // Event listener to hide the modal and reset errors when the cancel button is clicked
-    cancelButton.onclick = function() {
         modal.style.display = "none"; // Hide the modal
         passwordError.style.display = "none"; // Hide the error message
     };

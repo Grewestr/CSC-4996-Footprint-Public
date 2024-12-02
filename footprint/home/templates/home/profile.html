@@ -199,19 +199,28 @@
     <div id="deleteEmailModal" class="modal">
         <div class="modal-content">
             <span id="closeDeleteModal" class="close">&times;</span>
-            <h2>Delete Account</h2>
+            <div class="center-element">
+                <h2>Delete Account</h2>
+            </div>
 
             <!-- Ensure the form action points to 'delete_email' URL -->
             <form method="post" action="{% url 'delete_email' %}">
                 {% csrf_token %}
                 
-                <label for="delete-current-password">Current Password:</label>
-                <input type="password" id="delete-current-password" name="current_password" required><br>
+                <div class="infoType">
+                    <label for="delete-current-password">Current Password</label>
+                    <div class="password-container">
+                        <input type="password" id="delete-current-password" name="current_password" required><br>
+                        {% load static %}
+                        <img src="{% static 'images/eye_hide.svg' %}" id="delete-toggle-password" class="toggle-text" data-eye-show="{% static 'images/eye.svg' %}" data-eye-hide="{% static 'images/eye_hide.svg' %}">
+                    </div>
+                </div>
 
                 <p class="error-message" id="delete-password-error" style="color: red; display: none;">Incorrect password.</p>
                 
-                <button type="submit" id="submitDeleteEmail" class="button" disabled>Delete Account</button>
-                <button type="button" id="cancelDeleteButton" class="button">Cancel</button>
+                <div class="center-element">
+                    <button type="submit" id="submitDeleteEmail" class="button" disabled>Delete Account</button>
+                </div>
             </form>
         </div>
     </div>

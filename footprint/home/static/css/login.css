@@ -251,9 +251,9 @@
     user-select: none;
   }
 
-  . opacity: 0.6;
-  }toggle-text:hover {
-   
+  .toggle-text:hover {
+    opacity: 0.6;
+  }
 
   /* Remove browser's built-in password visibility icon */
   input[type="password"]::-ms-reveal,
