@@ -1,4 +1,8 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
+    // Get the URLs from the data attributes
+    const deleteUploadUrl = document.body.getAttribute('data-delete-url');
+    const checkStatusUrl = document.body.getAttribute('data-check-status-url');
+
     const youtubeLinkInput = document.getElementById('youtube_link');
     const videoPreview = document.getElementById('video-preview');
     const youtubeVideo = document.getElementById('youtube-video');
@@ -8,42 +12,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const clearQueueButton = document.getElementById('clear-queue-button');
     const queueTable = document.getElementById('queue-table');
     const noUploadsMessage = document.getElementById('no-uploads-message');
-    const uploadForm = document.querySelector('.upload-form'); // Form to handle new uploads
-    const checkStatusUrl = "{% url 'check_job_status' %}";
+    const uploadForm = document.querySelector('.upload-form');
 
-
-    
-    queueTable.addEventListener('click', function(event) {
-        if (event.target.classList.contains('delete-button')) {
-            const row = event.target.closest('tr');
-            const jobId = row.getAttribute('data-job-id');
-
-            if (jobId) {
-                // Send AJAX POST request to delete the job
-                fetch('{% url "delete_upload_view" %}', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value,
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: new URLSearchParams({ job_id: jobId }).toString()
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Remove the row from the queue table
-                        row.remove();
-                        console.log(`Job ${jobId} deleted successfully.`);
-                    } else {
-                        console.error(`Failed to delete job: ${data.message}`);
-                    }
-                })
-                .catch(error => console.error('Error deleting job:', error));
-            }
-        }
-    });
     // Update video preview when the YouTube link changes
-    youtubeLinkInput.addEventListener('input', function() {
+    youtubeLinkInput.addEventListener('input', function () {
         const url = youtubeLinkInput.value;
         const videoId = extractYouTubeVideoID(url);
         if (videoId) {
@@ -57,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Add event listeners to speed buttons
     processingSpeedButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             processingSpeedButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
 
@@ -82,84 +54,99 @@ document.addEventListener('DOMContentLoaded', function() {
         const match = url.match(regex);
         return match ? match[1] : null;
     }
+    queueTable.addEventListener('click', function (event) {
+        if (event.target.classList.contains('delete-button')) {
+            const row = event.target.closest('tr');
+            const jobId = row.getAttribute('data-job-id');
+            const deleteUploadUrl = row.getAttribute('data-delete-upload-url'); // Get delete URL from the attribute
+    
+            console.log('Job ID:', jobId);
+            console.log('Delete URL:', deleteUploadUrl); // Log to verify it's correct
+    
+            if (jobId && deleteUploadUrl) {
+                // Perform the delete request
+                fetch(deleteUploadUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({ job_id: jobId }).toString(),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        row.remove(); // Remove the row from the table
+                        console.log(`Job ${jobId} deleted successfully.`);
+                    } else {
+                        console.error(`Failed to delete job: ${data.message}`);
+                    }
+                })
+                .catch(error => console.error('Error deleting job:', error));
+            } else {
+                console.error('Job ID or Delete URL is missing.');
+            }
+        }
+    });
+    
+    
 
-    // AJAX form submission to update queue without page reload
-    uploadForm.addEventListener('submit', function(event) {
-        event.preventDefault();  // Prevent the default form submission
-
+    uploadForm.addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent default form submission
+    
         // Gather form data
-        const formData = {
+        const formData = new URLSearchParams({
             feed_name: document.getElementById('feed_name').value,
-            youtube_link: youtubeLinkInput.value,
-            processing_speed: processingSpeedInput.value,
+            youtube_link: document.getElementById('youtube_link').value,
+            processing_speed: document.getElementById('processing_speed').value,
             csrfmiddlewaretoken: document.querySelector('input[name="csrfmiddlewaretoken"]').value
-        };
-
+        });
+    
         // Send AJAX POST request to the server
         fetch(uploadForm.action, {
             method: 'POST',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: new URLSearchParams(formData).toString()
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: formData.toString()
         })
-        .then(response => {
-            if (!response.ok) {
-                // If the response is not OK (e.g., a 404 or 500), log an error but don’t show an alert
-                console.error("Error: Response not OK", response.status, response.statusText);
-                return Promise.reject(new Error("Server error"));
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Add the new upload to the queue table dynamically
+                const queueTableBody = document.querySelector('#queue-table tbody');
                 const newRow = document.createElement('tr');
-                newRow.setAttribute('data-job-id', data.upload.job_id);  // Set job ID for easy reference
+    
+                newRow.setAttribute('data-job-id', data.upload.job_id); // Set the job ID
                 newRow.innerHTML = `
-                    <td>${data.upload.feed_name}</td>
-                    <td>${data.upload.processing_speed}</td>
-                    <td class="status-cell">${data.upload.status}</td>
-                    <td>${data.upload.uploaded_at}</td>
+                    <td>
+                        <a href="${data.upload.youtube_link}" target="_blank">${data.upload.feed_name}</a> <!-- Add hyperlink -->
+                    </td>
+                    <td>${data.upload.status}</td> <!-- Status -->
+                    <td>${data.upload.uploaded_at}</td> <!-- Formatted time -->
+                    <td>
+                        <button type="button" class="delete-button" data-job-id="${data.upload.job_id}">Delete</button>
+                    </td>
                 `;
-                queueTable.querySelector('tbody').prepend(newRow);
-
-                // Show the queue table if it was hidden
-                queueTable.style.display = 'table';
-                noUploadsMessage.style.display = 'none';
+    
+                queueTableBody.prepend(newRow); // Add the new row to the top of the table
+                console.log(`New upload added: ${data.upload.feed_name}`);
             } else {
-                // If data.success is false, just log the error and don’t show an alert
-                console.error("Server responded with an error message:", data.message);
+                console.error(`Failed to add upload: ${data.message}`);
             }
         })
-        .catch(error => {
-            // Only log the error, don’t show an alert
-            console.error("Fetch error:", error);
-        });
+        .catch(error => console.error('Error adding upload:', error));
     });
+    
+    
 
+    // Function to periodically update the queue status
     function updateQueueStatus() {
         fetch(checkStatusUrl)
-            .then(response => {
-                if (!response.ok) {
-                    console.error("Status check error:", response.status, response.statusText);
-                    return Promise.reject(new Error("Server error"));
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
-                data.uploads.forEach(upload => {
-                    const row = document.querySelector(`#queue-table tr[data-job-id="${upload.job_id}"]`);
-                    if (row) {
-                        row.querySelector(".status-cell").innerText = upload.status;
-                        console.log(`Updated status for job ${upload.job_id} to ${upload.status}`);
-                    }
-                });
+                // Handle the updated queue and history here
+                console.log(data);
             })
-            .catch(error => console.error("Error fetching job statuses:", error));
+            .catch(error => console.error("Error updating queue status:", error));
     }
-    
-    // Poll every 5 seconds to check for updated job statuses
+
+    // Poll every 5 seconds
     setInterval(updateQueueStatus, 5000);
 });

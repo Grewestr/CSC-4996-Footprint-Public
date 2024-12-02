@@ -1,138 +1,175 @@
-/* Styles for the two-column layout */
-.upload-page {
+/* ================================
+   Upload Page Styles (Updated)
+================================ */
+
+/* General Styles */
+body {
     font-family: 'Roboto', sans-serif;
-    background-color: #d3d3d3;
-    color: #000000;
+    background-color: #e0e0e0;
+    color: #000;
     margin: 0;
-    padding: 0;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
-main{
-    padding: 20px 0;
-}
 
-/* Container Styles */
 .container {
     width: 95%;
-    max-width: 1200px; 
+    max-width: 1400px;
     margin: 0 auto;
+    padding: 20px;
+    margin-top: 10px;
 }
 
-/* Main content layout */
 .main-content {
     display: flex;
     gap: 20px;
-    padding: 200px 20px 20px;
+    margin-top: 10px;
 }
 
-/* Left Section (Upload) */
+/* Upload Section */
 .left-section {
     flex: 3;
-    background-color: #f4f4f4;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    height: 100%;
+    border: 2px solid #000;
 }
 
-/* Right Section (Queue) */
-.right-section {
-    flex: 2;
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.left-section h2 {
+    font-size: 24px; 
+    text-align: center;
+    font-weight: bold; 
+    color: #007BFF;
+    margin-bottom: 20px;
+    background-color: #808080;
+    color: white;
+    padding: 10px 0;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-/* Form and button styles */
 .upload-form label {
-    font-size: 1.1em;
-    margin-bottom: 5px;
+    display: block;
+    margin: 15px 0 5px;
     font-weight: bold;
 }
 
-/* Styling for Feed Name specifically */
-.upload-form input[type="text"] {
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #333;
-    border-radius: 4px;
-    font-size: 1em;
-    width: 100%;
-    background-color: #e9e9e9;
-    color: #000;
-}
-
-/* General input styling */
+.upload-form input[type="text"],
 .upload-form input[type="url"] {
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1em;
     width: 100%;
-    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-size: 1rem;
 }
 
-/* Processing speed button styles */
+.instructions {
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    border: 2px solid #000;
+}
+
 .processing-speed {
     display: flex;
-    align-items: center;
-    margin-bottom: 15px;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
 .speed-button {
-    background-color: #3fb2d8;
-    color: #000;
-    padding: 8px 12px;
-    border: 2px solid #000;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-right: 5px;
+    flex: 1;
+    padding: 8px;
     font-weight: bold;
+    border: 2px solid #007BFF;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.speed-button:hover,
+.speed-button.active {
+    background-color: #007BFF;
+    color: #fff;
+}
+
+#estimated-time {
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+.submit-button {
+    background-color: #007BFF;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
     transition: background-color 0.3s;
 }
 
-.speed-button.active {
-    background-color: #6cc8ec;
+.submit-button:hover {
+    background-color: #0056b3;
 }
 
-/* Queue table styles */
-.queue-section table {
+/* Queue Section */
+.right-section {
+    flex: 1.5;
+    background-color: #ffffff;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    height: 100%;
+    border: 2px solid #000;
+}
+
+.queue-section {
     width: 100%;
+}
+
+.queue-section h2 {
+    font-size: 24px; 
+    text-align: center;
+    font-weight: bold; 
+    color: #007BFF;
+    margin-bottom: 20px;
+    background-color: #808080;
+    color: white;
+    padding: 10px 0;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.queue-section table {
+    width: 95%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .queue-section th, .queue-section td {
-    padding: 10px;
-    text-align: left;
+    padding: 18px;
     border: 1px solid #000;
+    text-align: left;
+    background-color: #ffffff;
 }
 
-.queue-section th {
-    background-color: #f0f0f0;
-}
-
-.queue-section td {
-    background-color: #fff;
-}
-
-/* Clear Queue button styling */
-.clear-queue-button {
+.delete-button {
     background-color: #ff6666;
-    color: #fff;
-    padding: 10px 15px;
+    color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
+    padding: 5px 10px;
     cursor: pointer;
-    font-weight: bold;
-    margin-bottom: 10px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
 }
 
-.clear-queue-button:hover {
+.delete-button:hover {
     background-color: #ff3333;
 }
 
@@ -141,92 +178,27 @@ footer {
     border-top: 2px solid #000;
     padding: 20px 0;
     text-align: center;
-    font-weight: 500;
-    background-color: #ffffff;
-    width: 100%;
-    margin-top: auto; /* Pushes footer to the bottom */
-  }
+    background-color: #fff;
+    margin-top: auto;
+}
 
-/* Page responsiveness styling */
-
-@media (max-width: 1200px) {
+/* Responsive Design */
+@media (max-width: 800px) {
     .main-content {
-        gap: 10px; /* Reduce gap between sections */
-        padding: calc(150px + 20px) 10px 10px; /* Adjust padding to account for nav height */
+        flex-direction: column;
     }
 
-    .left-section, .right-section {
-        padding: 15px; /* Reduce padding inside sections */
-        box-shadow: none; /* Simplify layout for smaller screens */
-    }
-
-    .queue-section table th, 
-    .queue-section table td {
-        font-size: 0.9em; /* Reduce table font size */
+    .left-section,
+    .right-section {
+        flex: 1;
+        margin-bottom: 20px;
     }
 
     .speed-button {
-        padding: 6px 10px; /* Smaller buttons */
-        font-size: 0.9em; /* Adjust font size */
+        font-size: 0.9rem;
     }
 
-    .clear-queue-button {
-        padding: 8px 12px; /* Adjust padding */
-    }
-}
-
-@media (max-width: 768px) {
-    .main-content {
-        flex-direction: column; /* Stack sections vertically */
-        gap: 20px; /* Add spacing between sections */
-        padding: calc(150px + 20px) 10px 20px; /* Adjust padding for smaller screens */
-    }
-
-    .left-section, .right-section {
-        width: 100%; /* Full width for each section */
-    }
-
-    .upload-form input[type="text"], 
-    .upload-form input[type="url"] {
-        font-size: 0.9em; /* Smaller font size */
-    }
-
-    .queue-section table {
-        font-size: 0.8em; /* Smaller font size for the table */
-    }
-
-    .queue-section table th, 
-    .queue-section table td {
-        padding: 8px; /* Reduce padding in table cells */
+    .submit-button {
+        padding: 10px 20px;
     }
 }
-
-@media (max-width: 480px) {
-    .main-content {
-        padding: calc(120px + 10px) 5px 20px; /* Minimal padding for very small screens */
-    }
-
-    .upload-form input[type="text"], 
-    .upload-form input[type="url"] {
-        padding: 8px; /* Reduce input padding */
-        font-size: 0.8em; /* Smaller font size */
-    }
-
-    .speed-button {
-        padding: 5px 8px; /* Minimal button padding */
-        font-size: 0.8em; /* Smaller text */
-    }
-
-    .clear-queue-button {
-        padding: 6px 10px; /* Adjust padding */
-        font-size: 0.8em; /* Adjust font size */
-    }
-
-    .queue-section table th, 
-    .queue-section table td {
-        font-size: 0.7em; /* Smallest font size for table */
-        padding: 6px; /* Minimal padding for table cells */
-    }
-}
-
-/* End of Page responsiveness styling */

@@ -21,7 +21,6 @@ from django.core.paginator import Paginator
 from urllib.parse import urlencode
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect
-from django.contrib import messages
 from urllib.parse import urlencode
 
 from django.core.files.storage import default_storage
@@ -601,7 +600,7 @@ BOOT_COMMANDS_RUN = False  # Global flag to check if boot commands are run
 def check_and_run_boot_commands():
     global BOOT_COMMANDS_RUN
     if not BOOT_COMMANDS_RUN:
-        boot_directory = R"C:\Wayne State\Senior Capstone\Footprint Github clone\CSC-4996-Footprint\footprint"
+        boot_directory = R"C:\Users\17344\Documents\Capstone2\CSC-4996-Footprint\footprint"
         run_docker_command("docker-compose build", cwd=boot_directory)
         run_docker_command("docker-compose up -d", cwd=boot_directory)  # Run in detached mode
         BOOT_COMMANDS_RUN = True
@@ -657,7 +656,7 @@ def upload_view(request):
                     'speed': processing_speed,
                     'video_link': youtube_link,
                     'user_email': user_email,
-                    'feed_status': 'uncomplete',
+                    'feed_status': 'queued',
                     'uploaded_at': firestore.SERVER_TIMESTAMP
                 }
                 
@@ -676,7 +675,7 @@ def upload_view(request):
                     )
 
                     # Prepare parameters for the Docker command and pass the document ID
-                    script_directory = R"C:\Wayne State\Senior Capstone\Footprint Github clone\CSC-4996-Footprint\footprint\home\static\AI_Scripts"
+                    script_directory = R"C:\Users\17344\Documents\Capstone2\CSC-4996-Footprint\footprint\home\static\AI_Scripts"
                     docker_command = f'docker-compose run --rm rq-worker python video_Enqueue.py "{youtube_link}" {processing_speed} "{user_email}" "{document_id}"'
                     
                     # Run the Docker command asynchronously
@@ -684,15 +683,19 @@ def upload_view(request):
 
                     # For AJAX request, return a JSON response
                     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                        uploaded_at = localtime().strftime("%Y-%m-%d %H:%M")
+                        # Format uploaded_at to match existing format
+                        uploaded_at = datetime.now().strftime("%m/%d %I:%M %p")  
+                        
                         return JsonResponse({
                             "success": True,
                             "message": "Feed added successfully to Firestore.",
                             "upload": {
                                 "feed_name": feed_name,
+                                "youtube_link": youtube_link,  # Include the YouTube link
                                 "processing_speed": processing_speed,
-                                "status": "queued",
-                                "uploaded_at": uploaded_at
+                                "status": "queued",  # Default status for new uploads
+                                "uploaded_at": uploaded_at,  # Use the formatted time
+                                "job_id": document_id  # Include the job ID for dynamic updates
                             }
                         })
 
@@ -736,8 +739,9 @@ def upload_view(request):
     for feed in live_feeds:
         feed_data = feed.to_dict()
         feed_data['job_id'] = feed.id  # Add the document ID for reference
-        feed_data['uploaded_at'] = feed_data['uploaded_at'].strftime("%Y-%m-%d %H:%M:%S") if 'uploaded_at' in feed_data else "N/A"
-        feed_data['updated_at'] = feed_data['updated_at'].strftime("%Y-%m-%d %H:%M:%S") if 'updated_at' in feed_data else "N/A"
+        feed_data['uploaded_at'] = feed_data['uploaded_at'].strftime("%m/%d %I:%M %p") if 'uploaded_at' in feed_data else "N/A"
+        feed_data['updated_at'] = feed_data['updated_at'].strftime("%m/%d %I:%M %p") if 'updated_at' in feed_data else "N/A"
+        feed_data['youtube_link'] = feed_data['video_link'] if 'video_link' in feed_data else None
 
         if feed_data['feed_status'] == 'finished':
             upload_history.append(feed_data)
@@ -750,66 +754,80 @@ def upload_view(request):
     })
 
 from django.views.decorators.http import require_POST
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from google.cloud import firestore
 
-@csrf_protect
+@csrf_exempt
 @require_POST
 def delete_upload_view(request):
-    """
-    Handle the deletion of an upload from the queue.
-    Only allows deletion if the status is not "finished".
-    """
     job_id = request.POST.get('job_id')
-    user_email = request.session.get('email')
 
-    if not job_id or not user_email:
-        return JsonResponse({"success": False, "message": "Missing job ID or user not logged in."})
+    if not job_id:
+        return JsonResponse({"success": False, "message": "Missing job ID."})
 
     try:
-        # Reference to the 'live_feeds' document to be deleted
+        # Reference Firestore and attempt to delete the job document
         job_ref = db.collection('live_feeds').document(job_id)
-        job_data = job_ref.get().to_dict()
+        job_data = job_ref.get()
 
-        # Ensure that the user owns the job and the status is not "finished"
-        if job_data and job_data['user_email'] == user_email and job_data['feed_status'] != "finished":
+        if job_data.exists:
             job_ref.delete()
             return JsonResponse({"success": True, "message": "Job deleted successfully."})
         else:
-            return JsonResponse({"success": False, "message": "Cannot delete job. It may be finished or not owned by the user."})
+            return JsonResponse({"success": False, "message": "Job ID does not exist."})
 
     except Exception as e:
         return JsonResponse({"success": False, "message": f"Error deleting job: {str(e)}"})
-
     
 
 from django.http import JsonResponse
+from google.cloud import firestore  # Firestore client
+from google.cloud.firestore_v1 import _helpers  # Correct way to access Timestamp
+from datetime import datetime
 
 def check_job_status(request):
     try:
-        # Fetch live_feeds collection and order by updated_at in descending order
+        # Fetch documents from Firestore ordered by "updated_at"
         live_feeds = db.collection("live_feeds").order_by("updated_at", direction=firestore.Query.DESCENDING).stream()
-        
-        # Prepare the uploads data to return as JSON
-        uploads = [
-            {
+        upload_queue = []
+        upload_history = []
+
+        for feed in live_feeds:
+            feed_data = feed.to_dict()
+            uploaded_at = feed_data.get("uploaded_at")
+            
+            # Handle Firestore Timestamp conversion
+            if uploaded_at and isinstance(uploaded_at, _helpers.Timestamp):
+                uploaded_at = uploaded_at.to_datetime()
+                uploaded_at = uploaded_at.strftime("%Y-%m-%d %H:%M")
+
+            # Create job object
+            job = {
                 "job_id": feed.id,
-                "feed_name": feed.get("feed_name"),
-                "processing_speed": feed.get("speed"),
-                "status": feed.get("job_status"),
-                "uploaded_at": feed.get("uploaded_at").strftime("%Y-%m-%d %H:%M") if feed.get("uploaded_at") else ""
+                "feed_name": feed_data.get("feed_name"),
+                "processing_speed": feed_data.get("speed"),
+                "status": feed_data.get("feed_status"),
+                "uploaded_at": uploaded_at or "",
             }
-            for feed in live_feeds
-        ]
-        
-        # Return the uploads data as a JSON response
-        return JsonResponse({"uploads": uploads}, status=200)
-    
+
+            # Categorize job into queue or history
+            if feed_data.get("feed_status") == "finished":
+                upload_history.append(job)
+            else:
+                upload_queue.append(job)
+
+        # Return the JSON response
+        return JsonResponse({"upload_queue": upload_queue, "upload_history": upload_history}, status=200)
+
     except Exception as e:
-        # Log the error and return an error message
+        # Log and return error response
         print(f"Error fetching job statuses: {e}")
         return JsonResponse({"error": "Could not fetch job statuses. Please try again later."}, status=500)
+
+
+
+
 
 
 def search_attributes1(request):

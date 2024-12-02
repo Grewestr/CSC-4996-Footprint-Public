@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Footprint - Home</title>
-<p>{{e}} </p> 
-    <!-- Load static files for CSS and JavaScript -->
-    {% load static %}  <!-- Ensure static tag is loaded -->
     <link rel="stylesheet" href="{% static 'css/homepage.css' %}">
     <link rel="stylesheet" href="{% static 'css/header.css' %}">
-    <script src="{% static 'js/script.js' %}" defer></script>
     <script src="{% static 'js/header.js' %}" defer></script>
 </head>
+
 <body>
     <!-- Header -->
     <header class="header">
@@ -21,26 +20,20 @@
                 </a>
                 <h1 class="site-title">Footprint</h1>
             </div>
-
-            <!-- Burger Menu Button -->
             <button class="burger-menu" aria-label="Toggle Navigation">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
-
             <nav class="nav">
                 {% if request.session.uid %}
                     {% if request.session.role == 'user' %}
-                        <!-- Navigation links for regular users -->
                         <a href="{% url 'homepage' %}" class="nav-link">Home</a>
                         <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
                         <a href="{% url 'upload' %}" class="nav-link">Upload</a>
                         <a href="{% url 'profile' %}" class="nav-link">Profile</a>
                         <a href="{% url 'logout' %}" class="nav-link">Logout</a>
-                    
                     {% elif request.session.role == 'admin' %}
-                        <!-- Navigation links for admins -->
                         <a href="{% url 'homepage' %}" class="nav-link">Home</a>
                         <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
                         <a href="{% url 'upload' %}" class="nav-link">Upload</a>
@@ -49,75 +42,126 @@
                         <a href="{% url 'logout' %}" class="nav-link">Logout</a>
                     {% endif %}
                 {% else %}
-                    <!-- Navigation links for non-logged-in users -->
                     <a href="{% url 'homepage' %}" class="nav-link">Home</a>
                     <a href="{% url 'login' %}" class="nav-link">Login</a>
                     <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
                 {% endif %}
-                
             </nav>
         </div>
     </header>
 
-    <!-- Main Content Section -->
+    <!-- Main Content -->
     <main>
         <div class="container">
-            <!-- Main Heading -->
-            <h2 class="main-heading">Quickly Locate Missing People Using Computer Vision</h2>
-            <!-- Introduction Text -->
-            <p class="intro">
-                Footprint is a system designed to rapidly locate missing individuals by analyzing live video feeds. Utilizing existing technology, it recognizes people based on clothing and appearance without the need for specialized equipment.
-            </p>
+            <!-- Welcome to Footprint -->
+            <section class="welcome-section">
+                <div class="section-title">
+                    <h2>Welcome to Footprint</h2>
+                </div>
+                <div class="welcome-content">
+                    <p>
+                        Footprint is an AI-powered tool for real-time video analysis designed to assist law enforcement in locating missing persons. Users upload videos (e.g., YouTube links), which are processed by advanced computer vision models to detect individuals. The tool crops detected subjects and analyzes their clothing attributes—top, middle, and bottom sections—identifying types and colors. With an integrated search functionality, law enforcement can quickly filter and find individuals based on these attributes, streamlining search operations and enhancing public safety.
+                    </p>
+                </div>
+            </section>
 
-            <!-- Section: Problem & Solutions -->
-            <section>
-                <h3 class="section-heading">Problem & Solutions</h3>
-                <p>
-                    Identifying people based on clothing and appearance poses challenges due to frequent outfit changes and environmental factors like poor lighting or weather conditions. Footprint addresses these issues by combining features such as color and texture with time and location data.
+            <!-- How Footprint Works -->
+            <section class="how-it-works-section">
+                <div class="section-title">
+                    <h2>How Footprint Works</h2>
+                </div>
+                <div class="process-image">
+                    <img src="{% static 'images/ProcessDiagram.jpg' %}" alt="Process Diagram" class="process-diagram">
+                    <!-- Replace 'process_diagram.png' with your actual image name -->
+                </div>
+                <p class="section-description">
+                    Footprint Tech Stack
                 </p>
+                <div class="tech-stack-container">
+                    <ul class="tech-stack">
+                        <li>YOLOv11s for object detection</li>
+                        <li>PyTorch/Roboflow for model training</li>
+                        <li>OpenCV for image processing</li>
+                    </ul>
+                    <ul class="tech-stack">
+                        <li>Django for backend development</li>
+                        <li>Firebase for data storage</li>
+                        <li>Docker Desktop for asynchronous queue management</li>
+                    </ul>
+                </div>
             </section>
 
-            <!-- Section: Why Choose Footprint? -->
-            <section>
-                <h3 class="section-heading">Why Choose Footprint?</h3>
-                <ul class="features-list">
-                    <li>Fast and Efficient</li>
-                    <li>Cost-Effective</li>
-                    <li>Advanced Technology</li>
-                </ul>
+
+            <!-- How to Use -->
+            <section class="how-to-use-section">
+                <div class="section-title">
+                    <h2>How to Use</h2>
+                </div>
+                <div class="video-embed">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/INSERT_VIDEO_ID" title="How to Use Footprint" frameborder="0" allowfullscreen></iframe>
+                </div>
             </section>
 
-            <!-- Section: Target Audience -->
-            <section>
-                <h3 class="section-heading">Target Audience</h3>
-                <p>
-                    Ideal for law enforcement agencies, search and rescue teams, and public safety organizations.
-                </p>
-            </section>
+            <!-- Meet the Developers -->
+            <section class="meet-the-devs-section">
+                <div class="section-title">
+                    <h2>Meet The Developers</h2>
+                </div>
+                <div class="team-container">
+                    <!-- Tim -->
+                    <div class="team-member">
+                        <img src="{% static 'images/tim.png' %}" alt="Timothy Kosinski">
+                        <h3>Timothy Kosinski</h3>
+                        <p>Team Lead/AI Team</p>
+                        <div class="social-links">
+                            <a href="https://www.linkedin.com/in/timothy-kosinski/">LinkedIn</a>
+                            <a href="https://github.com/TKosinski24">GitHub</a>
+                        </div>
+                    </div>
 
-            <!-- Section: Technologies We Use -->
-            <section>
-                <h3 class="section-heading">Technologies We Use</h3>
-                <ul class="tech-list">
-                    <li>YOLOv5 for object detection</li>
-                    <li>PyTorch for model training</li>
-                    <li>OpenCV for image processing</li>
-                    <li>Django for backend development</li>
-                    <li>Python for functions</li>
-                    <li>Firebase for storing attributes and managing queries</li>
-                    <li>GitHub for version control</li>
-                    <!--li>Internal note for Jordan... Add the versions!</li-->
+                    <!-- Jordan -->
+                    <div class="team-member">
+                        <img src="{% static 'images/jordan.jpg' %}" alt="Jordan Grewe">
+                        <h3>Jordan Grewe</h3>
+                        <p>Website Lead/Website Team</p>
+                        <div class="social-links">
+                            <a href="https://www.linkedin.com/in/jordan-grewe-856622252/">LinkedIn</a>
+                            <a href="https://grewestr.github.io/">Portfolio</a>
+                        </div>
+                    </div>
 
-                </ul>
+                    <!-- Akram -->
+                    <div class="team-member">
+                        <img src="{% static 'images/akram.jpg' %}" alt="Akram Ali">
+                        <h3>Akram Ali</h3>
+                        <p>Database Lead/Website Team</p>
+                        <div class="social-links">
+                            <a href="https://www.linkedin.com/in/akram-m-ali/">LinkedIn</a>
+                            <a href="https://github.com/akram213103">GitHub</a>
+                        </div>
+                    </div>
+
+                    <!-- Kevin -->
+                    <div class="team-member">
+                        <img src="{% static 'images/kevin.jpg' %}" alt="Kevin Zheng">
+                        <h3>Kevin Zheng</h3>
+                        <p>Documentation Lead/AI Team</p>
+                        <div class="social-links">
+                            <a href="https://www.linkedin.com/in/kevin-zheng-5214ba1bb/">LinkedIn</a>
+                            <a href="https://github.com/kevinjzh">GitHub</a>
+                        </div>
+                    </div>
+                </div>
             </section>
         </div>
     </main>
 
-    <!-- Footer Section -->
+    <!-- Footer -->
     <footer>
-        <div class="container">
+        <div>
             <p>2024 FOOTPRINT</p>
         </div>
     </footer>
 </body>
+
 </html>

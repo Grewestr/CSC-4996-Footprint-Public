@@ -1,40 +1,51 @@
-# middleware.py
-
 from django.shortcuts import redirect
+import logging
 
 class AuthenticationMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
+        self.logger = logging.getLogger(__name__)
 
     def __call__(self, request):
-        # List of public URLs that don't require authentication
-        public_urls = ['/', '/login/', '/signup/','/password_reset/'] 
+        # Public, user, and admin URL definitions
+        public_urls = ['/', '/login/', '/signup/', '/password_reset/']
+        user_allowed_urls = [
+            '/', '/dashboard/', '/logout/', '/profile/', '/change_password/', '/delete_email/',
+            '/delete-upload/', '/check-status/', '/upload/', '/search_attributes1/',
+            '/format_time_detected/', '/generate_detection_time_link/'
+        ]
+        admin_allowed_urls = [
+            '/', '/admin_dashboard/', '/logout/', '/profile/', '/update_account_status/',
+            '/delete-upload/', '/check-status/', '/change_password/', '/delete_email/',
+            '/upload/', '/dashboard/', '/format_time_detected/', '/generate_detection_time_link/'
+        ]
 
-        # URLs accessible by regular users
-        user_allowed_urls = ['/','/dashboard/','/logout/','/profile/','/change_password/','/delete_email/', '/upload/','/search_attributes1/','/format_time_detected/','/generate_detection_time_link/']
-
-        # URLs accessible by admins
-        admin_allowed_urls = ['/','/admin_dashboard/','/logout/','/profile/','/update_account_status/','/change_password/','/delete_email/', '/upload/','/dashboard/','/format_time_detected/','/generate_detection_time_link/']
-
-        # Get the role and uid from the session
+        # Session values
         uid = request.session.get('uid')
         role = request.session.get('role')
 
-        # If the user is not logged in (no uid in session)
+        # Log the current request path, uid, and role
+        self.logger.info(f"Processing request: path={request.path}, uid={uid}, role={role}")
+
+        # Check for AJAX requests and allow them through
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            self.logger.info(f"Allowing AJAX request: {request.path}")
+            return self.get_response(request)
+
+        # Redirect unauthenticated users
         if not uid and request.path not in public_urls:
-            # Redirect to login page if trying to access a protected page without being logged in
+            self.logger.warning(f"Redirecting unauthenticated request: {request.path}")
             return redirect('login')
 
-        # If logged in as a user, check allowed URLs
+        # Handle role-based URL restrictions
         if role == 'user' and request.path not in user_allowed_urls:
-            # Redirect regular users trying to access admin pages to the user dashboard
+            self.logger.warning(f"Redirecting user to dashboard: unauthorized path={request.path}")
             return redirect('dashboard')
 
-        # If logged in as an admin, check allowed URLs
-        if role == 'admin':
-            # Check if the path starts with any allowed admin URL
-            if not any(request.path.startswith(url) for url in admin_allowed_urls):
-                return redirect('admin_dashboard')
+        if role == 'admin' and not any(request.path.startswith(url) for url in admin_allowed_urls):
+            self.logger.warning(f"Redirecting admin to admin_dashboard: unauthorized path={request.path}")
+            return redirect('admin_dashboard')
 
-        # If all conditions are met, allow access to the requested page
+        # Allow the request through if all conditions are met
+        self.logger.info(f"Request allowed: path={request.path}")
         return self.get_response(request)

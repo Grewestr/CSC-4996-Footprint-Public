@@ -32,7 +32,7 @@ def detect_clothing_attributes(person_crop):
     _, img_encoded = cv2.imencode(".jpg", person_crop)
     img_base64 = base64.b64encode(img_encoded).decode("utf-8")
     try:
-        result = CLIENT.infer(img_base64, model_id="clothing-detection-2/9")
+        result = CLIENT.infer(img_base64, model_id="clothing-detection-2/11")
         return result['predictions']
     except Exception as e:
         print(f"Inference for clothing attributes failed: {e}")

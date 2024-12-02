@@ -8,8 +8,11 @@
     <link rel="stylesheet" href="{% static 'css/upload.css' %}">
     <link rel="stylesheet" href="{% static 'css/header.css' %}">
     <script src="{% static 'js/header.js' %}" defer></script>
+    <script src="{% static 'js/upload.js' %}" defer></script>
 </head>
-<body class="upload-page">
+<body class="upload-page"
+      data-check-status-url="{% url 'check_job_status' %}"
+      data-delete-upload-url="{% url 'delete_upload_view' %}">
     <header class="header">
         <div class="container">
             <div class="logo-and-title">
@@ -18,7 +21,6 @@
                 </a>
                 <h1 class="site-title">Footprint</h1>
             </div>
-            <!-- Burger Menu Button -->
             <button class="burger-menu" aria-label="Toggle Navigation">
                 <span></span>
                 <span></span>
@@ -27,15 +29,12 @@
             <nav class="nav">
                 {% if request.session.uid %}
                     {% if request.session.role == 'user' %}
-                        <!-- Navigation links for regular users -->
                         <a href="{% url 'homepage' %}" class="nav-link">Home</a>
                         <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
                         <a href="{% url 'upload' %}" class="nav-link">Upload</a>
                         <a href="{% url 'profile' %}" class="nav-link">Profile</a>
                         <a href="{% url 'logout' %}" class="nav-link">Logout</a>
-                    
                     {% elif request.session.role == 'admin' %}
-                        <!-- Navigation links for admins -->
                         <a href="{% url 'homepage' %}" class="nav-link">Home</a>
                         <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
                         <a href="{% url 'upload' %}" class="nav-link">Upload</a>
@@ -44,34 +43,35 @@
                         <a href="{% url 'logout' %}" class="nav-link">Logout</a>
                     {% endif %}
                 {% else %}
-                    <!-- Navigation links for non-logged-in users -->
                     <a href="{% url 'homepage' %}" class="nav-link">Home</a>
                     <a href="{% url 'login' %}" class="nav-link">Login</a>
                     <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
                 {% endif %}
-                
             </nav>
         </div>
     </header>
 
     <main class="container main-content">
-        <!-- Left Section (Upload Section) -->
+        <!-- Upload YouTube Video Section -->
         <div class="left-section">
-            <h2>Upload YouTube Video</h2>
+            <h2 class="section-title">Upload YouTube Video</h2>
             <div class="instructions">
                 <p>Enter a YouTube video link to process it with our AI model. Choose the processing speed that suits your needs.</p>
             </div>
-            {% if message %}
-                <div class="message">
-                    <p>{{ message }}</p>
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div class="alert {{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
                 </div>
             {% endif %}
             <form action="{% url 'upload' %}" method="post" class="upload-form">
                 {% csrf_token %}
-                
                 <label for="feed_name">Feed Name:</label>
                 <input type="text" id="feed_name" name="feed_name" placeholder="Enter a feed name" required>
-
+                <br>
                 <label for="youtube_link">YouTube Video Link:</label>
                 <input type="url" id="youtube_link" name="youtube_link" placeholder="Enter YouTube video link" required>
 
@@ -88,69 +88,88 @@
                     <input type="hidden" id="processing_speed" name="processing_speed" value="5">
                 </div>
 
+                <div class="instructions">
+                    <p>
+                         <strong>Slow:</strong> Analyzes 1 frame per second for higher accuracy.  
+                        <br>
+                         <strong>Medium:</strong> Analyzes 1 frame every 5 seconds for balanced performance.  
+                        <br>
+                         <strong>Fast:</strong> Analyzes 1 frame every 10 seconds for quicker results.  
+                    </p>
+                </div>
+
                 <p id="estimated-time">Estimated processing time: <span>Moderate</span></p>
-                <button type="submit" id="submit-button">Upload</button>
+                <button type="submit" id="submit-button" class="submit-button">Upload</button>
             </form>
         </div>
 
-
         <!-- Upload Queue Section -->
-        <div class="right-section queue-section" style="flex: 2;">
-            <h2>Upload Queue</h2>
+        <div class="right-section queue-section">
+            <h2 class="section-title">Upload Queue</h2>
             {% if upload_queue %}
-                <table id="queue-table">
-                    <thead>
-                        <tr>
-                            <th>Feed Name</th>
-                            <th>Processing Speed</th>
-                            <th>Status</th>
-                            <th>Uploaded At</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for upload in upload_queue %}
-                            <tr data-job-id="{{ upload.job_id }}">
-                                <td>{{ upload.feed_name }}</td>
-                                <td>{{ upload.speed }}</td>
-                                <td class="status-cell">{{ upload.feed_status }}</td>
-                                <td>{{ upload.uploaded_at }}</td>
-                                <td><button class="delete-button">Delete</button></td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <table id="queue-table">
+                <thead>
+                    <tr>
+                        <th>Feed Name</th>
+                        <th>Status</th>
+                        <th>Uploaded At</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for upload in upload_queue %}
+                    <tr data-job-id="{{ upload.job_id }}" data-delete-upload-url="{% url 'delete_upload_view' %}">
+                        <td>
+                            {% if upload.youtube_link %}
+                            <a href="{{ upload.youtube_link }}" target="_blank">{{ upload.feed_name }}</a>
+                            {% else %}
+                            {{ upload.feed_name }}
+                            {% endif %}
+                        </td>
+                        <td>{{ upload.feed_status }}</td>
+                        <td>{{ upload.uploaded_at }}</td>
+                        <td>
+                            <button type="button" class="delete-button">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>                
+            </table>
             {% else %}
-                <p id="no-uploads-message">No videos in the queue.</p>
+            <p id="no-uploads-message">No videos in the queue.</p>
             {% endif %}
         </div>
-    
+
         <!-- Upload History Section -->
-        <div class="right-section queue-section" style="flex: 2;">
-            <h2>Upload History</h2>
+        <div class="right-section queue-section">
+            <h2 class="section-title">Upload History</h2>
             {% if upload_history %}
-                <table id="history-table">
-                    <thead>
-                        <tr>
-                            <th>Feed Name</th>
-                            <th>Processing Speed</th>
-                            <th>Status</th>
-                            <th>Uploaded At</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for upload in upload_history %}
-                            <tr>
-                                <td>{{ upload.feed_name }}</td>
-                                <td>{{ upload.speed }}</td>
-                                <td>{{ upload.feed_status }}</td>
-                                <td>{{ upload.uploaded_at }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <table id="history-table">
+                <thead>
+                    <tr>
+                        <th>Feed Name</th>
+                        <th>Status</th>
+                        <th>Uploaded At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for upload in upload_history %}
+                    <tr>
+                        <td>
+                            {% if upload.youtube_link %}
+                                <a href="{{ upload.youtube_link }}" target="_blank">{{ upload.feed_name }}</a>
+                            {% else %}
+                                {{ upload.feed_name }}
+                            {% endif %}
+                        </td>
+                        <td>{{ upload.feed_status }}</td>
+                        <td>{{ upload.uploaded_at }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
             {% else %}
-                <p id="no-history-message">No completed uploads.</p>
+            <p id="no-history-message">No completed uploads.</p>
             {% endif %}
         </div>
 
@@ -159,7 +178,5 @@
     <footer>
         <p>2024 FOOTPRINT</p>
     </footer>
-
-    <script src="{% static 'js/upload.js' %}"></script>
 </body>
 </html>

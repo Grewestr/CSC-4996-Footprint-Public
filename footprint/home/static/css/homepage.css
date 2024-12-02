@@ -1,106 +1,149 @@
-/* ================================
-   Homepage Styles
-=============================== */
-
 /* General Styles */
 body {
   font-family: 'Roboto', sans-serif;
-  background-color: #e0e0e0; /* Light grey background for consistency */
-  color: #000000;
+  background-color: #e0e0e0;
   margin: 0;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  padding: 0;
 }
 
-/* Container Styles */
 .container {
   width: 95%;
-  max-width: 1200px; 
+  max-width: 1200px;
   margin: 0 auto;
+  padding-top: 10px; /* Adds space between header and main content */
 }
 
-/* Main Content Styles */
-main {
-  padding-top: 40px; 
-  padding-left: 20px; 
-  padding-right: 20px; 
-  padding-bottom: 0px;
-  flex: 1;
-  overflow-y: auto;
-}
-
-/* Main Content Headings */
-.main-heading {
-  font-size: 2.6em; 
-  margin-bottom: 30px;
-  font-weight: 700;
-}
-
-.intro {
-  font-size: 1.6em; 
-  margin-bottom: 40px;
-  font-weight: 500;
-}
-
-/* Section Heading Styles */
-.section-heading {
-  font-size: 1.8em; 
-  margin: 30px 0;
-  cursor: pointer;
-  position: relative;
-  transition: color 0.3s ease, transform 0.3s ease;
-  font-weight: 700;
-}
-
-.section-heading:hover {
-  transform: scale(1.1);
-  color: #007BFF;
-  font-weight: 800;
-}
-
-.section-heading::after {
-  content: '+';
-  position: absolute;
-  right: 0;
-  font-size: 1.5em; 
-  transition: transform 0.3s;
-}
-
-.section.open .section-heading::after {
-  transform: rotate(45deg);
-}
-
-/* Section Content Styles */
-section p,
-section ul {
-  display: none;
+/* Section Styles */
+section {
+  background-color: #fff;
+  padding: 30px;
   margin-bottom: 20px;
-  font-size: 1.2em; 
-  font-weight: 500;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 30px; /* Adds space between sections */
 }
 
-section.open p,
-section.open ul {
+/* Text Styling */
+p, ul {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #333;
+}
+
+/* How Footprint Works Section */
+.how-it-works-section {
+  background-color: #fff;
+  padding: 30px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+}
+
+.process-image {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.process-diagram {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.section-description {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: justify;
+}
+
+.tech-stack-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.tech-stack {
+  list-style: disc;
+  padding-left: 20px;
+  margin: 0;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #333;
+}
+
+.tech-stack li {
+  margin-bottom: 10px;
+}
+
+/* Team Section */
+.team-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .team-container {
+    grid-template-columns: 1fr; /* Single column for smaller screens */
+  }
+}
+
+.team-member {
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.team-member img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  margin-bottom: 15px;
+}
+
+.team-member h3 {
+  font-size: 1.6rem; /* Slightly larger font for name */
+  margin-bottom: 10px;
+}
+
+.team-member p {
+  font-size: 1.2rem; /* Increased font size */
+  color: #444; /* Improved contrast */
+  margin-bottom: 10px;
+}
+
+.team-member a {
+  color: #007BFF;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.team-member a:hover {
+  color: #0056b3; /* Darker blue on hover */
+  text-decoration: underline;
+}
+
+/* Video Embed */
+.video-embed iframe {
+  width: 100%;
+  max-width: 700px;
+  height: 400px;
+  margin: 0 auto;
   display: block;
-}
-
-.features-list,
-.tech-list {
-  list-style-type: square;
-  padding-left: 30px; 
-  font-size: 1.2em; 
-  font-weight: 500;
 }
 
 /* Footer Styles */
 footer {
   border-top: 2px solid #000;
-  padding: 20px;
+  padding: 20px 0;
   text-align: center;
-  background-color: #ffffff; 
-  font-weight: 500;
-  width: 100%;
-  margin-top: auto;
+  background-color: #fff;
+  margin-top: 40px; /* Adds space above footer */
 }
-
