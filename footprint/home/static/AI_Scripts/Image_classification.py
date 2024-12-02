@@ -4,11 +4,10 @@ import base64
 import csv
 import numpy as np
 from inference_sdk import InferenceHTTPClient
-import clip
-import torch
-import sys
-from PIL import Image
-sys.path.append(R"C:\Users\17344\Documents\Capstone2\CLIP") # Change to where CLIP is cloned
+from sklearn.metrics.pairwise import euclidean_distances
+from colormath.color_objects import sRGBColor, LabColor
+from colormath.color_conversions import convert_color
+from color_diff import delta_e_cie2000
 
 # Define paths relative to the container’s working directory
 input_folder = "/AI_Scripts/Identified_Person"
@@ -44,7 +43,7 @@ def detect_top_color(person_crop):
     _, img_encoded = cv2.imencode(".jpg", person_crop)
     img_base64 = base64.b64encode(img_encoded).decode("utf-8")
     try:
-        result = CLIENT.infer(img_base64, model_id="hair_color_detection/10") # Hair Color Detection Model
+        result = CLIENT.infer(img_base64, model_id="hair_color_detection/7") # Hair Color Detection Model
         return result['predictions']
     except Exception as e:
         print(f"Inference for top color failed: {e}")
@@ -64,7 +63,7 @@ def get_bounding_box(prediction):
     ]
 
 # Calculate dominant color in a bounding box
-def color_detection(image, bbox):
+def dominant_color_detection(image, bbox):
     x, y, width, height = bbox
     x_start = int(max(0, x - width // 2))
     y_start = int(max(0, y - height // 2))
@@ -72,30 +71,62 @@ def color_detection(image, bbox):
     y_end = int(min(image.shape[0], y + height // 2))
     subimage = image[y_start:y_end, x_start:x_end]
     subimage = cv2.cvtColor(subimage, cv2.COLOR_BGR2RGB)
-    subimage = Image.fromarray(subimage)
+    pixels = subimage.reshape(-1, 3)
+    _, labels, centers = cv2.kmeans(data=np.float32(pixels), K=3, bestLabels=None,
+                                    criteria=(cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 20, 0.2),
+                                    attempts=10, flags=cv2.KMEANS_RANDOM_CENTERS)
+    centers = np.uint8(centers)
+    dominant_color = centers[np.argmax(np.bincount(labels.flatten()))]
+    return dominant_color
 
-    # Load the model
-    model, preprocess = clip.load("RN101", device="cuda" if torch.cuda.is_available() else "cpu")
+# Convert RGB to Lab color space
+def rgb_to_lab(rgb):
+    srgb = sRGBColor(rgb[0], rgb[1], rgb[2], is_upscaled=True)
+    lab = convert_color(srgb, LabColor)
+    return lab.lab_l, lab.lab_a, lab.lab_b
 
-    # Define the text labels
-    text = ["black clothing", "white clothing", "gray clothing", "brown clothing", "beige clothing",
-            "red clothing", "orange clothing", "yellow clothing", "green clothing", "blue clothing",
-            "purple clothing", "pink clothing"]
+# Detect color based on Lab values
+def detect_color(rgb_tuple):
+    l, a, b = rgb_to_lab(rgb_tuple)
+    color_ranges = [
+        ("black", 0, 0, 0),
+        ("white", 100, 0, 0),
+        ("gray", 50, 0, 0),
+        ("gray", 25, 0, 0), # Dark gray
+        ("brown", 30, 19, 25),
+        ("brown", 45, 5, 14), # Light brown but not beige
+        ("beige", 70, 10, 20),
+        ("red", 53, 80, 67),
+        ("red", 25, 50, 40), # Dark red
+        ("orange", 62, 34, 62),
+        ("orange", 64, 56, 50), # Peachy orange 
+        ("orange", 58, 65, 75), # Dark orange
+        ("yellow", 97, -21, 94),
+        ("yellow", 85, 0, 60), # Light yellow
+        ("green", 46, -51, 50),
+        ("green", 75, -30, 30), # Light green
+        ("blue", 32, 79, -108),
+        ("blue", 65, -10, -30), # Light blue
+        ("purple", 29, 58, -36),
+        ("purple", 50, 60, -68), # Light purple
+        ("purple", 40, 83, -93), # Purple with blue tint
+        ("pink", 75, 31, -6)
+    ]
+    
+    # Create a LabColor object for the input color
+    color_to_detect = LabColor(lab_l=l, lab_a=a, lab_b=b)
+    
+    # Calculate Delta-E for each predefined color
+    min_distance = float('inf')
+    closest_color = None
+    for color_name, l2, a2, b2 in color_ranges:
+        reference_color = LabColor(lab_l=l2, lab_a=a2, lab_b=b2)
+        delta_e = delta_e_cie2000(color_to_detect, reference_color)
+        if delta_e < min_distance:
+            min_distance = delta_e
+            closest_color = color_name
 
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-
-    # Tokenize the text
-    text_tokens = clip.tokenize(text).to(device)
-
-       
-    image_input = preprocess(subimage).unsqueeze(0).to(device)
-
-    # Get features and similarity
-    with torch.no_grad():
-        logits_per_image = model(image_input, text_tokens)
-        probs = logits_per_image.softmax(dim=-1).cpu().numpy()
-
-    return text[np.argmax(probs)].split()[0]
+    return closest_color
 
 # Process image for clothing attributes
 def process_image_for_attributes(image_path):
@@ -120,10 +151,10 @@ def process_image_for_attributes(image_path):
                 top_type = label
             elif "shirt" in label:
                 middle_type = label
-                middle_color = color_detection(image, bbox)
+                middle_color = detect_color(dominant_color_detection(image, bbox))
             elif "pants" in label or "skirt" in label:
                 bottom_type = label
-                bottom_color = color_detection(image, bbox)
+                bottom_color = detect_color(dominant_color_detection(image, bbox))
 
     top_color_predictions = detect_top_color(image)
     if top_color_predictions:
