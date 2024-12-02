@@ -63,12 +63,25 @@ def get_bounding_box(prediction):
     ]
 
 # Calculate dominant color in a bounding box
-def dominant_color_detection(image, bbox):
+def dominant_color_detection(image, bbox, middle_or_bottom):
     x, y, width, height = bbox
-    x_start = int(max(0, x - width // 2))
-    y_start = int(max(0, y - height // 2))
-    x_end = int(min(image.shape[1], x + width // 2))
-    y_end = int(min(image.shape[0], y + height // 2))
+
+    if middle_or_bottom == 'pants':
+        x_start = int(max(0, x - width // 2))
+        y_start = int(max(0, y - height // 2))
+        x_end = int(min(image.shape[1], x + width // 2))
+        y_end = int(min(image.shape[0], y))
+    else:
+        x_start = int(max(0, x - width // 2))
+        y_start = int(max(0, y - height // 2))
+        x_end = int(min(image.shape[1], x + width // 2))
+        y_end = int(min(image.shape[0], y + height // 2))
+
+    x_start *= 1.1
+    y_start *= 1.1
+    x_end *= 0.9
+    y_end *= 0.9
+    
     subimage = image[y_start:y_end, x_start:x_end]
     subimage = cv2.cvtColor(subimage, cv2.COLOR_BGR2RGB)
     pixels = subimage.reshape(-1, 3)
@@ -151,10 +164,10 @@ def process_image_for_attributes(image_path):
                 top_type = label
             elif "shirt" in label:
                 middle_type = label
-                middle_color = detect_color(dominant_color_detection(image, bbox))
+                middle_color = detect_color(dominant_color_detection(image, bbox, "shirt"))
             elif "pants" in label or "skirt" in label:
                 bottom_type = label
-                bottom_color = detect_color(dominant_color_detection(image, bbox))
+                bottom_color = detect_color(dominant_color_detection(image, bbox, "pants"))
 
     top_color_predictions = detect_top_color(image)
     if top_color_predictions:
