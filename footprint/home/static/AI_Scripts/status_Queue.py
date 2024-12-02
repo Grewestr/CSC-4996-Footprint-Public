@@ -20,7 +20,7 @@ def view_all_jobs():
             started_jobs.append(job)
         except Exception as e:
             print(f"Warning: Could not fetch job {job_id} due to: {e}")
-            started_job_registry.remove(job_id)  # Remove ghost job just incase first job is considered queue
+            started_job_registry.remove(job_id)  
 
     # Get queued jobs directly from the queue
     queued_jobs = []

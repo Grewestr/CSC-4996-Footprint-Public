@@ -32,7 +32,7 @@ def detect_clothing_attributes(person_crop):
     _, img_encoded = cv2.imencode(".jpg", person_crop)
     img_base64 = base64.b64encode(img_encoded).decode("utf-8")
     try:
-        result = CLIENT.infer(img_base64, model_id="clothing-detection-2/11")
+        result = CLIENT.infer(img_base64, model_id="clothing-detection-2/11") #Clothing Detection Model
         return result['predictions']
     except Exception as e:
         print(f"Inference for clothing attributes failed: {e}")
@@ -43,7 +43,7 @@ def detect_top_color(person_crop):
     _, img_encoded = cv2.imencode(".jpg", person_crop)
     img_base64 = base64.b64encode(img_encoded).decode("utf-8")
     try:
-        result = CLIENT.infer(img_base64, model_id="hair_color_detection/7")
+        result = CLIENT.infer(img_base64, model_id="hair_color_detection/7") # Hair Color Detection Model
         return result['predictions']
     except Exception as e:
         print(f"Inference for top color failed: {e}")
@@ -132,6 +132,7 @@ def detect_color(rgb_tuple):
 def process_image_for_attributes(image_path):
     image = cv2.imread(image_path)
     
+    # Default Values 
     top_type = "NULL"
     top_color = "Unknown"
     middle_type = "NULL"
@@ -140,6 +141,7 @@ def process_image_for_attributes(image_path):
     bottom_color = "Unknown"
 
     predictions = detect_clothing_attributes(image)
+    # Retrieve predictions and filter prediction values to category (Top,Middle,Bottom)
     for prediction in predictions:
         label = prediction.get("class", "")
         confidence = prediction.get("confidence", 0.01)
@@ -159,6 +161,7 @@ def process_image_for_attributes(image_path):
         top_color_label = top_color_predictions[0].get("class", "unknown_hair")
         top_color = map_top_color(top_color_label)
 
+    # Return values for found results
     return {
         "Image Name": os.path.basename(image_path),
         "Image Hash": os.path.splitext(os.path.basename(image_path))[0],
@@ -170,6 +173,7 @@ def process_image_for_attributes(image_path):
         "Bottom Color": bottom_color,
     }
 
+# Saved stored values and transfer to .csv file
 def save_to_csv(results):
     fieldnames = ["Image Name", "Image Hash", "Top Type", "Top Color", "Middle Type", "Middle Color",
                   "Bottom Type", "Bottom Color"]

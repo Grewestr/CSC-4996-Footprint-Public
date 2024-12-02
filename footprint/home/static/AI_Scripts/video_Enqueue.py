@@ -95,22 +95,22 @@ if __name__ == "__main__":
     user_id = sys.argv[3]
     document_id = sys.argv[4]  # Receive document ID
 
-    # Step 1: Enqueue the video processing job
+    # Enqueue the video processing job
     job = enqueue_video(video_url, interval, user_id, document_id)
     
-    # Step 2: Wait for video processing job to complete
+    # Wait for video processing job to complete
     if wait_for_job_completion(job, document_id):
-        # Step 3: Wait for tempdata.csv to be populated, only after job completion
+        # Wait for tempdata.csv to be populated, only after job completion
         if wait_for_tempdata():
             # Debugging output for tempdata.csv contents
             debug_tempdata_file()
             
-            # Step 4: Start image classification once tempdata.csv is ready
+            # Start image classification once tempdata.csv is ready
             print("Starting image classification...")
             Image_classification.main()
             print("Image classification completed.")
             
-            # Step 5: Start CSV to Firestore upload
+            # Start CSV to Firestore upload
             print("Starting CSV to Firestore upload...")
             CSV_To_Firestore.main()
             print("CSV to Firestore upload completed.")
