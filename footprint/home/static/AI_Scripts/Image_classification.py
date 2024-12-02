@@ -120,6 +120,7 @@ def detect_color(rgb_tuple):
         ("green", 75, -30, 30), # Light green
         ("blue", 32, 79, -108),
         ("blue", 65, -10, -30), # Light blue
+        ("blue", 45.84, -0.65, -15.4) # Jean blue
         ("purple", 29, 58, -36),
         ("purple", 50, 60, -68), # Light purple
         ("purple", 40, 83, -93), # Purple with blue tint
