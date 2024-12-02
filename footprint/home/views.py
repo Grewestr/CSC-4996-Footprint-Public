@@ -53,7 +53,7 @@ def dashboard_view(request):
     if user_email:
         try:
             # Query the live_feeds collection for documents with matching user_email and finished feed status
-            feeds_query = db.collection('live_feeds').where('user_email', '==', user_email).where('feed_status', '==', 'finished').stream()
+            feeds_query = db.collection('liveFchnage_feeds').where('user_email', '==', user_email).where('feed_status', '==', 'finished').stream()
 
             # Extract only the feed name for each matching document
             live_feed_names = [feed.to_dict().get('feed_name') for feed in feeds_query if 'feed_name' in feed.to_dict()]
@@ -516,7 +516,8 @@ def change_password(request):
 
         # Gather user information from the session for rendering back to the profile page
         user_info = {
-            'full_name': request.session.get('full_name', 'Not available'),
+            'first_name': request.session.get('first_name', 'Not available'),
+            'last_name': request.session.get('last_name', 'Not available'),
             'email': request.session.get('email', 'Not available'),
             'department_name': request.session.get('department_name', 'Not available'),
             'keep_modal_open': True  # Flag to keep the modal open in the frontend
