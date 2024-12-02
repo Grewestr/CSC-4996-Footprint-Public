@@ -184,7 +184,7 @@ body {
 .results-section {
     grid-column: 2 / 3;
     grid-row: 1 / 4;
-    max-height: 1290px;
+    max-height: 1400px;
     overflow-y: auto;
 }
 
@@ -645,7 +645,7 @@ footer {
     padding: 10px;
     background-color: #ffffff; /* Match the rest of the design */
     border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+   /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
 }
 
 
