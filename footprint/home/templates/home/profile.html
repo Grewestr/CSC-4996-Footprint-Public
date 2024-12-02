@@ -64,51 +64,30 @@
     <main class="container">
         <!-- Display User Information -->
         <div class="profile-container">
-            <div class="user-info">
-                <!-- Edit Profile Button-->
-                <button id="editProfileButton">Edit Profile</button>
-                <div style="display: none;" id="saveCancelButtons">
-                    <button type="submit" id="saveChangesButton">Save</button>
-                    <button id="cancelEditButton">Cancel</button>
-                </div>
-    
-                <!-- Profile Picture-->
-                <div class="image-container">
-                    <img src="{% if profile_picture_url %}{{ profile_picture_url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" class="profile-picture">
-                </div>
-    
                 <div class="profile">
                     <form method="POST" action="{% url 'edit_profile' %}" id="editProfileForm">
                         {% csrf_token %}
                         <div class="infoType">
                             <p class="infoTypeDisplay"><strong>First Name</strong></p>
                             <p class="infoDisplay" id="firstNameDisplay">{{ first_name }}</p>
-                            <input type="text" name="first_name" id="firstNameInput" value="{{ first_name }}" style="display: none;">
                         </div>
                         
                         <div class="infoType">
                             <p class="infoTypeDisplay"><strong>Last Name</strong></p>
                             <p class="infoDisplay" id="lastNameDisplay">{{ last_name }}</p>
-                            <input type="text" name="last_name" id="lastNameInput" value="{{ last_name }}" style="display: none;">
                         </div>
                         
                         <div class="infoType">
                             <p class="infoTypeDisplay"><strong>Email</strong></p>
                             <p class="infoDisplay" id="emailDisplay">{{ email }}</p>
-                            <input type="email" name="email" id="emailInput" value="{{ email }}" style="display: none;">
                         </div>
                         
                         <div class="infoType">
                             <p class="infoTypeDisplay"><strong>Department</strong></p>
                             <p class="infoDisplay" id="departmentDisplay">{{ department_name }}</p>
-                            <input type="text" name="department_name" id="departmentInput" value="{{ department_name }}" style="display: none;">
                         </div>
                     </form>
                 </div>
-    
-            {% if invalid_message %}
-                <p style="color: red;">{{ invalid_message }}</p>
-            {% endif %}
             </div>
 
             <!-- Button Container -->
