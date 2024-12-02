@@ -147,3 +147,68 @@ footer {
   background-color: #fff;
   margin-top: 40px; /* Adds space above footer */
 }
+
+.hero-banner {
+  display: flex;
+  justify-content: center; /* Center-aligns the content horizontally */
+  align-items: center; /* Center-aligns the content vertically */
+  gap: 20rem; /* Adds spacing between the items */
+  background-color: #f4f4f4;
+  padding: 1rem; /* Adjusted padding for better balance */
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: center; /* Ensures all text within the banner is centered */
+}
+
+/* Center Table in Tab Section */
+.tab-content table {
+  margin: 0 auto; /* Centers the table */
+  text-align: center; /* Aligns text in the table */
+  width: 90%; /* Adjust table width */
+}
+
+.tab-content th, .tab-content td {
+  padding: 0.75rem; /* Adjusts padding for cells */
+  text-align: center; /* Centers content in cells */
+}
+
+.tab-content thead th {
+  background-color: #f4f4f4;
+  border-bottom: 2px solid #ddd;
+}
+
+.tab-content tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.tab-content tbody tr:hover {
+  background-color: #eaeaea;
+}
+
+.tabs {
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 0.5rem;
+  background: #f4f4f4;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  text-align: center;
+}
+
+.tab-button.active {
+  background: #3b82f6;
+  color: white;
+  font-weight: bold;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
