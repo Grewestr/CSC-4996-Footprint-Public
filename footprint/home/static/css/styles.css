@@ -196,14 +196,15 @@ section.open ul {
    Controls the layout and apperance of the footer, including border, padding, and text alignment
 ========================================= */
 
+/* Footer Styles */
 footer {
   border-top: 2px solid #000;
   padding: 20px 0;
   text-align: center;
-  margin-top: 40px;
-  font-weight: 500;  
-  font-size: 0.9em;
-  color: #666; /* Secondary text color */
+  font-weight: 500;
+  background-color: #ffffff;
+  width: 100%;
+  margin-top: auto; /* Pushes footer to the bottom */
 }
 
 /* =========================================
