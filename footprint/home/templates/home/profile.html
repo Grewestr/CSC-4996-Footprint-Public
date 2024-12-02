@@ -65,28 +65,25 @@
         <!-- Display User Information -->
         <div class="profile-container">
                 <div class="profile">
-                    <form method="POST" action="{% url 'edit_profile' %}" id="editProfileForm">
-                        {% csrf_token %}
-                        <div class="infoType">
-                            <p class="infoTypeDisplay"><strong>First Name</strong></p>
-                            <p class="infoDisplay" id="firstNameDisplay">{{ first_name }}</p>
-                        </div>
-                        
-                        <div class="infoType">
-                            <p class="infoTypeDisplay"><strong>Last Name</strong></p>
-                            <p class="infoDisplay" id="lastNameDisplay">{{ last_name }}</p>
-                        </div>
-                        
-                        <div class="infoType">
-                            <p class="infoTypeDisplay"><strong>Email</strong></p>
-                            <p class="infoDisplay" id="emailDisplay">{{ email }}</p>
-                        </div>
-                        
-                        <div class="infoType">
-                            <p class="infoTypeDisplay"><strong>Department</strong></p>
-                            <p class="infoDisplay" id="departmentDisplay">{{ department_name }}</p>
-                        </div>
-                    </form>
+                    <div class="infoType">
+                        <p class="infoTypeDisplay"><strong>First Name</strong></p>
+                        <p class="infoDisplay" id="firstNameDisplay">{{ first_name }}</p>
+                    </div>
+                    
+                    <div class="infoType">
+                        <p class="infoTypeDisplay"><strong>Last Name</strong></p>
+                        <p class="infoDisplay" id="lastNameDisplay">{{ last_name }}</p>
+                    </div>
+                    
+                    <div class="infoType">
+                        <p class="infoTypeDisplay"><strong>Email</strong></p>
+                        <p class="infoDisplay" id="emailDisplay">{{ email }}</p>
+                    </div>
+                    
+                    <div class="infoType">
+                        <p class="infoTypeDisplay"><strong>Department</strong></p>
+                        <p class="infoDisplay" id="departmentDisplay">{{ department_name }}</p>
+                    </div>
                 </div>
             </div>
 
