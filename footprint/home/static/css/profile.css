@@ -15,9 +15,11 @@ body {
 
 /* Container Styles */
 .container {
+  display: flex;
   width: 95%;
   max-width: 900px; 
   margin: 0 auto;
+  justify-content: center;
 }
 
 main {
@@ -35,17 +37,8 @@ main {
   margin: 0;
 }
 
-.image-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-left: 50px;
-}
-
 /* User Information Styles */
 .profile-container {
-  justify-content: center;
-  align-items: center;
   margin-top: 80px;
   margin-bottom: 40px;
   padding: 20px;
@@ -53,6 +46,8 @@ main {
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   background-color: #cecece;
+  width: fit-content;
+  height: fit-content;
 }
 
 .user-info {
@@ -67,14 +62,6 @@ main {
   font-weight: 700;
 }
 
-.user-info .profile-picture {
-  width: 270px;
-  height: 270px;
-  border-radius: 50%;
-  object-fit: cover;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
-}
 
 /* Input Style */
 .profile input[type="text"], 
@@ -95,14 +82,31 @@ main {
 }
 
 /* Button Styles */
-#editProfileButton {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 16px;
-  border: #fff;
-  border-radius: 5px;
-  background-color: #cecece;
+.button-container #changePasswordButton {
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+.button-container #changePasswordButton:hover {
+  text-decoration: underline;
+  color: black;
+  transform: scale(1);
+}
+
+.button-container #deleteEmailButton {
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+.button-container #deleteEmailButton:hover {
+  text-decoration: underline;
+  color: black;
+  transform: scale(1);
+  background: #cecece;
 }
 
 #editProfileButton:hover {
@@ -152,15 +156,37 @@ main {
   border: #fff;
 }
 
-#deleteEmailButton {
+#submitDeleteEmail {
   background-color:#ff00009d;
   color: #000000;
 }
 
-#deleteEmailButton:hover {
+#submitDeleteEmail:hover {
   background-color:#aa00009d;
   transform: scale(1.05);
   color: #fff;
+}
+
+.other {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two equal-width columns */
+  width: 600px;
+  gap: 10px;
+  margin-left: 15px;
+  justify-content: left; /* Align grid items to the left */
+  font-size: 1.15em;
+  padding-top: 10px;
+  position: relative;
+}
+
+#logoid {
+  position: absolute;
+  right: 20px;
+  transform: scale(1.5);
+}
+
+.infoTypeOther {
+  width: 250px;
 }
 
 .button-container {
@@ -171,6 +197,7 @@ main {
   width: 95%;
   max-width: 900px;
   margin: 0 auto;
+  margin-top: 50px;
 }
 
 .button {
@@ -195,6 +222,17 @@ main {
 .infoType {
   margin-top: 30px;
   margin-bottom: 30px;
+}
+
+.profile .infoTypeName {
+  margin-top: 10px;
+  margin-bottom: 30px;
+  background-color: rgb(68, 68, 68);
+  color: white;
+  padding: 10px;
+  padding-left: 30px;
+  border-radius: 5px;
+  font-size: 1.35em;
 }
 
 .infoTypeDisplay {
