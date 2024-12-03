@@ -6,6 +6,7 @@
     <title>Profile</title>
     {% load static %}
     <!-- External Stylesheets -->
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <link rel="stylesheet" href="{% static 'css/change_password.css' %}">
     <link rel="stylesheet" href="{% static 'css/delete_email.css' %}">
     <link rel="stylesheet" href="{% static 'css/profile.css' %}">
@@ -38,7 +39,7 @@
                         <a href="{% url 'dashboard' %}" class="nav-link">Dashboard</a>
                         <a href="{% url 'upload' %}" class="nav-link">Upload</a>
                         <a href="{% url 'profile' %}" class="nav-link">Profile</a>
-                        <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+                        <a href="{% url 'logout' %}" class="nav-link">Log out</a>
                     
                     {% elif request.session.role == 'admin' %}
                         <!-- Navigation links for admins -->
@@ -47,12 +48,12 @@
                         <a href="{% url 'upload' %}" class="nav-link">Upload</a>
                         <a href="{% url 'admin_dashboard' %}" class="nav-link">Admin</a>
                         <a href="{% url 'profile' %}" class="nav-link">Profile</a>
-                        <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+                        <a href="{% url 'logout' %}" class="nav-link">Log out</a>
                     {% endif %}
                 {% else %}
                     <!-- Navigation links for non-logged-in users -->
                     <a href="{% url 'homepage' %}" class="nav-link">Home</a>
-                    <a href="{% url 'login' %}" class="nav-link">Login</a>
+                    <a href="{% url 'login' %}" class="nav-link">Log in</a>
                     <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
                 {% endif %}
                 
@@ -65,35 +66,35 @@
         <!-- Display User Information -->
         <div class="profile-container">
                 <div class="profile">
-                    <div class="infoType">
-                        <p class="infoTypeDisplay"><strong>First Name</strong></p>
-                        <p class="infoDisplay" id="firstNameDisplay">{{ first_name }}</p>
-                    </div>
-                    
-                    <div class="infoType">
-                        <p class="infoTypeDisplay"><strong>Last Name</strong></p>
-                        <p class="infoDisplay" id="lastNameDisplay">{{ last_name }}</p>
-                    </div>
-                    
-                    <div class="infoType">
-                        <p class="infoTypeDisplay"><strong>Email</strong></p>
+                    <div class="infoTypeName">
+                        <p class="infoTypeDisplay" id="firstNameDisplay"><strong>{{ full_name }}</strong></p>
                         <p class="infoDisplay" id="emailDisplay">{{ email }}</p>
                     </div>
-                    
-                    <div class="infoType">
-                        <p class="infoTypeDisplay"><strong>Department</strong></p>
-                        <p class="infoDisplay" id="departmentDisplay">{{ department_name }}</p>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Button Container -->
-            <div class="button-container">
-                <!-- Change Password Button -->
-                <button id="changePasswordButton" class="button">Change Password</button>
-            
-                <!-- Delete Account Button -->
-                <button id="deleteEmailButton" class="button">Delete Account</button>
+                    <div class="other"> 
+                        <div class="infoTypeOther">
+                            <p class="infoTypeDisplay"><strong>Department</strong></p>
+                            <p class="infoDisplay" id="departmentDisplay">{{ department_name }}</p>
+                        </div>
+    
+                        <div class="infoTypeOther">
+                            <p class="infoTypeDisplay"><strong>Role</strong></p>
+                            <p class="infoDisplay" id="emailDisplay">{{ role }}</p>
+                        </div>
+
+                        <img src="{% static 'images/logo.png' %}" id="logoid" alt="Logo" class="logo-image">
+                    </div>
+                    
+                </div>
+
+                <!-- Button Container -->
+                <div class="button-container">
+                    <!-- Change Password Button -->
+                    <button id="changePasswordButton" class="button">Change Password</button>
+                
+                    <!-- Delete Account Button -->
+                    <button id="deleteEmailButton" class="button">Delete Account</button>
+                </div> 
             </div> 
         </div>
     </main>
@@ -204,6 +205,10 @@
     <!-- External JavaScript Files -->
     <script src="{% static 'js/change_password.js' %}"></script>
     <script src="{% static 'js/delete_email.js' %}"></script>
-    <script src="{% static 'js/edit_profile.js' %}"></script>
+
+    <footer>
+        <p>2024 FOOTPRINT</p>
+    </footer>
+
 </body>
 </html>
