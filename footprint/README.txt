@@ -20,6 +20,8 @@ Welcome to the **Footprint Web Application** repository! This document provides 
 
 The **Footprint Web Application** is a web-based tool designed to help law enforcement locate missing persons using clothing attribute detection from video feeds. This application leverages advanced machine learning models and is deployed locally on a Windows 11 laptop.
 
+This project uses the Django framework, meaning most of the website's functions are handled in `views.py` files, while the majority of the AI-related functionalities are located in the `static/AI_Scripts` directory.
+
 ---
 
 ## **System Requirements**
@@ -168,7 +170,6 @@ Save the `views.py` file after modifying these paths.
 
 ---
 
-
 ## **License**
 
 This project is licensed under the [MIT License](LICENSE). Use, modify, and distribute the application as per the license terms.
@@ -176,3 +177,4 @@ This project is licensed under the [MIT License](LICENSE). Use, modify, and dist
 ---
 
 Enjoy using the Footprint Web Application! For any questions or support, please contact [gp0569@wayne.edu].
+
