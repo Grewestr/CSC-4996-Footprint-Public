@@ -184,7 +184,7 @@ footer {
     font-weight: 500;
     background-color: #ffffff;
     width: 100%;
-    margin-top: auto; /* Pushes footer to the bottom */
+    margin-top: auto; 
   }
 
 /* Responsive Design */

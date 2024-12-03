@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
             body: formData.toString()
         })
         .finally(() => {
-            window.location.reload(); // Always force reload the page
+            window.location.reload(); 
         });
     });
 

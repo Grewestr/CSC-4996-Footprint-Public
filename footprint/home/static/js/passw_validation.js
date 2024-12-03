@@ -1,5 +1,3 @@
-// passw_validation.js
-
 // JavaScript to handle real-time validation
 document.addEventListener('DOMContentLoaded', function() {
   const passwordInput = document.getElementById('signup-password');
@@ -12,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Hide the requirements box when clicking outside the password field
   passwordInput.addEventListener('blur', function() {
-      // Delay hiding to prevent flickering when clicking into the requirements box
       setTimeout(() => {
           requirementsBox.style.display = 'none';
       }, 200);

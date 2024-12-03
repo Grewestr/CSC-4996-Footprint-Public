@@ -4,7 +4,7 @@
 .password-requirements {
   list-style: none;
   padding: 0;
-  display: none; /* Hidden by default */
+  display: none; 
   background-color: #f9f9f9;
   border: 1px solid #ccc;
   padding: 10px;
@@ -13,14 +13,14 @@
 }
 
 .requirement {
-  color: red; /* Default color for unmet requirements */
+  color: red; 
   display: flex;
   align-items: center;
   margin-bottom: 5px;
 }
 
 .requirement.met {
-  color: green; /* Color for met requirements */
+  color: green; 
 }
 
 .requirement i {
@@ -28,11 +28,11 @@
 }
 
 .requirement i.x-mark::before {
-  content: '❌'; /* Red X mark for unmet requirements */
+  content: '❌'; 
 }
 
 .requirement i.check-mark::before {
-  content: '✔️'; /* Green check mark for met requirements */
+  content: '✔️'; 
 }
 
 
@@ -41,10 +41,10 @@
   font-size: 0.9em;
   margin-top: 5px;
   color: red;
-  display: none; /* Hidden by default */
+  display: none; 
 }
 
 /* Style for invalid password confirmation input */
 input.invalid {
-  border-color: red; /* Red border for invalid input */
+  border-color: red; 
 }

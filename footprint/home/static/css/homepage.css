@@ -10,7 +10,7 @@ body {
   width: 95%;
   max-width: 1200px;
   margin: 0 auto;
-  padding-top: 10px; /* Adds space between header and main content */
+  padding-top: 10px; 
 }
 
 /* Section Styles */
@@ -20,7 +20,7 @@ section {
   margin-bottom: 20px;
   border-radius: 10px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-  margin-top: 30px; /* Adds space between sections */
+  margin-top: 30px; 
 }
 
 /* Text Styling */
@@ -88,7 +88,7 @@ p, ul {
 
 @media (max-width: 768px) {
   .team-container {
-    grid-template-columns: 1fr; /* Single column for smaller screens */
+    grid-template-columns: 1fr; 
   }
 }
 
@@ -108,13 +108,13 @@ p, ul {
 }
 
 .team-member h3 {
-  font-size: 1.6rem; /* Slightly larger font for name */
+  font-size: 1.6rem; 
   margin-bottom: 10px;
 }
 
 .team-member p {
-  font-size: 1.2rem; /* Increased font size */
-  color: #444; /* Improved contrast */
+  font-size: 1.2rem; 
+  color: #444; 
   margin-bottom: 10px;
 }
 
@@ -126,7 +126,7 @@ p, ul {
 }
 
 .team-member a:hover {
-  color: #0056b3; /* Darker blue on hover */
+  color: #0056b3; 
   text-decoration: underline;
 }
 
@@ -147,31 +147,31 @@ footer {
   font-weight: 500;
   background-color: #ffffff;
   width: 100%;
-  margin-top: auto; /* Pushes footer to the bottom */
+  margin-top: auto; 
 }
 
 .hero-banner {
   display: flex;
-  justify-content: center; /* Center-aligns the content horizontally */
-  align-items: center; /* Center-aligns the content vertically */
-  gap: 20rem; /* Adds spacing between the items */
+  justify-content: center; 
+  align-items: center; 
+  gap: 20rem; 
   background-color: #f4f4f4;
-  padding: 1rem; /* Adjusted padding for better balance */
+  padding: 1rem; 
   border-radius: 8px;
   margin-bottom: 1.5rem;
-  text-align: center; /* Ensures all text within the banner is centered */
+  text-align: center; 
 }
 
 /* Center Table in Tab Section */
 .tab-content table {
-  margin: 0 auto; /* Centers the table */
-  text-align: center; /* Aligns text in the table */
-  width: 90%; /* Adjust table width */
+  margin: 0 auto; 
+  text-align: center;
+  width: 90%; 
 }
 
 .tab-content th, .tab-content td {
-  padding: 0.75rem; /* Adjusts padding for cells */
-  text-align: center; /* Centers content in cells */
+  padding: 0.75rem; 
+  text-align: center; 
 }
 
 .tab-content thead th {

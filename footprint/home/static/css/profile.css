@@ -169,11 +169,11 @@ main {
 
 .other {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Two equal-width columns */
+  grid-template-columns: 1fr 1fr; 
   width: 600px;
   gap: 10px;
   margin-left: 15px;
-  justify-content: left; /* Align grid items to the left */
+  justify-content: left; 
   font-size: 1.15em;
   padding-top: 10px;
   position: relative;

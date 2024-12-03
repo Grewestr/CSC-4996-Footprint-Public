@@ -24,23 +24,23 @@ body {
     color: white; 
     text-align: center; 
     font-weight: bold; 
-    font-size: 18px; /* Adjust size */
+    font-size: 18px; 
     padding: 10px; 
     border-radius: 8px; 
-    margin-bottom: 15px; /* Add space below*/
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* shadow */
+    margin-bottom: 15px; 
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); 
 }
 
 .table-header {
-    background-color: #808080; /* Gray background */
+    background-color: #808080; 
     color: white; 
-    text-align: center; /* Center text */
+    text-align: center; 
     font-size: 24px; 
     font-weight: bold; 
     padding: 10px 0; 
     border-radius: 10px; 
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Subtle shadow */
-    margin-bottom: 20px; /* Space below the header */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); 
+    margin-bottom: 20px; 
 }
 
 .container {
@@ -60,13 +60,13 @@ body {
 
 /* Attribute Buttons with Image Background */
 .attribute-btn {
-    all: unset; /* Reset default */
+    all: unset; 
     display: inline-flex;
     justify-content: center;
     align-items: center; 
     width: 55px; 
     height: 55px;
-    border-radius: 20%; /* Ensures button itself is rounded */
+    border-radius: 20%; 
     margin: 5px; 
     cursor: pointer;
     background-size: cover; 
@@ -79,8 +79,8 @@ body {
 
 /* Add hover effect */
 .attribute-btn:hover {
-    transform: scale(1.1); /* zoom effect */
-    outline: 3px solid gray; /* Hover outline */
+    transform: scale(1.1);
+    outline: 3px solid gray; 
     z-index: 1; 
     
 }
@@ -116,10 +116,10 @@ body {
 .attribute-btn:hover::before {
     content: '';
     position: absolute;
-    top: 100%; /* Position arrow at the bottom of the button */
+    top: 100%; 
     left: 50%;
     transform: translateX(-50%);
-    border-width: 8px; /*how big the triange is under hoverd item*/
+    border-width: 8px; 
     border-style: solid;
     border-color: black transparent transparent transparent;
     z-index: 10; 
@@ -295,25 +295,25 @@ h3 {
 /* Summary content styling */
 .summary-content {
     display: grid;
-    gap: 10px; /* Vertical spacing between rows */
+    gap: 10px; 
     padding: 10px;
 }
 
 .summary-row {
     display: grid;
-    grid-template-columns: 50px 1fr; /* Fixed width for labels, flexible for values */
-    gap: 15px; /* Space between label and value */
-    align-items: center; /* Vertically align items */
+    grid-template-columns: 50px 1fr; 
+    gap: 15px; 
+    align-items: center;
 }
 
 .summary-row strong {
-    text-align: left; /* Align label to the left */
-    white-space: nowrap; /* Prevent label wrapping */
+    text-align: left;
+    white-space: nowrap; 
 }
 
 .summary-row .summary-value {
-    text-align: left; /* Align value to the left */
-    word-break: break-word; /* Allow long words to break and wrap */
+    text-align: left; 
+    word-break: break-word; 
 }
 
 
@@ -328,7 +328,7 @@ h3 {
     }
     .attributes-section,
     .summary-section,
-    .feed-selection-section, /* Updated for responsive */
+    .feed-selection-section, 
     .results-section,
     .image-gallery-section {
         grid-column: 1 / -1;
@@ -354,23 +354,23 @@ h3 {
         grid-template-columns: repeat(2, 1fr);
     }
     .results-section  {
-        grid-template-columns: repeat(2, 1fr); /* Two columns */
+        grid-template-columns: repeat(2, 1fr); 
         gap: 10px;
     }
 
     .preview-area {
-        flex-direction: column; /* Stack image and details vertically */
-        gap: 10px; /* Reduce space between image and details */
+        flex-direction: column; 
+        gap: 10px; 
     }
 
     .preview-image {
-        max-height: 150px; /* Adjust image size for smaller screens */
+        max-height: 150px; 
         max-width: 250px;
     }
 
     .grid-container {
-        grid-template-columns: repeat(2, 1fr); /* Two columns */
-        gap: 10px; /* Smaller gaps */
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 10px; 
     }
 }
 
@@ -382,7 +382,7 @@ footer {
     font-weight: 500;
     background-color: #ffffff;
     width: 100%;
-    margin-top: auto; /* Pushes footer to the bottom */
+    margin-top: auto; 
   }
 
 
@@ -398,27 +398,27 @@ footer {
     margin: 5px; 
     cursor: pointer;
     background-color: black;
-    outline: 1px solid black; /* Black outline for buttons */
-    box-sizing: border-box; /* Ensures padding/borders are included in width/height */
+    outline: 1px solid black; 
+    box-sizing: border-box; 
     transition: transform 0.1s ease, outline 0.2s ease;
 }
 
 /* Hover effect for color buttons */
 .color-btn:hover {
-    transform: scale(1.1); /* zoom effect on hover */
-    outline: 3px solid gray; /* Hover outline */
+    transform: scale(1.1); 
+    outline: 3px solid gray; 
 }
 
 /* Selected state for color buttons */
 .color-btn.selected {
-    outline: 3px solid rgb(30, 220, 5); /* Highlight selected button */
+    outline: 3px solid rgb(30, 220, 5); 
 }
 
 /* Tooltip Styles */
 .color-btn:hover::after {
-    content: attr(data-tooltip); /* Title */
+    content: attr(data-tooltip); 
     position: absolute;
-    top: calc(100% + 10px); /* Spaced below the button */
+    top: calc(100% + 10px); 
     left: 50%;
     transform: translateX(-50%);
     background-color: black; 
@@ -426,11 +426,11 @@ footer {
     font-size: 12px;
     padding: 5px 10px; 
     border-radius: 4px; 
-    white-space: nowrap; /* Prevents wrapping */
+    white-space: nowrap; 
     z-index: 10;
     opacity: 1;
     transition: opacity 0.1s ease-in-out;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4); /* Subtle shadow */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4); 
 }
 
 /* Tooltip Arrow */
@@ -469,13 +469,13 @@ footer {
 
 /* Preview Image */
 .preview-image {
-    height: 350px; /* Fixed height */
-    width: auto; /* Maintain aspect ratio */
-    max-width: 300px; /* Ensure image doesn't get too wide */
+    height: 350px; 
+    width: auto; 
+    max-width: 300px; 
     object-fit: contain;
     border-radius: 10px;
     border: 2px solid #000;
-    display: block; /* Ensure it's treated as a block element */
+    display: block; 
 }
 
 /* Navigation Buttons for Images */
@@ -566,13 +566,13 @@ footer {
 }
 
 .validation-message {
-    color: #d9534f; /* Bootstrap's danger color */
+    color: #d9534f; 
     font-size: 0.9rem;
     margin-top: 5px;
     padding: 5px;
     border: 1px solid #d9534f;
     border-radius: 4px;
-    background-color: #f2dede; /* Light red background */
+    background-color: #f2dede; 
     display: block;
 }
 
@@ -633,12 +633,12 @@ footer {
 
 /* Pagination Container */
 .pagination-container {
-    margin-top: 30px; /* Ensure space from the grid */
+    margin-top: 30px; 
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 10px;
-    background-color: #ffffff; /* Match the rest of the design */
+    background-color: #ffffff; 
     border-radius: 10px;
    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
 }
@@ -658,31 +658,31 @@ footer {
     text-align: center;
     padding: 20px; 
     margin: 0; 
-    grid-column: 1 / -1; /* Ensure it spans across the full grid if inside a grid layout */
+    grid-column: 1 / -1; 
 }
 
 .no-results-container p {
-    font-size: 16px; /* Adjust text size */
-    color: #333; /* Neutral text color */
-    margin: 10px 0; /* Space between paragraphs */
+    font-size: 16px; 
+    color: #333; 
+    margin: 10px 0; 
 }
 
 .no-results-container p:first-of-type {
-    font-weight: bold; /* Highlight primary message */
-    font-size: 18px; /* Slightly larger font for emphasis */
+    font-weight: bold; 
+    font-size: 18px; 
 }
 
 /* Grid Container */
 .grid-container {
     display: grid;
     grid-template-columns: repeat(6, 1fr); 
-    gap: 15px; /* Space between grid items */
-    height: 740px; /* Fixed height */
+    gap: 15px; 
+    height: 740px;
     padding: 10px;
     background-color: #fff; 
     border: 1px solid #ddd; 
     border-radius: 10px;
-    overflow-y: auto; /* Scroll for overflow */
+    overflow-y: auto; 
 }
 
 .preview-container {
@@ -703,8 +703,8 @@ footer {
 .preview-content {
     display: flex;
    
-    gap: 30px; /* Space between image and details */
-    align-items: flex-start; /* Align content to the top */
+    gap: 30px; 
+    align-items: flex-start; 
     
 }
 
@@ -713,8 +713,8 @@ footer {
     margin-left: 20px;
     justify-content: center;
     align-items: center;
-    width: 250px; /* Fixed width for image */
-    height: 250px; /* Fixed height for image */
+    width: 250px; 
+    height: 250px; 
     border: 1px solid #ccc;
     border-radius: 8px;
     overflow: hidden;
@@ -734,7 +734,7 @@ footer {
 }
 
 .preview-details strong {
-    font-weight: 600; /* Highlight labels */
+    font-weight: 600; 
 }
 
 .preview-details a {
@@ -762,19 +762,19 @@ footer {
 .result-item-navigation {
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Space between the text and buttons */
-    gap: 20px; /* Space between the buttons and text */
+    justify-content: space-between; 
+    gap: 20px; 
 }
 
 .result-item-navigation p {
-    min-width: 150px; /* Fixed width for the Result Item text */
-    text-align: left; /* Align text to the left */
+    min-width: 150px; 
+    text-align: left; 
     margin: 0;
 }
 
 .navigation-buttons-image {
     display: flex;
-    gap: 10px; /* Space between buttons */
+    gap: 10px; 
 }
 
 .nav-button-image {

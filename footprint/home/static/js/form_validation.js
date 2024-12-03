@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const submitButton = document.getElementById('submit-button');
 
     function validateName(input, errorElementId) {
-        const nameRegex = /^[a-zA-Z]+$/;  // Regular expression to allow only letters
+        const nameRegex = /^[a-zA-Z]+$/;  
         const errorElement = document.getElementById(errorElementId);
         
         if (!nameRegex.test(input.value)) {

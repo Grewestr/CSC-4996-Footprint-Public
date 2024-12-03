@@ -3,10 +3,10 @@
 ================================ */
 
 :root {
-  --color-approved: #52e4298e; /* Light Green - Figma Color Code */
-  --color-pending: #f0f02882;  /* Yellow - Figma Color Code*/
-  --color-denied: #ff313187;   /* Red - Figma Color Code */
-  --color-default: #d3d3d3;  /* Default gray  - Need to change in later*/
+  --color-approved: #52e4298e; 
+  --color-pending: #f0f02882;  
+  --color-denied: #ff313187;  
+  --color-default: #d3d3d3;  
 }
 
 /* General reset for consistent styling */
@@ -26,11 +26,11 @@
 /* Body Styles */
 body {
   font-family: 'Roboto', sans-serif;
-  background-color: #d3d3d3; /* Gray background for the whole page */
+  background-color: #d3d3d3; 
   color: #000;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center main content horizontally */
+  align-items: center; 
   min-height: 100vh;
   margin: 0;
 }
@@ -47,9 +47,9 @@ body {
 /* Content Box - Centered White background box */
 .content-box {
   background-color: #ffffff;
-  padding: 40px 30px 5px 30px; /* Padding to add space */
+  padding: 40px 30px 5px 30px; 
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slight shadow */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
   margin: 20px auto;
   max-width: 1250px; 
   width: 100%;
@@ -71,7 +71,7 @@ section {
 h2 {
   font-weight: bold;
   font-size: 1.5em;
-  margin-bottom: 20px; /* Space between title and top */
+  margin-bottom: 20px; 
 }
 
 /* Filter and Search Styles */
@@ -131,8 +131,6 @@ button:hover {
 }
 
 
-
-
 /* Table Styles */
 table {
   width: 100%;
@@ -170,7 +168,7 @@ tbody td.account-created {
   color: #000;
   border-radius: 5px;
   font-weight: bold;
-  width: 100px; /* Set a fixed width */
+  width: 100px; 
   height: 33px;
   text-align: center;
 }
@@ -191,15 +189,15 @@ button.change-status {
 }
 
 .status-approved {
-  background-color: #51E429; /* Green */
+  background-color: #51E429; 
 }
 
 .status-denied {
-  background-color: #FF3131; /* Red */
+  background-color: #FF3131; 
 }
 
 .status-pending {
-  background-color: #F0F028; /* Yellow */
+  background-color: #F0F028; 
 }
 
 .action-cell {
@@ -216,7 +214,7 @@ select[name="new_status"] {
   font-weight: bold;
   cursor: pointer;
   font-family: 'Roboto', sans-serif;
-  background-color: #f0f02882; /* Adjust based on status */
+  background-color: #f0f02882; 
   transition: background-color 0.3s;
   width: 150px; 
   height: 35px;
@@ -235,7 +233,7 @@ select.open {
 /* Pagination Box Styles */
 .pagination-box {
   background-color: #ffffff;
-  border: 2px solid #4CAF50; /* Green border */
+  border: 2px solid #4CAF50; 
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -256,7 +254,7 @@ select.open {
 
 .pagination-controls {
   display: inline-flex;
-  gap: 10px; /* Space between Next and Previous */
+  gap: 10px; 
   margin-left: 5px; 
   font-weight: bold;
 }
@@ -264,7 +262,7 @@ select.open {
 .pagination-controls button {
   padding: 5px 10px;
   border: none;
-  background-color: #a3e508; /* Green button color */
+  background-color: #a3e508; 
   color: #000000;
   border-radius: 5px;
   cursor: pointer;
@@ -275,7 +273,7 @@ select.open {
 
 /* Buttom previous and Next buttom */
 .pagination-controls a {
-  padding: 5px 10px; /* Padding for the buttons */
+  padding: 5px 10px; 
   text-decoration: none;
   color: #000;
   background-color: #3fb2d8; 
@@ -369,7 +367,7 @@ footer {
   font-weight: 500;
   background-color: #ffffff;
   width: 100%;
-  margin-top: auto; /* Pushes footer to the bottom */
+  margin-top: auto; 
 }
 
 /* Container for title and message display */
@@ -397,107 +395,107 @@ footer {
 /* Responsive Styles */
 @media (max-width: 1200px) {
   .container {
-    width: 100%; /* Adjust container width */
-    padding: 0 10px; /* Add padding for smaller screens */
+    width: 100%; 
+    padding: 0 10px; 
   }
 
   .scaled-wrapper {
-    flex-direction: column; /* Stack items vertically */
-    padding: 10px; /* Adjust padding */
+    flex-direction: column; 
+    padding: 10px;
   }
 
   .content-box {
-    padding: 20px 15px; /* Reduce padding inside the box */
+    padding: 20px 15px; 
   }
 
   table {
-    font-size: 0.9em; /* Adjust font size for tables */
+    font-size: 0.9em; 
   }
 
   .status-box {
-    width: auto; /* Allow the status box to adjust to its content */
-    font-size: 0.8em; /* Reduce font size */
+    width: auto; 
+    font-size: 0.8em; 
   }
 
   .pagination-box {
-    padding: 15px; /* Reduce padding */
+    padding: 15px; 
   }
 
   .pagination-controls {
-    flex-wrap: wrap; /* Allow wrapping of controls */
-    justify-content: center; /* Center the controls */
+    flex-wrap: wrap; 
+    justify-content: center; 
   }
 }
 
 @media (max-width: 768px) {
   body {
-    padding: 10px; /* Add padding around the body */
+    padding: 10px; 
   }
 
   .container {
-    width: 100%; /* Full width for smaller screens */
+    width: 100%; 
   }
 
   .content-box {
-    padding: 15px; /* Further reduce padding */
+    padding: 15px; 
     box-shadow: none; 
   }
 
   h2 {
-    font-size: 1.2em; /* Adjust heading size */
+    font-size: 1.2em; 
   }
 
   form {
-    flex-direction: column; /* Stack form elements */
-    gap: 10px; /* Reduce gap */
+    flex-direction: column; 
+    gap: 10px; 
   }
 
   table {
-    font-size: 0.8em; /* Further reduce font size */
+    font-size: 0.8em; 
   }
 
   table thead th, table tbody td {
-    padding: 8px; /* Reduce padding in table cells */
+    padding: 8px; 
   }
 
   .status-box {
-    padding: 5px; /* Reduce padding */
-    font-size: 0.75em; /* Smaller font size */
+    padding: 5px; 
+    font-size: 0.75em; 
   }
 
   .pagination-controls a, .pagination-controls button {
-    padding: 5px 8px; /* Smaller buttons */
-    font-size: 0.8em; /* Smaller text */
+    padding: 5px 8px; 
+    font-size: 0.8em; 
   }
 }
 
 @media (max-width: 480px) {
   .content-box {
-    padding: 10px; /* Minimal padding */
+    padding: 10px; 
   }
 
   .pagination-box {
-    padding: 10px; /* Minimal padding */
+    padding: 10px; 
   }
 
   form {
-    gap: 5px; /* Tighten spacing */
+    gap: 5px; 
   }
 
   input[type="text"], select, button {
-    font-size: 0.8em; /* Reduce input font size */
-    padding: 6px; /* Smaller padding */
+    font-size: 0.8em; 
+    padding: 6px; 
   }
 
   .status-box {
-    font-size: 0.7em; /* Further reduce font size */
+    font-size: 0.7em; 
   }
 
   table {
-    font-size: 0.75em; /* Further reduce table font size */
+    font-size: 0.75em; 
   }
 
   .pagination-info-left {
-    font-size: 0.75em; /* Smaller font size */
+    font-size: 0.75em; 
   }
 }

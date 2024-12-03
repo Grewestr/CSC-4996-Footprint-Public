@@ -25,8 +25,8 @@ def enqueue_video(video_url, frame_interval, user_id, document_id):
         video_url, 
         frame_interval, 
         user_id, 
-        job_timeout=3600,  # Timeout execution 1 hour
-        ttl=86400  # TTL 1 day
+        job_timeout=3600, 
+        ttl=86400  
     )
     
     print(f"Enqueued Job ID: {job.id} and Firestore Document ID: {document_id}")

@@ -1,10 +1,9 @@
 import re
-from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from django.contrib import messages
 import firebase_admin
-from firebase_admin import auth, firestore, exceptions, storage
+from firebase_admin import auth, firestore, exceptions
 import requests
 import pytz
 import random
@@ -12,22 +11,26 @@ from django.http import JsonResponse
 import os
 from google.cloud import firestore
 from google.oauth2 import service_account
-from google.cloud.firestore_v1 import FieldFilter
-from collections import defaultdict
 from django.urls import reverse
 from datetime import timedelta, datetime
 import csv
-from django.core.paginator import Paginator
 from urllib.parse import urlencode
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.paginator import Paginator, EmptyPage
 from django.shortcuts import render, redirect
-from urllib.parse import urlencode
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_exempt  # Add this import
+from django.views.decorators.csrf import csrf_exempt  
+import threading
+import subprocess
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+from django.contrib import messages
+from .models import VideoUpload
+from django.views.decorators.http import require_POST
+from django.conf import settings
+from redis import Redis
+from rq import Queue
+from google.cloud.firestore_v1 import _helpers  
+from datetime import datetime
 
-
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 key_path = os.path.join(BASE_DIR, 'footprint', 'Firebase', 'serviceAccountKey.json')
@@ -39,7 +42,7 @@ firebase_api_key = 'AIzaSyBrnuE0rPIse9NIoJiV0kw2FMEGDXShjBQ'
 url = f'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={firebase_api_key}'
 
 # Define the desired time zone (UTC-4)
-desired_timezone = pytz.timezone("America/New_York")  # This is UTC-4 when in daylight saving time
+desired_timezone = pytz.timezone("America/New_York")  
 
 def homepage_view(request):
     return render(request, 'home/homepage.html')
@@ -568,17 +571,6 @@ def change_password(request):
     return redirect('profile')
 
 
-import threading
-import re
-import subprocess
-from django.shortcuts import render, redirect
-from django.http import JsonResponse
-from django.views.decorators.http import require_http_methods
-from django.contrib import messages
-from django.utils.timezone import localtime
-from google.cloud import firestore
-from .models import VideoUpload
-
 # Function to execute Docker commands
 def run_docker_command(command, cwd=None):
     try:
@@ -593,17 +585,18 @@ def run_docker_command_async(command, cwd=None):
     thread = threading.Thread(target=run_docker_command, args=(command, cwd))
     thread.start()
 
-# Run these commands on boot if they haven't been run already
-BOOT_COMMANDS_RUN = False  # Global flag to check if boot commands are run
+BOOT_COMMANDS_RUN = False  
 
+#run docker commands to ensure it is built befor calling video enqueue
 def check_and_run_boot_commands():
     global BOOT_COMMANDS_RUN
     if not BOOT_COMMANDS_RUN:
-        boot_directory = R"C:\Fall2024\Capstone\Footprint Website\CSC-4996-Footprint\footprint\footprint"
+        boot_directory = R"C:\Users\17344\Documents\Capstone2\CSC-4996-Footprint\footprint"
         run_docker_command("docker-compose build", cwd=boot_directory)
-        run_docker_command("docker-compose up -d", cwd=boot_directory)  # Run in detached mode
+        run_docker_command("docker-compose up -d", cwd=boot_directory)  
         BOOT_COMMANDS_RUN = True
 
+#only for clearing live feeds, call this function if you want to delete all firebase data
 from django.http import JsonResponse
 def clear_live_feeds_collection():
     # Reference the 'live_feeds' collection
@@ -619,7 +612,9 @@ def clear_live_feeds_collection():
 
     print("All documents in 'live_feeds' collection have been deleted.")
 
+
 local_timezone = pytz.timezone('America/New_York')
+
 @require_http_methods(["GET", "POST"])
 def upload_view(request):
     # Ensure boot commands run before proceeding
@@ -674,7 +669,7 @@ def upload_view(request):
                     )
 
                     # Prepare parameters for the Docker command and pass the document ID
-                    script_directory = R"C:\Fall2024\Capstone\Footprint Website\CSC-4996-Footprint\footprint\home\static\AI_Scripts"
+                    script_directory = R"C:\Users\17344\Documents\Capstone2\CSC-4996-Footprint\footprint\home\static\AI_Scripts"
                     docker_command = f'docker-compose run --rm rq-worker python video_Enqueue.py "{youtube_link}" {processing_speed} "{user_email}" "{document_id}"'
                     
                     # Run the Docker command asynchronously
@@ -752,10 +747,7 @@ def upload_view(request):
         'upload_history': upload_history
     })
 
-from django.views.decorators.http import require_POST
-from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
-from google.cloud import firestore
+
 
 @csrf_exempt
 @require_POST
@@ -780,10 +772,7 @@ def delete_upload_view(request):
         return JsonResponse({"success": False, "message": f"Error deleting job: {str(e)}"})
     
 
-from django.http import JsonResponse
-from google.cloud import firestore  # Firestore client
-from google.cloud.firestore_v1 import _helpers  # Correct way to access Timestamp
-from datetime import datetime
+
 
 def check_job_status(request):
     try:
@@ -824,11 +813,6 @@ def check_job_status(request):
         print(f"Error fetching job statuses: {e}")
         return JsonResponse({"error": "Could not fetch job statuses. Please try again later."}, status=500)
 
-
-
-
-
-
 def search_attributes1(request):
     # Mapping for human-readable names
     attribute_names = {
@@ -860,32 +844,29 @@ def search_attributes1(request):
         "NULL": "Undetected",
         "Unknown": "Undetected"
     }
-
-    # Helper function to format attributes
+    # Helper function to format attributes to human-readable form
     def format_attribute(value):
         return attribute_names.get(value, value)  # Default to raw value if no mapping exists
 
-    # Existing code
     user_email = request.session.get('email')
     live_feed_names = []
     items_per_page = 30
-
-    # Validate page number
     page_number = request.GET.get('page', 1)
+    # Validate page number; default to 1 if invalid
     try:
         page_number = int(page_number)
         if page_number < 1:
             page_number = 1
     except ValueError:
         page_number = 1
-
+    # Retrieve list of live feeds for the logged-in user
     if user_email:
         try:
             feeds_query = db.collection('live_feeds').where('user_email', '==', user_email).where('feed_status', '==', 'finished').stream()
             live_feed_names = [feed.to_dict().get('feed_name') for feed in feeds_query if 'feed_name' in feed.to_dict()]
         except Exception as e:
             messages.error(request, f"Error retrieving user feed names: {str(e)}")
-
+    # Handle POST request for filtering/searching attributes
     if request.method == 'POST':
         form_data = {
             'top_attribute': request.POST.get('top_attribute'),
@@ -898,7 +879,7 @@ def search_attributes1(request):
         }
         query_string = urlencode(form_data)
         return redirect(f"{request.path}?{query_string}")
-
+    # Retrieve search parameters from GET request
     top_attribute = request.GET.get('top_attribute')
     top_color = request.GET.get('top_color')
     middle_attribute = request.GET.get('middle_attribute')
@@ -909,7 +890,7 @@ def search_attributes1(request):
 
     if not feed_name:
         return render(request, 'home/dashboard.html', {'feeds': live_feed_names})
-
+    # Fetch video link and processing speed for the selected feed
     video_link = None
     speed = None
     try:
@@ -927,7 +908,7 @@ def search_attributes1(request):
     except Exception as e:
         messages.error(request, f"Error retrieving feed data: {str(e)}")
         return render(request, 'home/dashboard.html', {'feeds': live_feed_names})
-
+    # Define weights for scoring attribute matches
     weights = {
         'top_type': 20,
         'top_color': 10,
@@ -936,7 +917,7 @@ def search_attributes1(request):
         'bottom_type': 20,
         'bottom_color': 10
     }
-
+    # Query database for identified persons matching the video link and speed
     query = db.collection('IdentifiedPersons').where('user_email', '==', user_email).where('video_link', '==', video_link).where('speed', '==', speed)
 
     results = []
@@ -955,7 +936,7 @@ def search_attributes1(request):
 
             score = 0
             unmatched_attributes = []
-
+            # Check for matches in attributes and adjust score
             if top_attribute:
                 if doc_data.get('top_type') == top_attribute.lower():
                     score += weights['top_type']
@@ -1004,7 +985,7 @@ def search_attributes1(request):
                 priority = 4      
             else:
                 continue
-
+            # Append result to the list
             results.append({
                 'detection_time': format_time_detected(float(doc_data.get('detection_time'))),
                 'detection_time_link': detection_time_link,
@@ -1024,7 +1005,7 @@ def search_attributes1(request):
         messages.error(request, f"Error querying database: {str(e)}")
         return render(request, 'home/dashboard.html', {'feeds': live_feed_names})
 
-
+    # Sort results by priority and apply pagination
     results.sort(key=lambda x: x['priority'])
     paginator = Paginator(results, items_per_page)
 
@@ -1032,7 +1013,7 @@ def search_attributes1(request):
         page_obj = paginator.page(page_number)
     except EmptyPage:
         page_obj = paginator.page(paginator.num_pages)
-
+    # Prepare context for rendering the dashboard
     context = {
         'page_obj': page_obj,
         'results': page_obj.object_list,
@@ -1068,9 +1049,6 @@ def generate_detection_time_link(video_link, detection_time):
         return video_link + "&t=" + detection_time + "s"
     return video_link + "?t=" + detection_time + "s"
 
-from django.conf import settings
-from redis import Redis
-from rq import Queue
 
 # Connect to Redis using settings
 redis_conn = Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)

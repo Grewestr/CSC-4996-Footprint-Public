@@ -8,10 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
       // Toggle password visibility
       if (passwordInput.type === 'password') {
           passwordInput.type = 'text';
-          togglePassword.src = togglePassword.getAttribute('data-eye-show'); // Change to show eye icon
+          togglePassword.src = togglePassword.getAttribute('data-eye-show'); 
       } else {
           passwordInput.type = 'password';
-          togglePassword.src = togglePassword.getAttribute('data-eye-hide'); // Change hide eye icon
+          togglePassword.src = togglePassword.getAttribute('data-eye-hide'); 
       }
   });
 });

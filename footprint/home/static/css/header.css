@@ -9,7 +9,7 @@
 
 .nav-link.active {
     text-decoration: underline;
-    color: var(--secondary-color); /* Optional: Change color for active page */
+    color: var(--secondary-color); 
 }
 
 /* Root Variables for Consistency */
@@ -20,8 +20,8 @@
     --header-padding-vertical: 10px;
     --header-padding-horizontal: 20px;
     --header-height: 140px;
-    --nav-gap: 120px; /* Doubled gap between logo/title and nav */
-    --nav-link-gap: 20px; /* Space between nav links */
+    --nav-gap: 120px; 
+    --nav-link-gap: 20px; 
     --logo-max-height: 150px;
     --logo-max-height-mobile: 80px;
     --site-title-font-size: 1.85em;
@@ -84,11 +84,11 @@
 
 /* Flex Container for Header Content */
 .header .container {
-    display: flex; /* Flex container for alignment */
-    align-items: center; /* Vertically centers flex items */
+    display: flex; 
+    align-items: center; 
     justify-content: space-between; 
-    gap: var(--nav-gap); /* Uses the updated CSS variable for spacing */
-    padding: var(--header-padding-vertical) var(--header-padding-horizontal); /* Adjusted padding */
+    gap: var(--nav-gap); 
+    padding: var(--header-padding-vertical) var(--header-padding-horizontal); 
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -96,21 +96,20 @@
 /* Logo and Title Section */
 .logo-and-title {
     display: flex;
-    align-items: center; /* Vertically centers logo and title */
+    align-items: center; 
 }
 
 /* Logo Link */
 .logo-link {
     display: inline-block;
-    /* Removed margin-right: 20px; */
 }
 
 /* Logo Image */
 .logo-image {
-    display: block; /* Prevents extra space below the image */
-    max-height: var(--logo-max-height); /* From 150px */
+    display: block; 
+    max-height: var(--logo-max-height); 
     width: auto;
-    border-radius: 50%; /* Maintains circular shape if the logo is square */
+    border-radius: 50%; 
     cursor: pointer;
     transition: opacity 0.3s;
 }
@@ -121,17 +120,17 @@
 
 /* Site Title */
 .site-title {
-    font-size: var(--site-title-font-size); /* From 1.5em */
+    font-size: var(--site-title-font-size); 
     font-weight: 700;
     color: var(--primary-color);
     margin: 0;
-    line-height: 1; /* Prevents extra vertical spacing */
+    line-height: 1; 
 }
 
 /* Navigation Bar */
 .nav {
     display: flex;
-    gap: var(--nav-link-gap); /* Space between nav links */
+    gap: var(--nav-link-gap); 
 }
 
 /* Navigation Links */
@@ -139,7 +138,7 @@
     color: var(--primary-color);
     text-decoration: none;
     font-weight: bold;
-    font-size: var(--nav-link-font-size); /* From 1.2em */
+    font-size: var(--nav-link-font-size); 
     /* Removed margin-left: 20px; */
     transition: color 0.3s;
 }
@@ -150,16 +149,16 @@
 
 /* Body Padding to Prevent Content Overlap */
 body {
-    margin-top: var(--header-height); /* From 140px */
+    margin-top: var(--header-height); 
 }
 
 @media (max-width: 768px) {
     .header .container {
         flex-direction: column;
-        align-items: center; /* Centers items in column layout */
-        gap: 40px; /* Reduced gap from 120px to 40px for smaller screens */
-        padding: 5px 15px; /* Further reduced padding */
-        min-height: auto; /* Allows header to adjust height based on content */
+        align-items: center; 
+        gap: 40px;
+        padding: 5px 15px; 
+        min-height: auto; 
     }
 
     .logo-and-title {
@@ -167,32 +166,32 @@ body {
     }
 
     .logo-image {
-        max-height: var(--logo-max-height-mobile); /* From 80px */
+        max-height: var(--logo-max-height-mobile); 
     }
 
     .site-title {
-        font-size: 1.2em; /* Adjust font size for smaller screens */
+        font-size: 1.2em; 
     }
 
     .nav {
         width: 100%;
-        justify-content: center; /* Centers nav links in column layout */
-        gap: 15px; /* Reduced nav-link-gap for smaller screens */
+        justify-content: center; 
+        gap: 15px; 
     }
 
     .nav-link {
-        font-size: var(--nav-link-font-size-mobile); /* From 1em */
+        font-size: var(--nav-link-font-size-mobile); 
     }
 
     body {
-        margin-top: 130px; /* Adjust if header height changes */
+        margin-top: 130px; 
     }
 }
 
 
 /* Burger Menu Button */
 .burger-menu {
-    display: none; /* Hidden by default, visible on mobile screens */
+    display: none; 
     flex-direction: column;
     gap: 5px;
     background: none;
@@ -223,11 +222,11 @@ body {
   
   /* Navigation Visibility */
   .nav.hidden {
-    display: none; /* Hidden by default */
+    display: none; 
   }
   
   .nav.show {
-    display: flex; /* Show navigation when toggled */
+    display: flex; 
     flex-direction: column;
     gap: 15px;
     background-color: var(--background-color);
@@ -246,7 +245,7 @@ body {
     }
   
     .nav {
-        display: none; /* Hidden by default */
+        display: none; 
     }
   
     .nav.show {

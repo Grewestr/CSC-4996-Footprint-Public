@@ -154,8 +154,8 @@ toggling password visibality
 /* Password container to hold input and toggle */
 .password-container {
   position: relative;
-  width: 100%; /* Match input box width */
-  margin-bottom: 15px; /* Ensure consistency with other inputs */
+  width: 100%; 
+  margin-bottom: 15px; 
 }
 
 /* Show/Hide toggle text styling */

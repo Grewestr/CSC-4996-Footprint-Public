@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Set the initial aria-expanded attribute to false (collapsed)
             heading.setAttribute('aria-expanded', false);
         } else {
-            // Log a warning if no heading is found in the section (optional, can be removed if not needed)
+            // Log a warning if no heading is found in the section 
             console.warn('No .section-heading found in section:', section);
         }
     });
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     } else {
-        // Log a warning if the logo link element is not found (optional, can be removed if not needed)
+        // Log a warning if the logo link element is not found 
         console.warn('Logo link element not found.');
     }
 });

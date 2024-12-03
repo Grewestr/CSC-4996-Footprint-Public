@@ -75,12 +75,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Event handlers for button clicks
     currentTogglePassword?.addEventListener('click', () => {
-        if (currentPasswordInput.type === 'password') {  // If hiding password
-            currentPasswordInput.type = 'text'; // Convert to text
-            currentTogglePassword.src = currentTogglePassword.getAttribute('data-eye-show'); // Show eye icon
-        } else { // If already showing password
-            currentPasswordInput.type = 'password'; // Change back to password
-            currentTogglePassword.src = currentTogglePassword.getAttribute('data-eye-hide'); // Change to eye show icon
+        if (currentPasswordInput.type === 'password') {  
+            currentPasswordInput.type = 'text'; 
+            currentTogglePassword.src = currentTogglePassword.getAttribute('data-eye-show'); 
+        } else { 
+            currentPasswordInput.type = 'password'; 
+            currentTogglePassword.src = currentTogglePassword.getAttribute('data-eye-hide'); 
         }
     });
 
@@ -88,10 +88,10 @@ document.addEventListener("DOMContentLoaded", function() {
     newTogglePassword?.addEventListener('click', () => {
         if (newPasswordInput.type === 'password') {
             newPasswordInput.type = 'text';
-            newTogglePassword.src = newTogglePassword.getAttribute('data-eye-show'); // Show eye icon
+            newTogglePassword.src = newTogglePassword.getAttribute('data-eye-show'); 
         } else {
             newPasswordInput.type = 'password';
-            newTogglePassword.src = newTogglePassword.getAttribute('data-eye-hide'); // Change to eye show icon
+            newTogglePassword.src = newTogglePassword.getAttribute('data-eye-hide'); 
         }
     });
 
@@ -99,10 +99,10 @@ document.addEventListener("DOMContentLoaded", function() {
     retypeTogglePassword?.addEventListener('click', () => {
         if (retypePasswordInput.type === 'password') {
             retypePasswordInput.type = 'text';
-            retypeTogglePassword.src = retypeTogglePassword.getAttribute('data-eye-show'); // Show eye icon
+            retypeTogglePassword.src = retypeTogglePassword.getAttribute('data-eye-show'); 
         } else {
             retypePasswordInput.type = 'password';
-            retypeTogglePassword.src = retypeTogglePassword.getAttribute('data-eye-hide'); // Change to eye show icon
+            retypeTogglePassword.src = retypeTogglePassword.getAttribute('data-eye-hide'); 
         }
     });
 
@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Display password requirements when focused
     newPasswordInput.addEventListener('focus', () => requirementsBox.style.display = 'block');
     
-    // Hide requirements with a slight delay for better user experience
+    // Hide requirements with a slight delay
     newPasswordInput.addEventListener('blur', () => setTimeout(() => requirementsBox.style.display = 'none', 200));
     
     // Real-time validation of password criteria

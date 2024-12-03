@@ -15,6 +15,21 @@ q = Queue(connection=redis_conn)
 # Resize image for uniformity
 target_size = (256, 256)
 
+# Delete all contents of the Identified_Person folder
+def clear_identified_person_folder(folder="Identified_Person"):
+    if os.path.exists(folder):
+        for file in os.listdir(folder):
+            file_path = os.path.join(folder, file)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    os.rmdir(file_path)
+            except Exception as e:
+                print(f'Failed to delete {file_path}. Reason: {e}')
+
+clear_identified_person_folder()  # Clear folder at the start of the program
+
 # Generate a 16 length hash for each image - used for database
 def generate_image_hash(image):
     _, img_encoded = cv2.imencode(".jpg", image)
