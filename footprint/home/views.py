@@ -53,7 +53,7 @@ def dashboard_view(request):
     if user_email:
         try:
             # Query the live_feeds collection for documents with matching user_email and finished feed status
-            feeds_query = db.collection('liveFchnage_feeds').where('user_email', '==', user_email).where('feed_status', '==', 'finished').stream()
+            feeds_query = db.collection('live_feeds').where('user_email', '==', user_email).where('feed_status', '==', 'finished').stream()
 
             # Extract only the feed name for each matching document
             live_feed_names = [feed.to_dict().get('feed_name') for feed in feeds_query if 'feed_name' in feed.to_dict()]
