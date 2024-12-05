@@ -192,4 +192,4 @@ This project is licensed under the [MIT License](LICENSE). Use, modify, and dist
 
 ---
 
-Enjoy using the Footprint Web Application! For any questions or support, please contact [your email/contact info].
+Enjoy using the Footprint Web Application! For any questions or support, please contact [gp0569@wayne.edu].
